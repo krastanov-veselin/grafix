@@ -1,4 +1,4 @@
-<p align="center" style="font-size: 50px;"><span style="color: #39f">Tag</span>.<span style="color: #5d3">JS</span></p>
+<p align="center" style="font-size: 50px !important;"><span style="color: #39f !important;">Tag</span>.<span style="color: #5d3 !important;">JS</span></p>
 
 [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)
 
