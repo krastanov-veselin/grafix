@@ -1,16 +1,4 @@
-<style type="text/css">
-    .LogoName {
-        font-size: 50px !important;
-    }
-    .LogoSegment1 {
-        color: #39f !important;
-        color: #5d3 !important;
-    }
-    .LogoSegment2 {
-        font-size: 50px !important;
-    }
-</style>
-<p align="center" class="LogoName"><span class="LogoSegment1">Tag</span>.<span class="LogoSegment2">JS</span></p>
+<p align="center" size="50px"><span color="#39f">Tag</span>.<span color="#5d3">JS</span></p>
 
 [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)
 
