@@ -3,6 +3,8 @@
       "target": "ESNext",
       "typeRoots": [ "./types", "./node_modules/@types"]
     },
-    "exclude": ["./build/tag.d.ts"],
-    "declaration": true
+    "exclude": [
+      "./dist/index.d.ts",
+      "./addition.d.ts"
+    ]
 }

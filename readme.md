@@ -1,11 +1,11 @@
-# Tag.JS
+<p align="center" style="font-size: 50px;"><span style="color: #39f">Tag</span>.<span style="color: #5d3">JS</span></p>
 
 [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)
 
 Tag.JS is a library for building stateful user interfaces and managing front-end data
 
 ```js
-npm install tagjs
+npm install ts-tagjs
 ```
 
 * **Alive:** Everything you write looks & feels alive. When you change anything in your data, regardless where the data is the UI automatically adapts.
@@ -17,8 +17,13 @@ npm install tagjs
 
 ## Installation
 
-1. npm install tagjs
+1. npm install ts-tagjs
 2. enjoy
+
+Or
+
+1. get tag.js from ./vanilla folder
+2. enjoy #vanillaJS
 
 # Kay kay, let's go for the examples
 #### (Enough copying React's Readme.md headlines)

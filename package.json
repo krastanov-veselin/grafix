@@ -1,6 +1,6 @@
 {
-  "name": "tagjs",
-  "version": "1.0.0",
+  "name": "ts-tagjs",
+  "version": "1.0.9",
   "description": "A JavasScript library for building stateful UI and FrontEnd Data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
