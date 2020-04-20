@@ -1,0 +1,20 @@
+{
+  "name": "grafix",
+  "version": "1.0.0",
+  "description": "A state managed UI lib",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "start": "tsc @compile.txt --target ESNext --out ./dist/index.js -d --sourceMap true --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://v_krastanov@bitbucket.org/v_krastanov/grafix.git"
+  },
+  "author": "Veselin Krastanov",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/v_krastanov/grafix#readme",
+  "dependencies": {
+    "@types/node": "^13.11.1"
+  }
+}
