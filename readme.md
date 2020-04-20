@@ -1,4 +1,4 @@
-<div align="center" size="50px"><div style="color: #39f">Tag</div>.<div style="color: #5d3">JS</div></div>
+# Tag.JS
 
 [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)
 
