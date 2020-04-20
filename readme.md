@@ -1,4 +1,4 @@
-<p align="center" size="50px"><span color="#39f">Tag</span>.<span color="#5d3">JS</span></p>
+<div align="center" size="50px"><div color="#39f">Tag</div>.<div color="#5d3">JS</div></div>
 
 [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)
 
