@@ -1,6 +1,6 @@
 {
   "name": "ts-tagjs",
-  "version": "1.0.9",
+  "version": "1.0.19",
   "description": "A JavasScript library for building stateful UI and FrontEnd Data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://v_krastanov@bitbucket.org/v_krastanov/grafix.git"
+    "url": "url+https://github.com/krastanov-veselin/tagjs"
   },
   "author": "Veselin Krastanov",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/v_krastanov/grafix#readme",
+  "homepage": "https://github.com/krastanov-veselin/tagjs",
   "dependencies": {
     "@types/node": "^13.11.1"
   }
