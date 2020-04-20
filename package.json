@@ -1,7 +1,7 @@
 {
-  "name": "grafix",
+  "name": "tagjs",
   "version": "1.0.0",
-  "description": "A state managed UI lib",
+  "description": "A JavasScript library for building stateful UI and FrontEnd Data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
