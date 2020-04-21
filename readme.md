@@ -1,37 +1,36 @@
-<p align="center" style="font-size: 50px;"><span style="color: #39f">Tag</span>.<span style="color: #5d3">JS</span></p>
+<p align="center" style="font-size: 50px;"><span style="color: #39f">Grafix</span></p>
 
 [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)
 
-Tag.JS is a library for building stateful user interfaces and managing front-end data
+Grafix is a library that allows you to do rapid UI Logic & Layout with automatic databinding.
 
 ```js
-npm install ts-tagjs
+npm install grafix
 ```
 
-* **Alive:** Everything you write looks & feels alive. When you change anything in your data, regardless where the data is the UI automatically adapts.
+* **Alive (Proxies <3):** Everything you write looks & feels alive. When you change anything in your data, regardless where the data is the UI automatically adapts.
+* **TypeScript Ready:** Without any initial boilerplate it just works out of the box. The entire project is built in TypeScript as one module and exported in both .js and d.ts files, which excludes the need to install additional @type/... stuff.
+* **JavaScript JSDocked:** Even tho we love TypeScript, there are many of us who would prefer the oldschool JS, so we took our time to JSDoc the project almost to the look & feel of TypeScript's level of intellisense control.
 * **Composition / Reusability** Every single element is a function that receives props and returns a tag which makes elements composable and reusable.
 * **Zero Effort Databinding** While developing your tags as if you would do in normal HTML file you would probably want to add something like style="width: " + size.x + "px", well, just write it and it will automatically do all the binding for you, so no more databinding architectural effort!
 * **Blending** Create immersive blending functions that wrap tags and blend them with behavior and style.
-* **Efficiency** Without any expensive virtual doms or intense diffing for simple operations, Tag.JS simply does the subscribe->update pattern using the JavaScript Proxy API.
+* **Efficiency** Without any expensive virtual doms or intense diffing for simple operations, Grafix simply does the subscribe->update pattern using the JavaScript Proxy API.
 * **Simplicity** Just write a tag, router, loop, text, styles, classes, attributes and that's it! Just like you would do in HTML.
+* **Performance Disclamer** Even tho proxies aren't as fast as the actual object they are incredibly fast! Yeah, since all reads and writes are going through a getter and setter plus databinding it is expected to be somewhat more expensive. Is it worth it? Here are our performance.now() speedtests: [100k boolean writes NonProxy=2.820000001520384 Proxy=6.560000001627486] [100k boolean reads NonProxy=1.2399999977787957 Proxy=5.03000000026077]
 
 ## Installation
 
-1. npm install ts-tagjs
+1. npm install grafix
 2. enjoy
 
 Or
 
-1. get tag.js from ./vanilla folder
+1. get grafix.js from ./vanilla folder
 2. enjoy #vanillaJS
 
 # Kay kay, let's go for the examples
-#### (Enough copying React's Readme.md headlines)
-##### Psst Tag.JS is inspired by React <3
 
-## Examples
-
-# The Hello World! Example
+## The Hello World! Example
 
 ```jsx
 // Data

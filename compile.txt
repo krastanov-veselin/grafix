@@ -12,3 +12,5 @@
 ./src/interactive/drag.ts
 ./src/interactive/drop.ts
 ./src/interactive/sort.ts
+./src/grafix.ts
+./src/grafix.d.ts
