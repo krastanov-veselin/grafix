@@ -4,7 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)
 
-Grafix is a library that allows you to do rapid UI Logic & Layout with automatic databinding.
+### Grafix is a library that allows you to do rapid UI Logic & Layout with automatic databinding
 
 ```js
 npm install grafix
