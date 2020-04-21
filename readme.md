@@ -1,4 +1,6 @@
-<p align="center" style="font-size: 50px;"><span style="color: #39f">Grafix</span></p>
+<p align="center">
+  <img src="https://github.com/krastanov-veselin/grafix/blob/master/grafix.png?raw=true">
+</p>
 
 [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)
 
