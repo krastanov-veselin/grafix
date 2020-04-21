@@ -43,6 +43,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     }
     let originalOnSubmit: (ev: Event) => void = null
     
+    console.log(props.onCreate)
     if (props.onCreate) props.onCreate(data)
     
     const setupProps = (): void => {

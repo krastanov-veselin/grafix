@@ -16,5 +16,8 @@
   "homepage": "https://github.com/krastanov-veselin/grafix",
   "dependencies": {
     "@types/node": "^13.11.1"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3"
   }
 }

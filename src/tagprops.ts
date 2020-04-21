@@ -53,6 +53,7 @@ class TagProps {
         this.onChange = typeof data.onChange === "undefined" ? null : data.onChange
         this.onFocus = typeof data.onFocus === "undefined" ? null : data.onFocus
         this.onBlur = typeof data.onBlur === "undefined" ? null : data.onBlur
+        this.onCreate = typeof data.onCreate === "undefined" ? null : data.onCreate
         this.onInit = typeof data.onInit === "undefined" ? null : data.onInit
         this.onMount = typeof data.onMount === "undefined" ? null : data.onMount
         this.onUnmount = typeof data.onUnmount === "undefined" ? null : data.onUnmount
