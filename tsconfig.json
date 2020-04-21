@@ -5,6 +5,7 @@
     },
     "exclude": [
       "./dist/index.d.ts",
+      "./vanilla/grafix.d.ts",
       "./addition.d.ts"
     ]
 }

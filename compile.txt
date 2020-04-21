@@ -3,6 +3,7 @@
 ./src/types.ts
 ./src/tagprops.ts
 ./src/o.ts
+./src/nodes.ts
 ./src/api.ts
 ./src/tag.ts
 ./src/list.ts

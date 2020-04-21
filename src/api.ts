@@ -1,4 +1,4 @@
-const htmlNode = (
+const node = (
     type: string,
     props: Partial<TagProps> | TagChild[] = {},
     tags: TagChild[] = []
@@ -9,17 +9,6 @@ const htmlNode = (
         return tag(document.createElement(type), new TagProps({}), props)
     return tag(document.createElement(type), new TagProps(props), tags)
 }
-const div = (props: Partial<TagProps> | TagChild[] = {}, tags: TagChild[] = []): Tag =>
-    htmlNode("div", props, tags)
-const input = (props: Partial<TagProps> | TagChild[] = {}, tags: TagChild[] = []): Tag =>
-    htmlNode("input", props, tags)
-const form = (props: Partial<TagProps> | TagChild[] = {}, tags: TagChild[] = []): Tag =>
-    htmlNode("form", props, tags)
-const style = (props: Partial<TagProps> | TagChild[] = {}, tags: TagChild[] = []): Tag =>
-    htmlNode("style", props, tags)
-const comment = (props: Partial<TagProps> | TagChild[] = {}, tags: TagChild[] = []): Tag =>
-    htmlNode("comment", props, tags)
-
 const mountTag = (
     query: string,
     elementFunc: (...p) => Tag,

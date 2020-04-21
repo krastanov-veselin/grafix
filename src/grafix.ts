@@ -1,8 +1,123 @@
 module.exports = {
-    htmlNode,
+    node,
+    // Html Nodes
+    comment,
+    a,
+    abbr,
+    acronym,
+    address,
+    applet,
+    area,
+    article,
+    aside,
+    audio,
+    b,
+    base,
+    basefont,
+    bdi,
+    bdo,
+    big,
+    blockquote,
+    body,
+    br,
+    button,
+    canvas,
+    cite,
+    code,
+    col,
+    colgroup,
+    data,
+    datalist,
+    dd,
+    del,
+    details,
+    dfn,
+    dialog,
+    dir,
     div,
-    input,
+    dl,
+    dt,
+    em,
+    embed,
+    fieldset,
+    figcaption,
+    figure,
+    font,
+    footer,
     form,
+    frame,
+    frameset,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    head,
+    header,
+    hr,
+    i,
+    iframe,
+    img,
+    input,
+    ins,
+    kbd,
+    label,
+    legend,
+    li,
+    link,
+    main,
+    map,
+    mark,
+    meta,
+    meter,
+    nav,
+    noframes,
+    noscript,
+    object,
+    ol,
+    optgroup,
+    option,
+    p,
+    param,
+    picture,
+    pre,
+    progress,
+    q,
+    rp,
+    rt,
+    ruby,
+    s,
+    samp,
+    script,
+    section,
+    select,
+    small,
+    source,
+    span,
+    strike,
+    strong,
+    style,
+    sub,
+    svg,
+    table,
+    tbody,
+    td,
+    template,
+    textarea,
+    tfoot,
+    th,
+    thead,
+    time,
+    title,
+    tr,
+    track,
+    tt,
+    u,
+    ul,
+    htmlVar,
+    video,
+    
     move,
     drag,
     drop,
@@ -21,18 +136,132 @@ module.exports = {
     tag,
     bindType,
     mix,
-    o,
-    comment
+    o
 }
 declare module "grafix" {
-    export const htmlNode: (
+    export const node: (
         type: string,
         props: Partial<TagProps> | TagChild[],
         tags: TagChild[]
     ) => Tag
+    
+    // Html Nodes
+    export const comment: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const a: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const abbr: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const acronym: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const address: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const applet: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const area: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const article: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const aside: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const audio: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const b: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const base: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const basefont: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const bdi: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const bdo: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const big: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const blockquote: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const body: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const br: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const button: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const canvas: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const cite: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const code: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const col: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const colgroup: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const data: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const datalist: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const dd: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const del: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const details: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const dfn: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const dialog: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const dir: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const div: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
-    export const input: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const dl: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const dt: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const em: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const embed: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const fieldset: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const figcaption: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const figure: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const font: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const footer: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const form: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const frame: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const frameset: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const h1: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const h2: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const h3: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const h4: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const h5: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const h6: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const head: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const header: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const hr: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const i: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const iframe: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const img: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const input: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const ins: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const kbd: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const label: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const legend: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const li: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const link: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const main: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const map: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const mark: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const meta: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const meter: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const nav: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const noframes: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const noscript: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const object: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const ol: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const optgroup: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const option: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const p: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const param: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const picture: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const pre: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const progress: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const q: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const rp: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const ruby: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const s: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const samp: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const script: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const section: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const select: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const small: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const source: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const span: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const strike: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const strong: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const style: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const sub: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const svg: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const table: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const tbody: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const td: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const template: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const textarea: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const tfoot: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const th: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const thead: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const time: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const title: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const tr: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const track: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const tt: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const u: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const ul: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const htmlVar: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const video: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    
     export const move: (props?: MoveData | ((p: MoveProps) => Tag[]), tags?: ((p: MoveProps) => Tag[])) => Tag
     export const drag: (props?: DragData | ((p?: DragProps) => Tag[]), tags?: (p?: DragProps) => Tag[]) => Tag
     export const drop: (props?: ((p?: DropProps) => Tag[]) | DropData, tag?: (p?: DropProps) => Tag[]) => Tag
