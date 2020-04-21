@@ -1,3 +1,13 @@
+class Pos {
+    public x = 0
+    public y = 0
+}
+
+class Size {
+    public x = 0
+    public y = 0
+}
+
 const node = (
     type: string,
     props: Partial<TagProps> | TagChild[] = {},

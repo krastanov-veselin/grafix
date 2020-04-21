@@ -393,51 +393,67 @@ mountTag(".app", app)
 
 ```jsx
 // Style & Behavior Blend
-const myMoveBlend = (props, tags) => {
-    const start = {
-        x: 0,
-        y: 0
-    }
-    const onDown = (ev) => {
-        if (props.onDown) props.onDown(ev)
-        start.x = ev.pageX - props.pos.x
-        start.y = ev.pageY - props.pos.y
-        window.onmousemove = onMove
-        window.onmouseup = onUp
-    }
-    const onMove = (ev) => {
-        props.pos.x = ev.pageX - start.x
-        props.pos.y = ev.pageY - start.y
-        if (props.onMove) props.onMove(ev)
-    }
-    const onUp = (ev) => {
-        window.onmousemove = null
-        window.onmouseup = null
-        if (props.onUp) props.onUp(ev)
-    }
-    const tag = tags({
+import {
+    div, mountTag,
+    forward, filter, o 
+} from 'grafix'
+
+const blend = (feed, tags) => {
+    const props = {
+        reducedA: () => `${ feed.data.pos.x }px`,
+        reducedB: () => `${ feed.data.pos.y }px`,
+        reducedC: () => `5px`,
+        reducedD: () => `10px`,
+        combinedA: () => `
+            width: ${ props.reducedA() };
+            height: ${ props.reducedB() };
+        `,
+        combinedB: () => `
+            padding: ${ props.reducedC() };
+            margin: ${ props.reducedD() };
+        `,
         style: () => `
-            transform: translate3d(
-                ${props.pos.x}px,
-                ${props.pos.y}px,
-                0
-            );
-        `
-    })[0]
-    tag.addEvent("mousedown", onDown)
+            ${ props.combinedA() }
+            ${ props.combinedB() }
+        `,
+        
+    }
+    
+    const tag = forward(tags(props))
+    const target = filter(feed, tag)
+    
+    // Do blending logic to target
+    target.addEvent("click", () => {
+        feed.data.pos.x++
+        feed.data.pos.y++
+    })
+    
     return tag
 }
 
-const pos = o({
-    x: 0,
-    y: 0
-})
-
-const app = () => div([
-    myMoveBlend({pos}, ({style}) => [
-        div({text: "Move Me", style})
+const app = () => {
+    const data = o({
+        pos: o({
+            x: 0,
+            y: 0
+        })
+    })
+    let targetTag: Tag
+    
+    return div([
+        blend({data, target: () => targetTag}, ({ style }) => [
+            div({
+                onCreate: tag => targetTag = tag,
+                text: "Blended Tag",
+                style: () => `
+                    background-color: #39f;
+                    user-select: none;
+                    ${ style() }
+                `
+            })
+        ])
     ])
-])
+}
 
 mountTag(".app", app)
 ```

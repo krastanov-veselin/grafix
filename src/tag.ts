@@ -43,7 +43,6 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     }
     let originalOnSubmit: (ev: Event) => void = null
     
-    console.log(props.onCreate)
     if (props.onCreate) props.onCreate(data)
     
     const setupProps = (): void => {
@@ -187,8 +186,8 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     }
     
     const addEvent = (eventName: string, func: (ev?: any) => void): void => {
-        data.node.addEventListener("mousedown", func, false)
-        data.unmounts.add(() => data.node.removeEventListener("mousedown", func, false))
+        data.node.addEventListener(eventName, func, false)
+        data.unmounts.add(() => data.node.removeEventListener(eventName, func, false))
     }
     
     const cleanSubscriptions = (): void => {

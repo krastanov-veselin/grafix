@@ -8,9 +8,9 @@
 ./src/tag.ts
 ./src/list.ts
 ./src/router.ts
-./src/interactive/move.ts
-./src/interactive/resize.ts
-./src/interactive/drag.ts
-./src/interactive/drop.ts
-./src/interactive/sort.ts
+./src/blends/move.ts
+./src/blends/resize.ts
+./src/blends/drag.ts
+./src/blends/drop.ts
+./src/blends/sort.ts
 ./src/grafix.ts

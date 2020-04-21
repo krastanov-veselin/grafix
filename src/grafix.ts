@@ -264,11 +264,14 @@ declare module "grafix" {
     export const htmlVar: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const video: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     
-    export const move: (props?: MoveData | ((p: MoveProps) => Tag[]), tags?: ((p: MoveProps) => Tag[])) => Tag
-    export const drag: (props?: DragData | ((p?: DragProps) => Tag[]), tags?: (p?: DragProps) => Tag[]) => Tag
-    export const drop: (props?: ((p?: DropProps) => Tag[]) | DropData, tag?: (p?: DropProps) => Tag[]) => Tag
-    export const resize: (props?: ResizeData, tags?: (p?: ResizeProps) => Tag[]) => Tag
-    export const sort: (props?: SortData | ((p?: SortProps) => Tag[]), tag?: (p?: SortProps) => Tag[]) => Tag
+    // Blends
+    export const move: (props: MoveFeed, tags: (p: MoveProps) => Tag[]) => Tag
+    export const drag: (props: DragFeed, tags: (p?: DragProps) => Tag[]) => Tag
+    export const drop: (props: DropFeed, tags: (p?: DropProps) => Tag[]) => Tag
+    export const resize: (props: ResizeFeed, tags: (p?: ResizeProps) => Tag[]) => Tag
+    export const sort: (props: SortFeed, tags: (p?: SortProps) => Tag[]) => Tag
+    
+    // API
     export const mountTag: (
         query: string,
         elementFunc: (...p: any[]) => Tag,
@@ -301,5 +304,5 @@ declare module "grafix" {
     export const o: <C = any>(/** @type {(new() => A)|A} */ref: (new () => C) | C, /** @type {A} */d?: Partial<C>) => C
     export const mix: <T = any>() => Mix<T>
     export const forward: (tags: TagChild[]) => Tag
-    export const filter: (feed: Partial<{ target: Tag }>, tag: Tag) => Tag
+    export const filter: (feed: Partial<{ target: () => Tag }>, tag: Tag) => Tag
 }
