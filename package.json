@@ -1,7 +1,7 @@
 {
   "name": "grafix",
-  "version": "1.0.0",
-  "description": "A JavasScript library for building stateful UI and FrontEnd Data",
+  "version": "1.0.1",
+  "description": "Grafix is a library that allows you to do rapid UI Logic & Layout with automatic databinding.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

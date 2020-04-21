@@ -11,7 +11,7 @@ npm install grafix
 ```
 
 * **Alive (Proxies <3):** Everything you write looks & feels alive. When you change anything in your data, regardless where the data is the UI automatically adapts.
-* **TypeScript Ready:** Without any initial boilerplate it just works out of the box. The entire project is built in TypeScript as one module and exported in both .js and d.ts files, which excludes the need to install additional @type/... stuff.
+* **TypeScript Ready:** Without any initial boilerplate it just works out of the box. The entire project is built in TypeScript as one module and exported in both .js and d.ts files, which excludes the need to install additionally @type/grafix. However if you want to use AMD modular architecture you need to install @types/grafix from DefinitelyTyped or simply make an empty folder ./node_modules/@types/grafix
 * **JavaScript JSDocked:** Even tho we love TypeScript, there are many of us who would prefer the oldschool JS, so we took our time to JSDoc the project almost to the look & feel of TypeScript's level of intellisense control.
 * **Composition / Reusability** Every single element is a function that receives props and returns a tag which makes elements composable and reusable.
 * **Zero Effort Databinding** While developing your tags as if you would do in normal HTML file you would probably want to add something like style="width: " + size.x + "px", well, just write it and it will automatically do all the binding for you, so no more databinding architectural effort!
@@ -22,13 +22,84 @@ npm install grafix
 
 ## Installation
 
+> Modular
 1. npm install grafix
 2. enjoy
 
-Or
+> Vanilla
 
 1. get grafix.js from ./vanilla folder
 2. enjoy #vanillaJS
+
+> Modular [Parcel + TypeScript + Grafix]
+
+1. npm install typescript -g
+    > tsconfig.json
+    ```json
+    {
+        "compilerOptions": {
+            "target": "es5",
+            "module": "commonjs",
+            "lib": ["es2017", "es7", "es6", "dom"],
+            "declaration": true,
+            "outDir": "dist",
+            "esModuleInterop": true,
+            "moduleResolution": "node",
+        },
+        "exclude": [
+            "node_modules",
+            "dist"
+        ]
+    }
+    ```
+2. npm install parcel -g
+    > index.html
+    ```html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Tag.JS Test</title>
+    </head>
+    <body>
+        <div class="app"></div>
+        <script src="src/app.ts"></script>
+    </body>
+    </html>
+    ```
+3. npm install grafix
+    > ./src/app.ts or ./src/app.js
+    ```js
+    import { div, mountTag } from 'grafix'
+
+    const app = () => div({ text: "Hello World" })
+
+    mountTag(".app", app)
+    ```
+4. Setup Build & Start scripts
+    > package.json
+    ```json
+    {
+        "name": "my-new-grafix-app",
+        "version": "1.0.0",
+        "description": "",
+        "main": "index.js",
+        "scripts": {
+            "build": "tsc ./src/app.ts",
+            "start": "parcel ./index.html"
+        },
+        "author": "",
+        "license": "ISC",
+        "dependencies": {
+            "@types/node": "^13.13.1",
+            "grafix": "^1.0.1"
+        },
+        "devDependencies": {
+            "typescript": "^3.8.3"
+        }
+    }
+
+    ```
 
 # Kay kay, let's go for the examples
 
