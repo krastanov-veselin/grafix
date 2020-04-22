@@ -381,7 +381,7 @@ setTimeout(() => {
 }, 3000)
 setTimeout(() => {
     settings.title = ""
-    const text = ", we're all set and doing grafix is cool!"
+    const text = ", we all love to do <grafix>!"
     let time = 0
     for (let i = 0; i < text.length; i++)
         setTimeout(() =>
