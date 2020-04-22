@@ -59,7 +59,7 @@ npm install grafix
     <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Tag.JS Test</title>
+        <title>Grafix Test</title>
     </head>
     <body>
         <div class="gfx"></div>
@@ -799,7 +799,7 @@ mountTag(".gfx", app)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tag.JS Test</title>
+    <title>Grafix Test</title>
 </head>
 <body>
     <div class="gfx1"></div>
