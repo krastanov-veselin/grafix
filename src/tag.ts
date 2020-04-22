@@ -61,6 +61,8 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     const applyNodeValue = (domProp: string, value: string): void | string => {
         if (domProp === "style")
             return data.node.style.cssText = value
+        if (domProp === "className")
+            return data.node[domProp] = value.trim()
         data.node[domProp] = value
     }
     
@@ -68,7 +70,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         if (data.node instanceof Comment) return
         if (!data.props[prop]) return
         if (typeof data.props[prop] === "string" || typeof data.props[prop] === "number")
-            return (data.node as any)[domProp] = data.props[prop]
+            return applyNodeValue(domProp, data.props[prop])
         if (data.props[prop] instanceof Function) {
             bind(type, () => applyNodeValue(domProp, data.props[prop]()))
             applyNodeValue(domProp, data.props[prop]())

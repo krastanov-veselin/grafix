@@ -22,13 +22,13 @@ const sort = (feed: SortFeed, tags: (p?: SortProps) => Tag[]): Tag => {
             const draggingTag = fx.dragData
             if (
                 !feed.data.has(hoveredTag.props.name) ||
-                !feed.data.has(draggingTag.feed.name)
+                !feed.data.has(draggingTag.props.name)
             ) return
             if (after)
                 if (hoveredTag.props.name === feed.data.lastID())
-                    feed.data.sort(draggingTag.feed.name, null)
-                else feed.data.sort(draggingTag.feed.name, feed.data.getNode(hoveredTag.props.name).next.id)
-            else feed.data.sort(draggingTag.feed.name, hoveredTag.props.name)
+                    feed.data.sort(draggingTag.props.name, null)
+                else feed.data.sort(draggingTag.props.name, feed.data.getNode(hoveredTag.props.name).next.id)
+            else feed.data.sort(draggingTag.props.name, hoveredTag.props.name)
         }
         else if (after) {
             if (node.nextSibling)
@@ -46,7 +46,10 @@ const sort = (feed: SortFeed, tags: (p?: SortProps) => Tag[]): Tag => {
         drop({onEnter, onData: () => tag}, () => [
             forward(tags({
                 translate: dragProps.translate,
-                style: dragProps.style,
+                style: () => `
+                    user-select: none;
+                    ${ dragProps.style() }
+                `,
                 moveStyle: dragProps.moveStyle,
                 dragStyle: dragProps.style
             }))

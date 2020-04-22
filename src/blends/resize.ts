@@ -23,7 +23,11 @@ const resize = (feed: ResizeFeed, tags: (p?: ResizeProps) => Tag[]) => {
         left: o(Pos),
         right: o(Pos),
     }
-    return tags({
+    const resizerStyle = `
+        position: absolute;
+        background-color: pink;
+    `
+    return forward(tags({
         width: () => "width: " + feed.size.x + "px;",
         height: () => "height: " + feed.size.y + "px;",
         translate: () => "translate3d(" + feed.pos.x + "px, " + feed.pos.y + "px, 0)",
@@ -46,7 +50,17 @@ const resize = (feed: ResizeFeed, tags: (p?: ResizeProps) => Tag[]) => {
                 if (feed.pos)
                     feed.pos.y = start.posY + pos.top.y
             }}, () => [
-                div({classes: "ResizerTop Resizer"})
+                div({
+                    classes: "ResizerTop Resizer",
+                    style: `
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 10px;
+                        cursor: move;
+                        ${resizerStyle}
+                    `
+                })
             ]),
             move({data: pos.bottom, onDown: () => {
                 pos.bottom.y = 0
@@ -59,7 +73,17 @@ const resize = (feed: ResizeFeed, tags: (p?: ResizeProps) => Tag[]) => {
             }, onMove: () => {
                 feed.size.y = start.y + pos.bottom.y
             }}, () => [
-                div({classes: "ResizerBottom Resizer"})
+                div({
+                    classes: "ResizerBottom Resizer",
+                    style: `
+                        bottom: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 10px;
+                        cursor: move;
+                        ${resizerStyle}
+                    `
+                })
             ]),
             move({data: pos.left, onDown: () => {
                 pos.left.x = 0
@@ -74,7 +98,17 @@ const resize = (feed: ResizeFeed, tags: (p?: ResizeProps) => Tag[]) => {
                 if (feed.pos)
                     feed.pos.x = start.posX + pos.left.x
             }}, () => [
-                div({classes: "ResizerLeft Resizer"})
+                div({
+                    classes: "ResizerLeft Resizer",
+                    style: `
+                        top: 0;
+                        left: 0;
+                        width: 10px;
+                        height: 100%;
+                        cursor: move;
+                        ${resizerStyle}
+                    `
+                })
             ]),
             move({data: pos.right, onDown: () => {
                 pos.right.x = 0
@@ -87,8 +121,18 @@ const resize = (feed: ResizeFeed, tags: (p?: ResizeProps) => Tag[]) => {
             }, onMove: () => {
                 feed.size.x = start.x + pos.right.x
             }}, () => [
-                div({classes: "ResizerRight Resizer"})
+                div({
+                    classes: "ResizerRight Resizer",
+                    style: `
+                        top: 0;
+                        right: 0;
+                        width: 10px;
+                        height: 100%;
+                        cursor: move;
+                        ${resizerStyle}
+                    `
+                })
             ])
         ]
-    })[0]
+    }))
 }

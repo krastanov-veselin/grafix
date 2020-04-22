@@ -138,7 +138,8 @@ module.exports = {
     mix,
     o,
     forward,
-    filter
+    filter,
+    grafix: Unit
 }
 declare module "grafix" {
     export const node: (
@@ -302,7 +303,12 @@ declare module "grafix" {
         attributes: "attributes"
     }
     export const o: <C = any>(/** @type {(new() => A)|A} */ref: (new () => C) | C, /** @type {A} */d?: Partial<C>) => C
-    export const mix: <T = any>() => Mix<T>
+    export const mix: <T = any>(
+        items?: T[] | [string, T][],
+        unique?: boolean,
+        subscribable?: boolean
+    ) => Mix<T>
     export const forward: (tags: TagChild[]) => Tag
     export const filter: (feed: Partial<{ target: () => Tag }>, tag: Tag) => Tag
+    export const grafix: typeof Unit
 }

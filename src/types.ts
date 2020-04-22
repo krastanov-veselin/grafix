@@ -37,3 +37,5 @@ declare type Attributes = {
     style: string,
     id: string
 }
+declare type NodeProps = Partial<TagProps> | TagChild[]
+declare type NodeTags = TagChild[]

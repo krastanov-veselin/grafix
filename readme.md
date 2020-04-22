@@ -62,7 +62,7 @@ npm install grafix
         <title>Tag.JS Test</title>
     </head>
     <body>
-        <div class="app"></div>
+        <div class="gfx"></div>
         <script src="src/app.ts"></script>
     </body>
     </html>
@@ -71,10 +71,10 @@ npm install grafix
     > ./src/app.ts or ./src/app.js
     ```js
     import { div, mountTag } from 'grafix'
-
+    
     const app = () => div({ text: "Hello World" })
-
-    mountTag(".app", app)
+    
+    mountTag(".gfx", app)
     ```
 4. Setup Build & Start scripts
     > package.json
@@ -101,11 +101,90 @@ npm install grafix
 
     ```
 
+# The universe of our philosophy
+## We believe that the UI development is a 9 component world
+> node
+```js
+div()
+```
+
+> style
+```js
+div({
+    style: () => ``
+})
+```
+
+> classes
+```js
+div({
+    classes: () => ``
+})
+```
+
+> text
+```js
+div({
+    text: () => ``
+})
+```
+
+> router
+```js
+() => {
+    if (a) return div({ text: "A" })
+    if (b) return div({ text: "B" })
+}
+```
+
+> loop
+```js
+div([
+    ...loop(items, (item, id), [
+        div({ text: id })
+    ])
+])
+```
+
+> element
+```js
+const element = (props) => {
+    const state = o({
+        data: "Hello World",
+    })
+    return div({ text: () => state.data + props.prop })
+}
+```
+
+> blend
+```js
+div([
+    behavior({}, ({ style }) => [
+        div({ style, text: "Blended Div" })
+    ])
+])
+```
+
+> data
+```js
+const data = o({
+    prop: "Hello World"
+})
+```
+
 # Kay kay, let's go for the examples
 
 ## The Hello World! Example
 
+Make sure you have somewhere in your index.html
+The classname doesn't really matter as long as you can query select it
+```html
+<div class="gfx"></div>
+```
+
 ```jsx
+import { div, mountTag, o } from 'grafix'
+
 // Data
 const data = o({
     title: "Hello World"
@@ -121,7 +200,7 @@ setTimeout(() => {
     data.title = "Hello World Modified!"
 }, 2000)
 
-mountTag(".app", app)
+mountTag(".gfx", app)
 ```
 
 This example will display ```Hello World``` <br /> and after 2 seconds it will change into ```Hello World Modified!``` <br />
@@ -136,17 +215,30 @@ This example will display ```Hello World``` <br /> and after 2 seconds it will c
 # The Router Example
 
 ```jsx
+import { o, mountTag, div } from 'grafix'
+
 const data = o({
     location: "home"
 })
 
 const app = () => div([
-    div({ text: "Home", onClick: () => data.location = "home" }),
-    div({ text: "Settings", onClick: () => data.location = "settings" }),
-    div({ text: "Gallery", onClick: () => data.location = "gallery" }),
-    // This is a router!
-    // Just a function
+    div({
+        text: "Home",
+        onClick: () => data.location = "home"
+    }),
+    div({
+        text: "Settings",
+        onClick: () => data.location = "settings"
+    }),
+    div({
+        text: "Gallery",
+        onClick: () => data.location = "gallery"
+    }),
+    // This function here is the router
     () => {
+        // These conditions are the routes
+        // When ever data changes, it reroutes
+        // It's practically magic
         if (data.location === "home")
             return div({text: "This is Home"})
         if (data.location === "settings")
@@ -156,7 +248,7 @@ const app = () => div([
     }
 ])
 
-mountTag(".app", app)
+mountTag(".gfx", app)
 ```
 
 This example will build ```<div>This is Home</div>``` <br />
@@ -181,6 +273,8 @@ After clicking on "Settings"
 # The Simple Loop Example
 
 ```jsx
+import { mountTag, div, loop } from 'grafix'
+
 const arr = [15, 25, 35]
 
 const app = () => div([
@@ -194,12 +288,17 @@ const app = () => div([
     ])
 ])
 
-mountTag(".app", app)
+mountTag(".gfx", app)
 ```
 
 # The Stateful Loop Example
 
 ```jsx
+import {
+    mountTag, div, loop,
+    mix, o, input
+} from 'grafix'
+
 const m = mix([
     o({ title: "Item 1" }),
     o({ title: "Item 2" }),
@@ -224,7 +323,7 @@ const app = () => div([
     ])
 ])
 
-mountTag(".app", app)
+mountTag(".gfx", app)
 ```
 
 This example will display 3 divs with their content
@@ -235,21 +334,30 @@ This example will display 3 divs with their content
 # The Stateful Attributes Example
 
 ```jsx
+import { mountTag, div, o, grafix } from 'grafix'
+
 const settings = o({
     title: "World!",
     hasColor: false,
-    color: "#39f",
+    color: "#999",
     hasAttr: false,
     attrVal: "World",
-    padding: 20
+    padding: 20,
+    transition: 1
 })
 
 const app = () => div([
     div({
         text: () => "Hello " + settings.title,
         style: () => `
-            background-color: ${ settings.color };
-            padding: ${ settings.padding }px
+            background-color: ${
+                settings.hasColor ?
+                    settings.color :
+                    "#555"
+            };
+            padding: ${ settings.padding }px;
+            transition: all ${ settings.transition }s;
+            border-radius: 20px;
         `,
         classes: () => `
             SomeClass ${ settings.hasColor ? "colored" : "" }
@@ -264,7 +372,23 @@ const app = () => div([
     })
 ])
 
-mountTag(".app", app)
+setTimeout(() => settings.hasColor = true, 1000)
+setTimeout(() => settings.color = "#39f", 2000)
+setTimeout(() => {
+    settings.padding = 80
+    settings.transition = 3
+}, 3000)
+setTimeout(() => {
+    settings.title = ""
+    const text = ", we're all set!"
+    let time = 0
+    for (let i = 0; i < text.length; i++)
+        setTimeout(() =>
+            settings.title += text[i],
+            time += grafix.random(50, 300))
+}, 3000)
+
+mountTag(".gfx", app)
 ```
 
 All attributes will automatically update when ever some of the binded properties change.
@@ -274,6 +398,8 @@ Or when the settings.hasColor is changed then the colored style will be either a
 # The Modular Example
 
 ```jsx
+import { o, div, form, input, mountTag } from 'grafix'
+
 const settings = o({
     location: ""
 })
@@ -309,12 +435,14 @@ const myRouter = (optionalProps) => () => {
         return div({text: "This is settings"})
 }
 
-mountTag(".app", app)
+mountTag(".gfx", app)
 ```
 
 # The Nested Router Example
 
 ```jsx
+import { o, div, mountTag } from 'grafix'
+
 const settings = o({
     location: "",
     innerLocation: "",
@@ -346,28 +474,42 @@ const app = () => div([
     div()
 ])
 
-mountTag(".app", app)
+settings.location = "home"
+
+setTimeout(() => settings.location = "settings", 1000)
+setTimeout(() => {
+    settings.innerLocation = "nested1"
+    settings.location = "nested"
+}, 2000)
+setTimeout(() => settings.innerLocation = "nested2", 3000)
+setTimeout(() => {
+    settings.innerLocation2 = "nested1"
+    settings.innerLocation = "nested3"
+}, 4000)
+setTimeout(() => settings.innerLocation2 = "nested2", 5000)
+
+mountTag(".gfx", app)
 ```
 
 # The Create Your Own Tag Example
 
 ```jsx
-const settings = o({
-    location: "",
-    innerLocation: "",
-    innerLocation2: ""
-})
+import {
+    div, mountTag, node,
+    arrange, setDefaultStyle
+} from 'grafix'
 
-const myTag = (props, tags) => htmlNode("mycustomtag", props, tags)
+const myTag = (props?: NodeProps, tags?: NodeTags) =>
+    node("mycustomtag", props, tags)
 
-const myStyledTag = (props, tags) => {
+const myStyledTag = (props?: NodeProps, tags?: NodeTags) => {
     [props, tags] = arrange(props, tags)
     setDefaultStyle(props, `
         padding: 10px;
         background-color: #39f;
         display: block;
     `)
-    return htmlNode("mystyledtag", props, tags)
+    return node("mystyledtag", props, tags)
 }
 
 const app = () => div([
@@ -386,20 +528,39 @@ const app = () => div([
     ])
 ])
 
-mountTag(".app", app)
+mountTag(".gfx", app)
 ```
 
 # The Create Your Own Blend Example
 
 ```jsx
-// Style & Behavior Blend
 import {
     div, mountTag,
     forward, filter, o 
 } from 'grafix'
 
-const blend = (feed, tags) => {
-    const props = {
+interface BlendFeed {
+    target: () => Tag,
+    data: {
+        pos: Pos
+    }
+}
+
+interface BlendProps {
+    reducedA: () => string
+    reducedB: () => string
+    reducedC: () => string
+    reducedD: () => string
+    combinedA: () => string
+    combinedB: () => string
+    style: () => string
+}
+
+const blend = (
+    feed: Partial<BlendFeed>,
+    tags: (p: BlendProps
+) => NodeTags) => {
+    const props: BlendProps = {
         reducedA: () => `${ feed.data.pos.x }px`,
         reducedB: () => `${ feed.data.pos.y }px`,
         reducedC: () => `5px`,
@@ -455,12 +616,17 @@ const app = () => {
     ])
 }
 
-mountTag(".app", app)
+mountTag(".gfx", app)
 ```
 
 # The Composition Blending Example
 
 ```jsx
+import {
+    div, mountTag, o,
+    move, resize, sort
+} from 'grafix'
+
 const pos = o({
     x: 0,
     y: 0
@@ -473,7 +639,7 @@ const size = o({
 const app = () => {
     let moveHandle = null
     return div([
-        move({pos, target: () => moveHandle}, ({transform}) => [
+        move({data: pos, target: () => moveHandle}, ({transform}) => [
             resize({pos, size}, ({width, height, resizers}) => [
                 div({
                     style: () => `
@@ -497,49 +663,35 @@ const app = () => {
             // sort blend is blending styles from move, drag and drop blends
             // the same way move and resize are blended above
             // Therefore blending can be continuous / compositioned
-            sort(({style}) => [
+            sort({}, ({style}) => [
                 div({text: "Item 1", style}),
             ]),
-            sort(({style}) => [
+            sort({}, ({style}) => [
                 div({text: "Item 2", style}),
             ]),
-            sort(({style}) => [
+            sort({}, ({style}) => [
                 div({text: "Item 3", style}),
             ]),
         ])
     ])
 }
 
-mountTag(".app", app)
+mountTag(".gfx", app)
 ```
 
 Blends are invisible, they are just functionality wrappers that provide style and behavior to children tags. The blending effect can be set by choice on any children tag, allowing what we call blending art.
-
-The actual DOM with all blends active
-
-```html
-<div>
-    <div style="position: relative; transform: translate3d(0px, 0px, 0px); width: 100px; height: 100px;">
-        <div style="padding: 10px;">Move Handle</div>
-        <div></div>
-        <div class="ResizerTop Resizer"></div>
-        <div class="ResizerBottom Resizer"></div>
-        <div class="ResizerLeft Resizer"></div>
-        <div class="ResizerRight Resizer"></div>
-    </div>
-    <div>
-        <div style="transform: translate3d(0px, 0px, 0px);">Item 1</div>
-        <div style="transform: translate3d(0px, 0px, 0px);">Item 2</div>
-        <div style="transform: translate3d(0px, 0px, 0px);">Item 3</div>
-    </div>
-</div>
-```
 
 # The Events Example
 
 ### In simple list form
 
 ```jsx
+import {
+    div, mountTag,
+    o, mix, sort, loop,
+    form, input
+} from 'grafix'
+
 const list = mix()
 
 const app = () => {
@@ -571,12 +723,12 @@ const app = () => {
 
 const itemElement = (item, id) => {
     let sortHandle
-    return sort({mix: list, target: () => sortHandle}, ({style}) => [
+    return sort({data: list, target: () => sortHandle}, ({style}) => [
         div({style}, [
             div({text: () => item.title}),
             div({
                 text: "Sort Handle",
-                onInit: t => sortHandle = t
+                onCreate: t => sortHandle = t
             }),
             div({
                 text: "remove",
@@ -597,7 +749,47 @@ const itemElement = (item, id) => {
     ])
 }
 
-mountTag(".app", app)
+mountTag(".gfx", app)
 ```
 
+# The Multiple Grafix Instances Example
 
+> index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag.JS Test</title>
+</head>
+<body>
+    <div class="gfx1"></div>
+    <div class="gfx2"></div>
+    <script src="src/app.ts"></script>
+</body>
+</html>
+```
+
+> src/app.ts
+```js
+import { div, mountTag, o } from 'grafix'
+
+const data = o({
+    title1: "Instance 1",
+    title2: "Instance 2"
+})
+
+const app1 = () => div({
+    text: () => data.title1
+})
+const app2 = () => div({
+    text: () => data.title2
+})
+
+setTimeout(() => data.title1 = "Instance 1 Modified!", 2000)
+setTimeout(() => data.title2 = "Instance 2 Modified!", 3000)
+
+mountTag(".gfx1", app1)
+mountTag(".gfx2", app2)
+```
