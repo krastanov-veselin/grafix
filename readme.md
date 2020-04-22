@@ -176,8 +176,9 @@ const data = o({
 
 ## The Hello World! Example
 
-Make sure you have somewhere in your index.html.<br/>
+Make sure you have somewhere in your index.html<br />
 The classname doesn't really matter as long as you can query select it
+<br />
 ```html
 <div class="gfx"></div>
 ```
