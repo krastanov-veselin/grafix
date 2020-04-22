@@ -18,7 +18,7 @@ npm install grafix
 * **Blending** Create immersive blending functions that wrap tags and blend them with behavior and style.
 * **Efficiency** Without any expensive virtual doms or intense diffing for simple operations, Grafix simply does the subscribe->update pattern using the JavaScript Proxy API.
 * **Simplicity** Just write a tag, router, loop, text, styles, classes, attributes and that's it! Just like you would do in HTML.
-* **Performance Disclamer** Even tho proxies aren't as fast as the actual object they are incredibly fast! Yeah, since all reads and writes are going through a getter and setter plus databinding it is expected to be somewhat more expensive. Is it worth it? Here are our performance.now() speedtests: [100k boolean writes NonProxy=2.820000001520384 Proxy=6.560000001627486] [100k boolean reads NonProxy=1.2399999977787957 Proxy=5.03000000026077]
+* **Performance Disclaimer** Even tho proxies aren't as fast as the actual object they are incredibly fast! Yeah, since all reads and writes are going through a getter and setter plus databinding it is expected to be somewhat more expensive. Is it worth it? Here are our performance.now() speedtests: [100k boolean writes NonProxy=2.820000001520384 Proxy=6.560000001627486] [100k boolean reads NonProxy=1.2399999977787957 Proxy=5.03000000026077]
 
 ## Installation
 
