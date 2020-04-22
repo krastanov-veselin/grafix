@@ -344,7 +344,11 @@ const settings = o({
     hasAttr: false,
     attrVal: "World",
     padding: 20,
-    transition: 1
+    transition: 1,
+    textColor: "#333",
+    fontFamily: "",
+    blink: false,
+    preBlink: false
 })
 
 const app = () => div([
@@ -359,6 +363,15 @@ const app = () => div([
             padding: ${ settings.padding }px;
             transition: all ${ settings.transition }s;
             border-radius: 20px;
+            color: ${ settings.textColor };
+            font-family: ${ settings.fontFamily };
+            transform: ${
+                settings.preBlink ? 
+                    "scale(1.005)" :
+                settings.blink ?
+                    "scale(0.99)" :
+                    "scale(1)"
+            };
         `,
         classes: () => `
             SomeClass ${ settings.hasColor ? "colored" : "" }
@@ -383,10 +396,34 @@ setTimeout(() => {
     settings.title = ""
     const text = ", we all love to do <grafix>!"
     let time = 0
+    let passed = 0
     for (let i = 0; i < text.length; i++)
-        setTimeout(() =>
-            settings.title += text[i],
-            time += grafix.random(50, 300))
+        setTimeout(() => {
+            settings.title += text[i]
+            passed++
+            if (passed === text.length) {
+                settings.transition = 0
+                setTimeout(() => {
+                settings.fontFamily = "verdana"
+                setTimeout(() =>
+                settings.textColor = "#fff", 1000)
+                settings.transition = 1
+                setInterval(() => {
+                settings.transition = 0.3
+                settings.preBlink = true
+                setTimeout(() => {
+                settings.transition = 0.5
+                settings.preBlink = false
+                settings.blink = true
+                setTimeout(() => {
+                settings.transition = 2
+                settings.blink = false
+                }, 500)
+                }, 300)
+                }, 3000)
+                }, 300)
+            }
+        }, time += grafix.random(50, 300))
 }, 3000)
 
 mountTag(".gfx", app)
