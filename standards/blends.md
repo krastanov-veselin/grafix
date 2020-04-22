@@ -105,7 +105,7 @@ const app = () => {
     ])
 }
 
-mountTag(".app", app)
+mountTag(".gfx", app)
 ```
 
 > TypeScript Usage Example
@@ -189,6 +189,6 @@ const app = () => {
     ])
 }
 
-mountTag(".app", app)
+mountTag(".gfx", app)
 
 ```
