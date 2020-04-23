@@ -913,8 +913,8 @@ const myItem = o(MyItemData, {
 const arr = [1, 2, 3, 4, 5]
 
 // If you would like to make a stateful array
-// you could use our blazing fast, lightweight
-// linked list, speed is even faster than the array
+// you could use the blazing fast, lightweight
+// linked list "mix", speed is even faster than the array
 // because it provides random access read, write, delete and sort
 // iterates faster than the array thanks to the random access
 const stateArr = mix([1, 2, 3, 4, 5])
