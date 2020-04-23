@@ -364,7 +364,7 @@ const app = () => div([
         div([
             div({
                 onClick: () => m.delete(id),
-                onRightClick: () => m.add(o({
+                onContextMenu: () => m.add(o({
                     title: "Item " + Unit.random(1, 99999)
                 })),
                 text: () => id + ": " + item.title

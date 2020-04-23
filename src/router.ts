@@ -15,8 +15,6 @@ const router = (props: () => Tag): Tag => {
     }
     tag.onMount = () => {
         tag.bind(bindType.router, () => bind())
-        bind()
-        tag.disableBinding()
     }
     return tag
 }

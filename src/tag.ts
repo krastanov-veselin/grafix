@@ -73,8 +73,6 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
             return applyNodeValue(domProp, data.props[prop])
         if (data.props[prop] instanceof Function) {
             bind(type, () => applyNodeValue(domProp, data.props[prop]()))
-            applyNodeValue(domProp, data.props[prop]())
-            disableBinding()
         }
     }
     
