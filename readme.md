@@ -7,8 +7,6 @@
 ![npm](https://badgen.net/npm/dw/grafix)
 ![GitHub](https://badgen.net/npm/license/lodash)
 ![npm type definitions](https://badgen.net/npm/types/typescript)
-![npm type definitions](https://img.shields.io/npm/types/typescript)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/krastanov-veselin/grafix)
 
 
 ### Grafix is a library that allows you to do rapid UI Logic & Layout with automatic databinding
