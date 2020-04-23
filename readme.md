@@ -16,6 +16,7 @@ npm install grafix
 * **Composition / Reusability** Every single element is a function that receives props and returns a tag which makes elements composable and reusable.
 * **Zero Effort Databinding** While developing your tags as if you would do in normal HTML file you would probably want to add something like style="width: " + size.x + "px", well, just write it and it will automatically do all the binding for you, so no more databinding architectural effort!
 * **Blending** Create immersive blending functions that wrap tags and blend them with behavior and style.
+* **Animation Patience** Patiently awaiting all nested animations to finish for a tag to unmount, unless explicitly stated to do bruteforce unmount.
 * **Efficiency** Without any expensive virtual doms or intense diffing for simple operations, Grafix simply does the subscribe->update pattern using the JavaScript Proxy API.
 * **Simplicity** Just write a tag, router, loop, text, styles, classes, attributes and that's it! Just like you would do in HTML.
 * **Performance Disclaimer** Even tho proxies aren't as fast as the actual object they are incredibly fast! Yeah, since all reads and writes are going through a getter and setter plus databinding it is expected to be somewhat more expensive. Is it worth it? Here are our performance.now() speedtests: [100k boolean writes NonProxy=2.820000001520384 Proxy=6.560000001627486] [100k boolean reads NonProxy=1.2399999977787957 Proxy=5.03000000026077]
