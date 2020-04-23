@@ -214,6 +214,53 @@ This example will display ```Hello World``` <br /> and after 2 seconds it will c
 <div>Hello World Modified!</div>
 ```
 
+# The LifeCycle Events Example
+
+```jsx
+import { mountTag, div } from 'grafix'
+
+const app = () => div({
+    text: "I got a lifecycle, like all other tags!",
+    onCreate: (tag: Tag) => {
+        // Called when the Tag object is created
+        // This event is called before any parent Tag is created
+        // Useful to pass target to parent
+        console.log("Created", tag)
+    },
+    onInit: (tag: Tag) => {
+        // Called when parent is created
+        // before tag is mounted to the parent
+        // useful to communicate with parent before mount
+        console.log("Inited", tag)
+    },
+    onMount: (tag: Tag) => {
+        // Called when Tag's html node is mounted to the parent node
+        // Useful when working with Tag's node
+        // and when working with Tag's sub Tags
+        console.log("Mounted", tag)
+        
+        tag.unmount(() => {
+            console.log("Tag successfully unmounted!", tag)
+        })
+    },
+    onUnmount: (tag: Tag) => {
+        // Called when Tag is getting unmounted
+        // before anything is attempted to be deleted yet
+        // Useful as an immediate destructor
+        console.log("Unmounting", tag)
+    },
+    onUnmountAsync: (unmount: VoidFunction, tag: Tag) => {
+        // Called when Tag is getting unmounted
+        // Tag will only unmount after the unmount callback is called
+        // allowing awaited unmount control
+        // Useful with animations
+        setTimeout(() => unmount(), 2000)
+    }
+})
+ 
+mountTag(".gfx", app)
+```
+
 # The Router Example
 
 ```jsx
