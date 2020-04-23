@@ -325,6 +325,73 @@ After clicking on "Settings"
 <div>This is Settings</div>
 ```
 
+# The Router Animation Patience Example
+
+```js
+import { o, div, mountTag, grafix } from 'grafix'
+
+const data = o({
+    location: "loc1",
+    unmounting: false
+})
+
+const app = () => div([
+    div({style: "padding: 10px; user-select: none;"}, [
+        div({
+            text: "Go To Loc1",
+            onClick: () => {
+                data.unmounting = true
+                data.location = "loc1"
+            }
+        }),
+        div({
+            text: "Go To Loc2",
+            onClick: () => {
+                data.unmounting = true
+                data.location = "loc2"
+            }
+        }),
+        div({
+            text: "Go To Loc3",
+            onClick: () => {
+                data.unmounting = true
+                data.location = "loc3"
+            }
+        }),
+    ]),
+    () => {
+        if (data.unmounting)
+            return div({ text: "Unmounting" })
+    },
+    () => {
+        if (data.location === "loc1")
+            return div({
+                text: "Loc1 with 1s unmount",
+                onMount: () => data.unmounting = false,
+                onUnmountAsync: (u) => grafix.setTimeout(u, 1000)
+            }, [
+                div({
+                    text: "Internal animation unmount 3s",
+                    onUnmountAsync: u => setTimeout(u, 3000)
+                })
+            ])
+        if (data.location === "loc2")
+            return div({
+                text: "Loc2 with 1s unmount",
+                onMount: () => data.unmounting = false,
+                onUnmountAsync: (u) => grafix.setTimeout(u, 1000)
+            })
+        if (data.location === "loc3")
+            return div({
+                text: "Loc3 with immediate unmount",
+                onMount: () => data.unmounting = false
+            })
+    }
+])
+
+mountTag(".gfx", app)
+```
+
 # The Simple Loop Example
 
 ```jsx
