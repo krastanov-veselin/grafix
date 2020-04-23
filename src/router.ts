@@ -3,10 +3,15 @@ const router = (props: () => Tag): Tag => {
     let unmounting = false
     const bind = () => {
         if (unmounting) return
+        if (tag.tags.has("selection")) {
+            unmounting = true
+            return tag.tags.get("selection").unmount(() => {
+                unmounting = false
+                bind()
+            })
+        }
         let t = props()
         if (t instanceof Array) t = t[0]
-        if (tag.tags.has("selection"))
-            tag.tags.get("selection").unmount()
         if (!t) return
         t = tag.mount(t)
         t.id = "selection"
