@@ -5,6 +5,7 @@
 ![GitHub package.json version](https://badgen.net/npm/v/grafix)
 ![node-current](https://badgen.net/npm/node/next)
 ![npm](https://badgen.net/npm/dw/grafix)
+![npm](https://badgen.net/npm/dt/grafix)
 ![GitHub](https://badgen.net/npm/license/lodash)
 ![npm type definitions](https://badgen.net/npm/types/typescript)
 
