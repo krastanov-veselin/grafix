@@ -13,6 +13,11 @@ const node = (
     props: Partial<TagProps> | TagChild[] = {},
     tags: TagChild[] = []
 ): Tag => {
+    if (type === "document")
+        return tag(
+            document.implementation.createDocument("doc", "doc",
+            document.implementation.createDocumentType("doc", "doc", Unit.uniqueID())
+        ) as any as HTMLElement, new TagProps({}), [])
     if (type === "comment")
         return tag(document.createComment("Grafix Magic Here!") as any as HTMLElement, new TagProps({}), [])
     if (props instanceof Array)

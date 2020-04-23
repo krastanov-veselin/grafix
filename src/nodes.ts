@@ -70,6 +70,8 @@ const dl = (props: Partial<TagProps> | TagChild[] = {}, tags: TagChild[] = []): 
     node("dl", props, tags)
 const dt = (props: Partial<TagProps> | TagChild[] = {}, tags: TagChild[] = []): Tag =>
     node("dt", props, tags)
+const doc = (props: Partial<TagProps> | TagChild[] = {}, tags: TagChild[] = []): Tag =>
+    node("document", props, tags)
 const em = (props: Partial<TagProps> | TagChild[] = {}, tags: TagChild[] = []): Tag =>
     node("em", props, tags)
 const embed = (props: Partial<TagProps> | TagChild[] = {}, tags: TagChild[] = []): Tag =>

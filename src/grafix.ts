@@ -37,6 +37,7 @@ module.exports = {
     div,
     dl,
     dt,
+    doc,
     em,
     embed,
     fieldset,
@@ -56,6 +57,7 @@ module.exports = {
     head,
     header,
     hr,
+    html,
     i,
     iframe,
     img,
@@ -185,6 +187,7 @@ declare module "grafix" {
     export const div: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const dl: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const dt: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const doc: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const em: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const embed: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const fieldset: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
@@ -204,6 +207,7 @@ declare module "grafix" {
     export const head: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const header: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const hr: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
+    export const html: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const i: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const iframe: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
     export const img: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag
