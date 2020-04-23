@@ -1,6 +1,6 @@
 {
   "name": "grafix",
-  "version": "1.0.7",
+  "version": "1.0.10",
   "description": "Grafix is a library that allows you to do rapid UI Logic & Layout with automatic databinding.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,7 +12,7 @@
     "url": "url+https://github.com/krastanov-veselin/grafix"
   },
   "author": "Veselin Krastanov",
-  "license": "ISC",
+  "license": "MIT",
   "homepage": "https://github.com/krastanov-veselin/grafix",
   "dependencies": {
     "@types/node": "^13.11.1"

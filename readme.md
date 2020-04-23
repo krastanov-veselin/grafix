@@ -12,7 +12,7 @@ npm install grafix
 
 * **Alive (Proxies <3):** Everything you write looks & feels alive. When you change anything in your data, regardless where the data is the UI automatically adapts.
 * **TypeScript Ready:** Without any initial boilerplate it just works out of the box. The entire project is built in TypeScript as one module and exported in both .js and d.ts files, which excludes the need to install additionally @type/grafix. However if you want to use AMD modular architecture you need to install @types/grafix from DefinitelyTyped or simply make an empty folder ./node_modules/@types/grafix
-* **JavaScript JSDocked:** Even tho we love TypeScript, there are many of us who would prefer the oldschool JS, so we took our time to JSDoc the project almost to the look & feel of TypeScript's level of intellisense control.
+* **JavaScript JSDoced:** Even tho we love TypeScript, there are many of us who would prefer the oldschool JS, so we took our time to JSDoc the project almost to the look & feel of TypeScript's level of intellisense control.
 * **Composition / Reusability** Every single element is a function that receives props and returns a tag which makes elements composable and reusable.
 * **Zero Effort Databinding** While developing your tags as if you would do in normal HTML file you would probably want to add something like style="width: " + size.x + "px", well, just write it and it will automatically do all the binding for you, so no more databinding architectural effort!
 * **Blending** Create immersive blending functions that wrap tags and blend them with behavior and style.
