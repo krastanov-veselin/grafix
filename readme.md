@@ -879,3 +879,106 @@ setTimeout(() => data.title2 = "Instance 2 Modified!", 3000)
 mountTag(".gfx1", app1)
 mountTag(".gfx2", app2)
 ```
+
+# The Working With Data Example
+
+```js
+import { o, mix, loop, div } from 'grafix'
+
+// In order to make any object stateful
+// it needs to be returned as a proxy
+// this happens via the "o" function
+const statefulObj = o({
+    prop: "val",
+    subState: o({
+        anotherProp: 123.5
+    })
+})
+
+class MyItemData {
+    public id: string = ""
+    public result: number = 0
+}
+
+// Making stateful class instances
+// goes through the "o" function as well
+// The second parameter is the optional initializer object
+const myItem = o(MyItemData, {
+    id: "item1",
+    result: 15
+})
+
+// At this point arrays are not stateful
+// for performance reasons
+const arr = [1, 2, 3, 4, 5]
+
+// If you would like to make a stateful array
+// you could use our blazing fast, lightweight
+// linked list, speed is even faster than the array
+// because it provides random access read, write, delete and sort
+// iterates faster than the array thanks to the random access
+const stateArr = mix([1, 2, 3, 4, 5])
+
+// Mixes are also useful to be passed in loops
+// for iterated rendering
+// The loop is onAdd, onRemove, onSort databinded to the mix
+const tag = div([
+    ...loop(stateArr, (item, id) => [
+        div({ text: id + " = " + item })
+    ])
+])
+
+console.log(tag.node)
+
+// Every item has a unique string id
+console.log(stateArr.monitorAssoc())
+
+// To specify custom ids on initialization
+const myMix = mix([
+    ["item1", 1],
+    ["item2", 2],
+    ["item3", 4]
+])
+
+// Writing
+    // Adds a unique ID
+    myMix.add(25)
+    // Adding with a specific ID
+    myMix.set("customID", 30)
+    // Random access delete
+    myMix.delete("customID")
+    myMix.foreach((item, id) => console.log(item, id))
+    // Async foreach, useful in animations
+    myMix.aforeach((next, item, id) => {
+        next()
+    }, () => console.log("end reached"))
+    // Random access sort
+    myMix.sort("beforeItemID", "afterItemID")
+
+// Reading
+    const item = myMix.get("itemID")
+    const hasItem = myMix.has("itemID")
+    const firstItem = myMix.firstItem
+    const lastItem = myMix.lastItem
+    const firstID = myMix.firstID
+    const lastID = myMix.lastID
+
+// Databinding
+myMix.onAdd((item, id) => {
+    
+})
+myMix.onRemove((item, id) => {
+    
+})
+myMix.onSort((item1, item2, id1, id2) => {
+    
+})
+
+// Databinded items
+const newMix = mix()
+// Adding the object as a bindable object
+newMix.set("item1", o({
+    prop: "val"
+}))
+
+```
