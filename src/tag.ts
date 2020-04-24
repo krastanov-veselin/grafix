@@ -108,23 +108,27 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         setupNodeProp(bindType.styles, "style", "style")
     const setupClasses = (): void | string =>
         setupNodeProp(bindType.classes, "classes", "className")
+    const setupPlaceholder = () =>
+        setupAttribute("placeholder", "placeholder")
+    const setupType = () =>
+        setupAttribute("type", "type")
     
-    const setupPlaceholder = () => {
+    const setupAttribute = (name: string, prop: string) => {
         if (data.node instanceof Comment) return
-        if (!data.props.placeholder) return
+        if (!data.props[prop]) return
         bind(bindType.attributes,
-            () => applyPlaceholder(data.props.placeholder))
+            () => applyAttribute(name, data.props[prop]))
     }
     
-    const applyPlaceholder = (placeholder: string | (() => string)) => {
+    const applyAttribute = (name: string, val: string | (() => string)) => {
         let value: string
-        if (typeof placeholder === "string")
-            value = placeholder
-        else value = placeholder()
-        if (!value) return data.node.removeAttribute("placeholder")
-        data.node.setAttribute("placeholder", value)
+        if (typeof val === "string")
+            value = val
+        else value = val()
+        if (!value) return data.node.removeAttribute(name)
+        data.node.setAttribute(name, value)
     }
-        
+    
     const setupAttributes = (): void | string => {
         if (data.node instanceof Comment) return
         if (!data.props.attributes) return
@@ -419,6 +423,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     setupStyle()
     setupClasses()
     setupPlaceholder()
+    setupType()
     setupAttributes()
     setupEvents()
     mountTags(childTags)

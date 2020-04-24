@@ -1058,18 +1058,15 @@ newMix.set("item1", o({
 
 # The TagProps List
 ```js
-// Attributes
+// Stateful Attributes
 name?: string
-text?: TagValue
-html?: string
-style?: TagValue
-width?: string
-height?: string
-classes?: TagValue
+text?: string | (() => string)
+style?: string | (() => string)
+classes?: string | (() => string)
+value?: string | (() => string)
+placeholder?: string | (() => string)
+type?: string | (() => string)
 attributes?: (() => { [key]: [prop] }) | any
-type?: string
-value?: TagValue
-placeholder?: string
 
 // LifeCycle Events
 onCreate?: (tag?: Tag) => void

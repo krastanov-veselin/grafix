@@ -1,16 +1,13 @@
 class TagProps {
     // Attributes
     public name?: string
-    public text?: TagValue
-    public html?: string
-    public style?: TagValue
-    public width?: string
-    public height?: string
-    public classes?: TagValue
-    public attributes?: (() => Partial<Attributes> | any)
-    public type?: string
-    public value?: TagValue
+    public text?: string | (() => string)
+    public style?: string | (() => string)
+    public classes?: string | (() => string)
+    public type?: string | (() => string)
+    public value?: string | (() => string)
     public placeholder?: string | (() => string)
+    public attributes?: (() => Partial<Attributes> | any)
     
     // LifeCycle Events
     public onCreate?: (tag?: Tag) => void
@@ -115,10 +112,7 @@ class TagProps {
         // Attributes
         this.name = typeof data.name === "undefined" ? "" : data.name
         this.text = typeof data.text === "undefined" ? "" : data.text
-        this.html = typeof data.html === "undefined" ? "" : data.html
         this.style = typeof data.style === "undefined" ? "" : data.style
-        this.width = typeof data.width === "undefined" ? "" : data.width
-        this.height = typeof data.height === "undefined" ? "" : data.height
         this.classes = typeof data.classes === "undefined" ? "" : data.classes
         this.attributes = typeof data.attributes === "undefined" ? null : data.attributes
         this.type = typeof data.type === "undefined" ? "" : data.type
