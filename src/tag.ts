@@ -20,6 +20,16 @@ declare type Tag = {
 }
 
 const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => {
+    const setupProps = (): void => {
+        if (!props.onInit) props.onInit = () => {}
+        if (!props.onMount) props.onMount = () => {}
+        if (!props.onUnmount) props.onUnmount = () => {}
+        if (!props.onUnmountAsync)
+            props.onUnmountAsync = (u: VoidFunction) => u()
+    }
+    
+    setupProps()
+    
     const data: Tag = {
         id: Unit.uniqueID(),
         parent: null,
@@ -44,14 +54,6 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     let originalOnSubmit: (ev: Event) => void = null
     
     if (props.onCreate) props.onCreate(data)
-    
-    const setupProps = (): void => {
-        if (!props.onInit) props.onInit = () => {}
-        if (!props.onMount) props.onMount = () => {}
-        if (!props.onUnmount) props.onUnmount = () => {}
-        if (!props.onUnmountAsync)
-            props.onUnmountAsync = (u: VoidFunction) => u()
-    }
     
     const setupName = (): void => {
         if (!data.props.name.length)
@@ -385,11 +387,16 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     }
     
     const unmountFromParent = () => {
-        data.node.parentNode.removeChild(data.node)
-        if (data.parent) data.parent.tags.delete(data.id)
+        // Animation overlapping can occur naturally
+        // in complex situations, which means that a node is always cleaned
+        // so we don't have to rely on the parent unmounting?
+        if (data.node.parentNode)
+            data.node.parentNode.removeChild(data.node)
+        if (data.parent)
+        if (data.parent.tags.has(data.id))
+            data.parent.tags.delete(data.id)
     }
     
-    setupProps()
     setupName()
     setupText()
     setupValue()
