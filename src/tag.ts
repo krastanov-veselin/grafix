@@ -221,8 +221,8 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         if (data.props.onSubmit) {
             originalOnSubmit = data.props.onSubmit
             data.props.onSubmit = (ev: Event) => {
-                originalOnSubmit(ev)
                 ev.preventDefault()
+                originalOnSubmit(ev)
             }
             data.node.addEventListener("submit", data.props.onSubmit, false)
         }
