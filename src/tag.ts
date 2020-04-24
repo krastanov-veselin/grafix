@@ -109,6 +109,22 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     const setupClasses = (): void | string =>
         setupNodeProp(bindType.classes, "classes", "className")
     
+    const setupPlaceholder = () => {
+        if (data.node instanceof Comment) return
+        if (!data.props.placeholder) return
+        bind(bindType.attributes,
+            () => applyPlaceholder(data.props.placeholder))
+    }
+    
+    const applyPlaceholder = (placeholder: string | (() => string)) => {
+        let value: string
+        if (typeof placeholder === "string")
+            value = placeholder
+        else value = placeholder()
+        if (!value) return data.node.removeAttribute("placeholder")
+        data.node.setAttribute("placeholder", value)
+    }
+        
     const setupAttributes = (): void | string => {
         if (data.node instanceof Comment) return
         if (!data.props.attributes) return
@@ -402,6 +418,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     setupValue()
     setupStyle()
     setupClasses()
+    setupPlaceholder()
     setupAttributes()
     setupEvents()
     mountTags(childTags)

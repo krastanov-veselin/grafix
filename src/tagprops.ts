@@ -10,7 +10,7 @@ class TagProps {
     public attributes?: (() => Partial<Attributes> | any)
     public type?: string
     public value?: TagValue
-    public placeholder?: string
+    public placeholder?: string | (() => string)
     
     // LifeCycle Events
     public onCreate?: (tag?: Tag) => void
