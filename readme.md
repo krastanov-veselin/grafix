@@ -418,7 +418,7 @@ mountTag(".gfx", app)
 ```jsx
 import {
     mountTag, div, loop,
-    mix, o, input
+    mix, o, input, grafix
 } from 'grafix'
 
 const m = mix([
@@ -433,7 +433,7 @@ const app = () => div([
             div({
                 onClick: () => m.delete(id),
                 onContextMenu: () => m.add(o({
-                    title: "Item " + Unit.random(1, 99999)
+                    title: "Item " + grafix.random(1, 99999)
                 })),
                 text: () => id + ": " + item.title
             }),
@@ -1054,4 +1054,241 @@ newMix.set("item1", o({
     prop: "val"
 }))
 
+```
+
+# The TagProps List
+```js
+// Attributes
+name?: string
+text?: TagValue
+html?: string
+style?: TagValue
+width?: string
+height?: string
+classes?: TagValue
+attributes?: (() => { [key]: [prop] }) | any
+type?: string
+value?: TagValue
+placeholder?: string
+
+// LifeCycle Events
+onCreate?: (tag?: Tag) => void
+onInit?: (tag?: Tag) => void
+onMount?: (tag?: Tag) => void
+onUnmount?: (tag?: Tag) => void
+onUnmountAsync: (unmount: VoidFunction, tag?: Tag) => void
+
+// DOM Events
+onAbort?: EventFunc | null
+onAfterPrint?: EventFunc | null
+onAnimationEnd?: EventFunc | null
+onAnimationIteration?: EventFunc | null
+onAnimationStart?: EventFunc | null
+onBeforePrint?: EventFunc | null
+onBeforeUnload?: EventFunc | null
+onBlur?: EventFunc | null
+onCanPlay?: EventFunc | null
+onCanPlayThough?: EventFunc | null
+onChange?: EventFunc | null
+onClick?: EventFunc | null
+onContextMenu?: EventFunc | null
+onCopy?: EventFunc | null
+onCut?: EventFunc | null
+onDoubleClick?: EventFunc | null
+onDrag?: EventFunc | null
+onDragEnd?: EventFunc | null
+onDragEnter?: EventFunc | null
+onDragLeave?: EventFunc | null
+onDragOver?: EventFunc | null
+onDragStart?: EventFunc | null
+onDrop?: EventFunc | null
+onDurationChange?: EventFunc | null
+onEnded?: EventFunc | null
+onError?: EventFunc | null
+onFocus?: EventFunc | null
+onFocusIn?: EventFunc | null
+onFocusOut?: EventFunc | null
+onFullScreenChange?: EventFunc | null
+onFullScreenError?: EventFunc | null
+onHashChange?: EventFunc | null
+onInput?: EventFunc | null
+onInvalid?: EventFunc | null
+onKeyDown?: EventFunc | null
+onKeyPress?: EventFunc | null
+onKeyUp?: EventFunc | null
+onLoad?: EventFunc | null
+onLoadedData?: EventFunc | null
+onLoadedMetaData?: EventFunc | null
+onLoadStart?: EventFunc | null
+onMessage?: EventFunc | null
+onMouseDown?: EventFunc | null
+onMouseEnter?: EventFunc | null
+onMouseLeave?: EventFunc | null
+onMouseMove?: EventFunc | null
+onMouseOver?: EventFunc | null
+onMouseOut?: EventFunc | null
+onMouseUp?: EventFunc | null
+/** @deprecated Use the onWheel event instead */
+onMouseWheel?: EventFunc | null
+onOffline?: EventFunc | null
+onOnline?: EventFunc | null
+onOpen?: EventFunc | null
+onPageHide?: EventFunc | null
+onPageShow?: EventFunc | null
+onPaste?: EventFunc | null
+onPause?: EventFunc | null
+onPlay?: EventFunc | null
+onPlaying?: EventFunc | null
+onPopState?: EventFunc | null
+onProgress?: EventFunc | null
+onRateChange?: EventFunc | null
+onResize?: EventFunc | null
+onReset?: EventFunc | null
+onScroll?: EventFunc | null
+onSearch?: EventFunc | null
+onSeeked?: EventFunc | null
+onSeeking?: EventFunc | null
+onSelect?: EventFunc | null
+onShow?: EventFunc | null
+onStalled?: EventFunc | null
+onStorage?: EventFunc | null
+onSubmit?: EventFunc | null
+onSuspend?: EventFunc | null
+onTimeUpdate?: EventFunc | null
+onToggle?: EventFunc | null
+onTouchCancel?: EventFunc | null
+onTouchEnd?: EventFunc | null
+onTouchMove?: EventFunc | null
+onTouchStart?: EventFunc | null
+onTransitionEnd?: EventFunc | null
+onUnload?: EventFunc | null
+onVolumeChange?: EventFunc | null
+onWaiting?: EventFunc | null
+onWheel?: EventFunc | null
+
+// Custom Events
+onUpdate?: (v: string) => void | null
+```
+# The Tags List
+
+```js
+node()
+comment()
+a()
+abbr()
+acronym()
+address()
+applet()
+area()
+article()
+aside()
+audio()
+b()
+base()
+basefont()
+bdi()
+bdo()
+big()
+blockquote()
+body()
+br()
+button()
+canvas()
+cite()
+code()
+col()
+colgroup()
+data()
+datalist()
+dd()
+del()
+details()
+dfn()
+dialog()
+dir()
+div()
+dl()
+dt()
+doc()
+em()
+embed()
+fieldset()
+figcaption()
+figure()
+font()
+footer()
+form()
+frame()
+frameset()
+h1()
+h2()
+h3()
+h4()
+h5()
+h6()
+head()
+header()
+hr()
+html()
+i()
+iframe()
+img()
+input()
+ins()
+kbd()
+label()
+legend()
+li()
+link()
+main()
+map()
+mark()
+meta()
+meter()
+nav()
+noframes()
+noscript()
+object()
+ol()
+optgroup()
+option()
+p()
+param()
+picture()
+pre()
+progress()
+q()
+rp()
+rt()
+ruby()
+s()
+samp()
+script()
+section()
+select()
+small()
+source()
+span()
+strike()
+strong()
+style()
+sub()
+svg()
+table()
+tbody()
+td()
+template()
+textarea()
+tfoot()
+th()
+thead()
+time()
+title()
+tr()
+track()
+tt()
+u()
+ul()
+htmlVar()
+video()
 ```
