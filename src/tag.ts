@@ -133,25 +133,29 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         if (data.node instanceof Comment) return
         if (!data.props.attributes) return
         const props: string[] = []
-        bind(bindType.attributes,
-            () => applyAttributes(props, data.props.attributes))
         const value = data.props.attributes()
         for (const prop in value) props.push(prop)
-        applyAttributes(props, value)
-        disableBinding()
+        bind(bindType.attributes,
+            () => applyAttributes(props, data.props.attributes()))
     }
     
     const applyAttributes = (props: string[], attributes: any): void => {
-        for (let i = 0; i < props.length; i++)
-            if (attributes[props[i]] === null) {
+        for (let i = 0; i < props.length; i++) {
+            let value = null
+            if (attributes[props[i]] instanceof Function)
+                value = attributes[props[i]]()
+            else if (typeof attributes[props[i]] === "string")
+                value = attributes[props[i]]
+            if (value === null) {
                 if (data.node.hasAttribute(props[i]))
                     data.node.removeAttribute(props[i])
             }
             else if (data.node.hasAttribute(props[i])) {
-                if (data.node.getAttribute(props[i]) !== attributes[props[i]])
-                    data.node.setAttribute(props[i], attributes[props[i]])
+                if (data.node.getAttribute(props[i]) !== value)
+                    data.node.setAttribute(props[i], value)
             }
-            else data.node.setAttribute(props[i], attributes[props[i]])
+            else data.node.setAttribute(props[i], value)
+        }
     }
     
     const setupEvents = (): void => {
