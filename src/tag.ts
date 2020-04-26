@@ -1,5 +1,6 @@
 declare type Tag = {
     id: string
+    name: () => string
     parent: Tag
     tags: Mix<Tag>
     binds: Binds
@@ -7,6 +8,7 @@ declare type Tag = {
     unmounts: Mix<VoidFunction>
     node: HTMLElement
     props: TagProps
+    mounted: boolean
     addEvent: ((eventName: string, func: (ev?: any) => void) => void)
     onCreate: VoidFunction
     onMount: VoidFunction
@@ -32,6 +34,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     
     const data: Tag = {
         id: Unit.uniqueID(),
+        name: () => props.name,
         parent: null,
         tags: new Mix(),
         binds: new Mix(),
@@ -39,6 +42,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         unmounts: new Mix(),
         node,
         props,
+        mounted: false,
         addEvent: (eventName: string, func: ((ev?: any) => void)
         ) => addEvent(eventName, func),
         onCreate: () => props.onCreate(data),
@@ -387,6 +391,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         if (data.node instanceof Comment)
             data.node.parentNode.insertBefore(tag.node, data.node)
         else data.node.appendChild(tag.node)
+        tag.mounted = true
         tag.onMount()
         return tag as Tag
     }

@@ -1,4 +1,4 @@
-const router = (props: () => Tag): Tag => {
+const router = (props: () => TagChild): Tag => {
     const tag = comment()
     let unmounting = false
     const bind = () => {
@@ -11,8 +11,8 @@ const router = (props: () => Tag): Tag => {
             })
         }
         let t = props()
-        if (t instanceof Array) t = t[0]
         if (!t) return
+        if (t instanceof Array) t = t[0] as any as Tag
         t = tag.mount(t)
         t.id = "selection"
         t.props.name = "selection"

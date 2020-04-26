@@ -339,24 +339,15 @@ const app = () => div([
     div({style: "padding: 10px; user-select: none;"}, [
         div({
             text: "Go To Loc1",
-            onClick: () => {
-                data.unmounting = true
-                data.location = "loc1"
-            }
+            onClick: () => data.location = "loc1"
         }),
         div({
             text: "Go To Loc2",
-            onClick: () => {
-                data.unmounting = true
-                data.location = "loc2"
-            }
+            onClick: () => data.location = "loc2"
         }),
         div({
             text: "Go To Loc3",
-            onClick: () => {
-                data.unmounting = true
-                data.location = "loc3"
-            }
+            onClick: () => data.location = "loc3"
         }),
     ]),
     () => {
@@ -368,18 +359,24 @@ const app = () => div([
             return div({
                 text: "Loc1 with 1s unmount",
                 onMount: () => data.unmounting = false,
-                onUnmountAsync: (u) => grafix.setTimeout(u, 1000)
+                onUnmountAsync: (u) => {
+                    data.unmounting = true
+                    grafix.setTimeout(u, 1000)
+                }
             }, [
                 div({
                     text: "Internal animation unmount 3s",
-                    onUnmountAsync: u => setTimeout(u, 3000)
+                    onUnmountAsync: u => grafix.setTimeout(u, 3000)
                 })
             ])
         if (data.location === "loc2")
             return div({
                 text: "Loc2 with 1s unmount",
                 onMount: () => data.unmounting = false,
-                onUnmountAsync: (u) => grafix.setTimeout(u, 1000)
+                onUnmountAsync: (u) => {
+                    data.unmounting = true
+                    grafix.setTimeout(u, 1000)
+                }
             })
         if (data.location === "loc3")
             return div({

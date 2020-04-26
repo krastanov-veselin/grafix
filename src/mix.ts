@@ -162,7 +162,16 @@ class AssocList<I, T> {
         if (this.size !== 1)
             this.sort(
                 (id as any) as I,
-                (this.firstID as any) as I)
+                (this.firstID() as any) as I)
+        return this
+    }
+    
+    public preAssoc(id: I, item: T): AssocList<I, T> {
+        this.set(id, item)
+        if (this.size !== 1)
+            this.sort(
+                id,
+                (this.firstID() as any) as I)
         return this
     }
     
@@ -195,7 +204,7 @@ class AssocList<I, T> {
         if (next) this.sort(id, next.id)
     }
     
-    public unshift(): T {
+    public shift(): T {
         if (!this.size) return null
         const item: T = this.get(this.firstNode.id)
         this.delete(this.firstNode.id)
