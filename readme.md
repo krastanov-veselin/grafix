@@ -714,8 +714,8 @@ interface BlendProps {
 
 const blend = (
     feed: Partial<BlendFeed>,
-    tags: (p: BlendProps
-) => NodeTags) => {
+    tags: (p: BlendProps) => NodeTags
+) => {
     const props: BlendProps = {
         reducedA: () => `${ feed.data.pos.x }px`,
         reducedB: () => `${ feed.data.pos.y }px`,

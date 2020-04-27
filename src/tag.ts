@@ -21,8 +21,6 @@ declare type Tag = {
     disableBinding: VoidFunction
 }
 
-const tagsOrder: Mix<[string, HTMLElement]> = new Mix()
-{(window as any).tagsOrder = tagsOrder}
 const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => {
     const setupProps = (): void => {
         if (!props.onInit) props.onInit = () => {}
@@ -394,7 +392,6 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
             data.node.parentNode.insertBefore(tag.node, data.node)
         else data.node.appendChild(tag.node)
         if (id) tag.id = id
-        tagsOrder.set(tag.id, [tag.id, tag.node])
         tag.mounted = true
         tag.onMount()
         return tag as Tag
@@ -413,7 +410,6 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     }
     
     const continueUnmount = (u?: VoidFunction): void => {
-        tagsOrder.delete(data.id)
         cleanEvents()
         cleanSubscriptions()
         unmountFromParent()
