@@ -98,9 +98,9 @@ const expand = (style: string | (() => string)) => {
     return style()
 }
 
-const forward = (tags: Tag[]): Tag => tags[0]
+const forward = (tags: any[]): Tag => tags[0]
 
-const filter = (feed: Partial<{ target: () => Tag }>, tag: Tag): Tag => {
+const filter = (feed: Partial<{ target: () => any }>, tag: Tag): Tag => {
     if (feed.target) return feed.target()
     else return tag
 } 
