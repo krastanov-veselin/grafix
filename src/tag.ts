@@ -10,17 +10,19 @@ declare type Tag = {
     props: TagProps
     mounted: boolean
     addEvent: ((eventName: string, func: (ev?: any) => void) => void)
-    onCreate: VoidFunction
-    onMount: VoidFunction
-    onInit: VoidFunction
-    onUnmount: VoidFunction
-    onUnmountAsync: (u: VoidFunction) => void
+    onCreate: (tag?: Tag) => void
+    onMount: (tag?: Tag) => void
+    onInit: (tag?: Tag) => void
+    onUnmount: (tag?: Tag) => void
+    onUnmountAsync: (u: VoidFunction, tag?: Tag) => void
     unmount: (u?: VoidFunction) => void
-    mount: (tag: TagChild) => Tag
+    mount: (tag: TagChild, id?: string) => Tag
     bind: (type: bindType, apply: Function) => void
     disableBinding: VoidFunction
 }
 
+const tagsOrder: Mix<[string, HTMLElement]> = new Mix()
+{(window as any).tagsOrder = tagsOrder}
 const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => {
     const setupProps = (): void => {
         if (!props.onInit) props.onInit = () => {}
@@ -51,7 +53,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         onUnmount: () => props.onUnmount(data),
         onUnmountAsync: (u: VoidFunction) => props.onUnmountAsync(() => u(), data),
         unmount: (u?: VoidFunction) => unmount(u),
-        mount: (tag: TagChild) => mountTag(tag),
+        mount: (tag: TagChild, id?: string) => mountTag(tag, id),
         bind: (type: bindType, apply: Function) => bind(type, apply),
         disableBinding: () => disableBinding()
     }
@@ -68,7 +70,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         if (domProp === "style")
             return data.node.style.cssText = value
         if (domProp === "className")
-            return data.node[domProp] = value.trim()
+            return data.node[domProp] = value.replace(/\s\s+/g, ' ').trim()
         data.node[domProp] = value
     }
     
@@ -365,7 +367,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         }
     }
     
-    const mountTag = (rawTag: TagChild): Tag => {
+    const mountTag = (rawTag: TagChild, id?: string): Tag => {
         let tag: Tag = null
         if (rawTag instanceof Array)
             tag = tagList({
@@ -391,6 +393,8 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         if (data.node instanceof Comment)
             data.node.parentNode.insertBefore(tag.node, data.node)
         else data.node.appendChild(tag.node)
+        if (id) tag.id = id
+        tagsOrder.set(tag.id, [tag.id, tag.node])
         tag.mounted = true
         tag.onMount()
         return tag as Tag
@@ -409,6 +413,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     }
     
     const continueUnmount = (u?: VoidFunction): void => {
+        tagsOrder.delete(data.id)
         cleanEvents()
         cleanSubscriptions()
         unmountFromParent()

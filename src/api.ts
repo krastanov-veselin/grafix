@@ -19,7 +19,9 @@ const node = (
             document.implementation.createDocumentType("doc", "doc", Unit.uniqueID())
         ) as any as HTMLElement, new TagProps({}), [])
     if (type === "comment")
-        return tag(document.createComment("Grafix Magic Here!") as any as HTMLElement, new TagProps({}), [])
+        return tag(
+            document.createComment("Grafix Magic Here!") as any as HTMLElement,
+            new TagProps(props as Partial<TagProps>), [])
     if (props instanceof Array)
         return tag(document.createElement(type), new TagProps({}), props)
     return tag(document.createElement(type), new TagProps(props), tags)
