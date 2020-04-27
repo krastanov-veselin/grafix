@@ -837,6 +837,54 @@ mountTag(".gfx", app)
 
 Blends are invisible, they are just functionality wrappers that provide style and behavior to children tags. The blending effect can be set by choice on any children tag, allowing what we call blending art.
 
+# The Network Blending
+```js
+import { div, grafix, o, mix, loop, mountTag } from "grafix"
+
+interface NetworkFeed {
+    server: string
+    method: string
+    api: string
+}
+
+const network = (
+    feed: Partial<NetworkFeed>,
+    tags: (p: any) => NodeTags
+) => {
+    const state = o({
+        loaded: false
+    })
+    const data = mix()
+    
+    setInterval(() => {
+        data.clean()
+        
+        for (let i = 0; i < grafix.random(10, 100); i++)
+            data.set("product" + i, o({
+                name: "Product " + i
+            }))
+        
+        if (!state.loaded) state.loaded = true
+    }, 2000)
+    
+    return () => {
+        if (state.loaded)
+            return tags(data)
+    }
+}
+
+const home = () =>
+    div([
+        network({ server: "183.224.85.31:80", method: "GET", api: "category/85/products" }, products => [
+            ...loop(products, (product, id) => [
+                div({ text: () => product.name })
+            ])
+        ])
+    ])
+
+mountTag(".gfx", home)
+```
+
 # The Events Example
 
 ### In simple list form
