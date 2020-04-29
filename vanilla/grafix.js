@@ -175,7 +175,13 @@ class AssocList {
     pre(item) {
         const id = this.add(item);
         if (this.size !== 1)
-            this.sort(id, this.firstID);
+            this.sort(id, this.firstID());
+        return this;
+    }
+    preAssoc(id, item) {
+        this.set(id, item);
+        if (this.size !== 1)
+            this.sort(id, this.firstID());
         return this;
     }
     push(item) {
@@ -207,7 +213,7 @@ class AssocList {
         if (next)
             this.sort(id, next.id);
     }
-    unshift() {
+    shift() {
         if (!this.size)
             return null;
         const item = this.get(this.firstNode.id);
@@ -516,41 +522,108 @@ class UniqueMix extends Mix {
 }
 class TagProps {
     constructor(data) {
+        // Attributes
         this.name = typeof data.name === "undefined" ? "" : data.name;
         this.text = typeof data.text === "undefined" ? "" : data.text;
-        this.html = typeof data.html === "undefined" ? "" : data.html;
         this.style = typeof data.style === "undefined" ? "" : data.style;
-        this.width = typeof data.width === "undefined" ? "" : data.width;
-        this.height = typeof data.height === "undefined" ? "" : data.height;
         this.classes = typeof data.classes === "undefined" ? "" : data.classes;
         this.attributes = typeof data.attributes === "undefined" ? null : data.attributes;
         this.type = typeof data.type === "undefined" ? "" : data.type;
         this.value = typeof data.value === "undefined" ? "" : data.value;
         this.placeholder = typeof data.placeholder === "undefined" ? "" : data.placeholder;
-        this.onClick = typeof data.onClick === "undefined" ? null : data.onClick;
-        this.onChange = typeof data.onChange === "undefined" ? null : data.onChange;
-        this.onFocus = typeof data.onFocus === "undefined" ? null : data.onFocus;
-        this.onBlur = typeof data.onBlur === "undefined" ? null : data.onBlur;
+        // LifeCycle Events
+        this.onCreate = typeof data.onCreate === "undefined" ? null : data.onCreate;
         this.onInit = typeof data.onInit === "undefined" ? null : data.onInit;
         this.onMount = typeof data.onMount === "undefined" ? null : data.onMount;
         this.onUnmount = typeof data.onUnmount === "undefined" ? null : data.onUnmount;
         this.onUnmountAsync = typeof data.onUnmountAsync === "undefined" ? null : data.onUnmountAsync;
+        // DOM Events
+        this.onAbort = typeof data.onAbort === "undefined" ? null : data.onAbort;
+        this.onAfterPrint = typeof data.onAfterPrint === "undefined" ? null : data.onAfterPrint;
+        this.onAnimationEnd = typeof data.onAnimationEnd === "undefined" ? null : data.onAnimationEnd;
+        this.onAnimationIteration = typeof data.onAnimationIteration === "undefined" ? null : data.onAnimationIteration;
+        this.onAnimationStart = typeof data.onAnimationStart === "undefined" ? null : data.onAnimationStart;
+        this.onBeforePrint = typeof data.onBeforePrint === "undefined" ? null : data.onBeforePrint;
+        this.onBlur = typeof data.onBlur === "undefined" ? null : data.onBlur;
+        this.onCanPlay = typeof data.onCanPlay === "undefined" ? null : data.onCanPlay;
+        this.onCanPlayThough = typeof data.onCanPlayThough === "undefined" ? null : data.onCanPlayThough;
+        this.onChange = typeof data.onChange === "undefined" ? null : data.onChange;
+        this.onClick = typeof data.onClick === "undefined" ? null : data.onClick;
+        this.onContextMenu = typeof data.onContextMenu === "undefined" ? null : data.onContextMenu;
+        this.onCopy = typeof data.onCopy === "undefined" ? null : data.onCopy;
+        this.onCut = typeof data.onCut === "undefined" ? null : data.onCut;
         this.onDoubleClick = typeof data.onDoubleClick === "undefined" ? null : data.onDoubleClick;
+        this.onDrag = typeof data.onDrag === "undefined" ? null : data.onDrag;
+        this.onDragEnd = typeof data.onDragEnd === "undefined" ? null : data.onDragEnd;
+        this.onDragEnter = typeof data.onDragEnter === "undefined" ? null : data.onDragEnter;
+        this.onDragLeave = typeof data.onDragLeave === "undefined" ? null : data.onDragLeave;
+        this.onDragOver = typeof data.onDragOver === "undefined" ? null : data.onDragOver;
+        this.onDragStart = typeof data.onDragStart === "undefined" ? null : data.onDragStart;
+        this.onDrop = typeof data.onDrop === "undefined" ? null : data.onDrop;
+        this.onDurationChange = typeof data.onDurationChange === "undefined" ? null : data.onDurationChange;
+        this.onEnded = typeof data.onEnded === "undefined" ? null : data.onEnded;
+        this.onError = typeof data.onError === "undefined" ? null : data.onError;
+        this.onFocus = typeof data.onFocus === "undefined" ? null : data.onFocus;
+        this.onFocusIn = typeof data.onFocusIn === "undefined" ? null : data.onFocusIn;
+        this.onFocusOut = typeof data.onFocusOut === "undefined" ? null : data.onFocusOut;
+        this.onFullScreenChange = typeof data.onFullScreenChange === "undefined" ? null : data.onFullScreenChange;
+        this.onFullScreenError = typeof data.onFullScreenError === "undefined" ? null : data.onFullScreenError;
+        this.onHashChange = typeof data.onHashChange === "undefined" ? null : data.onHashChange;
+        this.onInput = typeof data.onInput === "undefined" ? null : data.onInput;
+        this.onInvalid = typeof data.onInvalid === "undefined" ? null : data.onInvalid;
+        this.onKeyDown = typeof data.onKeyDown === "undefined" ? null : data.onKeyDown;
+        this.onKeyPress = typeof data.onKeyPress === "undefined" ? null : data.onKeyPress;
+        this.onKeyUp = typeof data.onKeyUp === "undefined" ? null : data.onKeyUp;
+        this.onLoad = typeof data.onLoad === "undefined" ? null : data.onLoad;
+        this.onLoadedData = typeof data.onLoadedData === "undefined" ? null : data.onLoadedData;
+        this.onLoadedMetaData = typeof data.onLoadedMetaData === "undefined" ? null : data.onLoadedMetaData;
+        this.onLoadStart = typeof data.onLoadStart === "undefined" ? null : data.onLoadStart;
+        this.onMessage = typeof data.onMessage === "undefined" ? null : data.onMessage;
         this.onMouseDown = typeof data.onMouseDown === "undefined" ? null : data.onMouseDown;
-        this.onMouseUp = typeof data.onMouseUp === "undefined" ? null : data.onMouseUp;
-        this.onMouseMove = typeof data.onMouseMove === "undefined" ? null : data.onMouseMove;
         this.onMouseEnter = typeof data.onMouseEnter === "undefined" ? null : data.onMouseEnter;
         this.onMouseLeave = typeof data.onMouseLeave === "undefined" ? null : data.onMouseLeave;
+        this.onMouseMove = typeof data.onMouseMove === "undefined" ? null : data.onMouseMove;
         this.onMouseOver = typeof data.onMouseOver === "undefined" ? null : data.onMouseOver;
         this.onMouseOut = typeof data.onMouseOut === "undefined" ? null : data.onMouseOut;
-        this.onRightClick = typeof data.onRightClick === "undefined" ? null : data.onRightClick;
-        this.onKeyUp = typeof data.onKeyUp === "undefined" ? null : data.onKeyUp;
-        this.onKeyDown = typeof data.onKeyDown === "undefined" ? null : data.onKeyDown;
-        this.onUpdate = typeof data.onUpdate === "undefined" ? null : data.onUpdate;
-        this.onScroll = typeof data.onScroll === "undefined" ? null : data.onScroll;
+        this.onMouseUp = typeof data.onMouseUp === "undefined" ? null : data.onMouseUp;
         this.onMouseWheel = typeof data.onMouseWheel === "undefined" ? null : data.onMouseWheel;
-        this.onSubmit = typeof data.onSubmit === "undefined" ? null : data.onSubmit;
+        this.onOffline = typeof data.onOffline === "undefined" ? null : data.onOffline;
+        this.onOnline = typeof data.onOnline === "undefined" ? null : data.onOnline;
+        this.onOpen = typeof data.onOpen === "undefined" ? null : data.onOpen;
+        this.onPageHide = typeof data.onPageHide === "undefined" ? null : data.onPageHide;
+        this.onPageShow = typeof data.onPageShow === "undefined" ? null : data.onPageShow;
+        this.onPaste = typeof data.onPaste === "undefined" ? null : data.onPaste;
+        this.onPause = typeof data.onPause === "undefined" ? null : data.onPause;
+        this.onPlay = typeof data.onPlay === "undefined" ? null : data.onPlay;
+        this.onPlaying = typeof data.onPlaying === "undefined" ? null : data.onPlaying;
+        this.onPopState = typeof data.onPopState === "undefined" ? null : data.onPopState;
+        this.onProgress = typeof data.onProgress === "undefined" ? null : data.onProgress;
+        this.onRateChange = typeof data.onRateChange === "undefined" ? null : data.onRateChange;
         this.onResize = typeof data.onResize === "undefined" ? null : data.onResize;
+        this.onReset = typeof data.onReset === "undefined" ? null : data.onReset;
+        this.onScroll = typeof data.onScroll === "undefined" ? null : data.onScroll;
+        this.onSearch = typeof data.onSearch === "undefined" ? null : data.onSearch;
+        this.onSeeked = typeof data.onSeeked === "undefined" ? null : data.onSeeked;
+        this.onSeeking = typeof data.onSeeking === "undefined" ? null : data.onSeeking;
+        this.onSelect = typeof data.onSelect === "undefined" ? null : data.onSelect;
+        this.onShow = typeof data.onShow === "undefined" ? null : data.onShow;
+        this.onStalled = typeof data.onStalled === "undefined" ? null : data.onStalled;
+        this.onStorage = typeof data.onStorage === "undefined" ? null : data.onStorage;
+        this.onSubmit = typeof data.onSubmit === "undefined" ? null : data.onSubmit;
+        this.onSuspend = typeof data.onSuspend === "undefined" ? null : data.onSuspend;
+        this.onTimeUpdate = typeof data.onTimeUpdate === "undefined" ? null : data.onTimeUpdate;
+        this.onToggle = typeof data.onToggle === "undefined" ? null : data.onToggle;
+        this.onTouchCancel = typeof data.onTouchCancel === "undefined" ? null : data.onTouchCancel;
+        this.onTouchEnd = typeof data.onTouchEnd === "undefined" ? null : data.onTouchEnd;
+        this.onTouchMove = typeof data.onTouchMove === "undefined" ? null : data.onTouchMove;
+        this.onTouchStart = typeof data.onTouchStart === "undefined" ? null : data.onTouchStart;
+        this.onTransitionEnd = typeof data.onTransitionEnd === "undefined" ? null : data.onTransitionEnd;
+        this.onUnload = typeof data.onUnload === "undefined" ? null : data.onUnload;
+        this.onVolumeChange = typeof data.onVolumeChange === "undefined" ? null : data.onVolumeChange;
+        this.onWaiting = typeof data.onWaiting === "undefined" ? null : data.onWaiting;
+        this.onWheel = typeof data.onWheel === "undefined" ? null : data.onWheel;
+        // Custom Events
+        this.onUpdate = typeof data.onUpdate === "undefined" ? null : data.onUpdate;
         this._onSubmit = typeof data._onSubmit === "undefined" ? null : data._onSubmit;
     }
 }
@@ -572,7 +645,7 @@ let bindingChanged = false;
  * @template A
  * @returns {A}
  * */
-const o = (/** @type {(new() => A)|A} */ ref, /** @type {A} */ d) => {
+const o = (/** @type {(new() => A)|A} */ ref, /** @type {A} */ d, refreshable = false) => {
     const id = Unit.uniqueID();
     let object = ref instanceof Function ?
         new ref() : ref;
@@ -605,7 +678,7 @@ const o = (/** @type {(new() => A)|A} */ ref, /** @type {A} */ d) => {
         });
         if (!binds.has(prop))
             binds.set(prop, new Mix());
-        binds.get(prop).set(bindID, currentBindFunc);
+        binds.get(prop).preAssoc(bindID, currentBindFunc);
         bindingChanged = true;
     };
     const p = new Proxy(object, {
@@ -615,6 +688,8 @@ const o = (/** @type {(new() => A)|A} */ ref, /** @type {A} */ d) => {
             return obj[prop];
         },
         set: (obj, prop, val) => {
+            if (obj[prop] === val && refreshable === false)
+                return true;
             obj[prop] = val;
             if (binds.has(prop))
                 binds.get(prop).foreach(u => u());
@@ -624,18 +699,145 @@ const o = (/** @type {(new() => A)|A} */ ref, /** @type {A} */ d) => {
     object = null;
     return p;
 };
-const htmlNode = (type, props = {}, tags = []) => {
+const comment = (props = {}, tags = []) => node("comment", props, tags);
+const a = (props = {}, tags = []) => node("a", props, tags);
+const abbr = (props = {}, tags = []) => node("abbr", props, tags);
+const acronym = (props = {}, tags = []) => node("acronym", props, tags);
+const address = (props = {}, tags = []) => node("address", props, tags);
+const applet = (props = {}, tags = []) => node("applet", props, tags);
+const area = (props = {}, tags = []) => node("area", props, tags);
+const article = (props = {}, tags = []) => node("article", props, tags);
+const aside = (props = {}, tags = []) => node("aside", props, tags);
+const audio = (props = {}, tags = []) => node("audio", props, tags);
+const b = (props = {}, tags = []) => node("b", props, tags);
+const base = (props = {}, tags = []) => node("base", props, tags);
+const basefont = (props = {}, tags = []) => node("basefont", props, tags);
+const bdi = (props = {}, tags = []) => node("bdi", props, tags);
+const bdo = (props = {}, tags = []) => node("bdo", props, tags);
+const big = (props = {}, tags = []) => node("big", props, tags);
+const blockquote = (props = {}, tags = []) => node("blockquote", props, tags);
+const body = (props = {}, tags = []) => node("body", props, tags);
+const br = (props = {}, tags = []) => node("br", props, tags);
+const button = (props = {}, tags = []) => node("button", props, tags);
+const canvas = (props = {}, tags = []) => node("canvas", props, tags);
+const cite = (props = {}, tags = []) => node("cite", props, tags);
+const code = (props = {}, tags = []) => node("code", props, tags);
+const col = (props = {}, tags = []) => node("col", props, tags);
+const colgroup = (props = {}, tags = []) => node("colgroup", props, tags);
+const data = (props = {}, tags = []) => node("data", props, tags);
+const datalist = (props = {}, tags = []) => node("datalist", props, tags);
+const dd = (props = {}, tags = []) => node("dd", props, tags);
+const del = (props = {}, tags = []) => node("del", props, tags);
+const details = (props = {}, tags = []) => node("details", props, tags);
+const dfn = (props = {}, tags = []) => node("dfn", props, tags);
+const dialog = (props = {}, tags = []) => node("dialog", props, tags);
+const dir = (props = {}, tags = []) => node("dir", props, tags);
+const div = (props = {}, tags = []) => node("div", props, tags);
+const dl = (props = {}, tags = []) => node("dl", props, tags);
+const dt = (props = {}, tags = []) => node("dt", props, tags);
+const doc = (props = {}, tags = []) => node("document", props, tags);
+const em = (props = {}, tags = []) => node("em", props, tags);
+const embed = (props = {}, tags = []) => node("embed", props, tags);
+const fieldset = (props = {}, tags = []) => node("fieldset", props, tags);
+const figcaption = (props = {}, tags = []) => node("figcaption", props, tags);
+const figure = (props = {}, tags = []) => node("figure", props, tags);
+const font = (props = {}, tags = []) => node("font", props, tags);
+const footer = (props = {}, tags = []) => node("footer", props, tags);
+const form = (props = {}, tags = []) => node("form", props, tags);
+const frame = (props = {}, tags = []) => node("frame", props, tags);
+const frameset = (props = {}, tags = []) => node("frameset", props, tags);
+const h1 = (props = {}, tags = []) => node("h1", props, tags);
+const h2 = (props = {}, tags = []) => node("h2", props, tags);
+const h3 = (props = {}, tags = []) => node("h3", props, tags);
+const h4 = (props = {}, tags = []) => node("h4", props, tags);
+const h5 = (props = {}, tags = []) => node("h5", props, tags);
+const h6 = (props = {}, tags = []) => node("h6", props, tags);
+const head = (props = {}, tags = []) => node("head", props, tags);
+const header = (props = {}, tags = []) => node("header", props, tags);
+const hr = (props = {}, tags = []) => node("hr", props, tags);
+const html = (props = {}, tags = []) => node("html", props, tags);
+const i = (props = {}, tags = []) => node("i", props, tags);
+const iframe = (props = {}, tags = []) => node("iframe", props, tags);
+const img = (props = {}, tags = []) => node("img", props, tags);
+const input = (props = {}, tags = []) => node("input", props, tags);
+const ins = (props = {}, tags = []) => node("ins", props, tags);
+const kbd = (props = {}, tags = []) => node("kbd", props, tags);
+const label = (props = {}, tags = []) => node("label", props, tags);
+const legend = (props = {}, tags = []) => node("legend", props, tags);
+const li = (props = {}, tags = []) => node("li", props, tags);
+const link = (props = {}, tags = []) => node("link", props, tags);
+const main = (props = {}, tags = []) => node("main", props, tags);
+const map = (props = {}, tags = []) => node("map", props, tags);
+const mark = (props = {}, tags = []) => node("mark", props, tags);
+const meta = (props = {}, tags = []) => node("meta", props, tags);
+const meter = (props = {}, tags = []) => node("meter", props, tags);
+const nav = (props = {}, tags = []) => node("nav", props, tags);
+const noframes = (props = {}, tags = []) => node("noframes", props, tags);
+const noscript = (props = {}, tags = []) => node("noscript", props, tags);
+const object = (props = {}, tags = []) => node("object", props, tags);
+const ol = (props = {}, tags = []) => node("ol", props, tags);
+const optgroup = (props = {}, tags = []) => node("optgroup", props, tags);
+const option = (props = {}, tags = []) => node("option", props, tags);
+const p = (props = {}, tags = []) => node("p", props, tags);
+const param = (props = {}, tags = []) => node("param", props, tags);
+const picture = (props = {}, tags = []) => node("picture", props, tags);
+const pre = (props = {}, tags = []) => node("pre", props, tags);
+const progress = (props = {}, tags = []) => node("progress", props, tags);
+const q = (props = {}, tags = []) => node("q", props, tags);
+const rp = (props = {}, tags = []) => node("rp", props, tags);
+const rt = (props = {}, tags = []) => node("rt", props, tags);
+const ruby = (props = {}, tags = []) => node("ruby", props, tags);
+const s = (props = {}, tags = []) => node("s", props, tags);
+const samp = (props = {}, tags = []) => node("samp", props, tags);
+const script = (props = {}, tags = []) => node("script", props, tags);
+const section = (props = {}, tags = []) => node("section", props, tags);
+const select = (props = {}, tags = []) => node("select", props, tags);
+const small = (props = {}, tags = []) => node("small", props, tags);
+const source = (props = {}, tags = []) => node("source", props, tags);
+const span = (props = {}, tags = []) => node("span", props, tags);
+const strike = (props = {}, tags = []) => node("strike", props, tags);
+const strong = (props = {}, tags = []) => node("strong", props, tags);
+const style = (props = {}, tags = []) => node("style", props, tags);
+const sub = (props = {}, tags = []) => node("sub", props, tags);
+const svg = (props = {}, tags = []) => node("svg", props, tags);
+const table = (props = {}, tags = []) => node("table", props, tags);
+const tbody = (props = {}, tags = []) => node("tbody", props, tags);
+const td = (props = {}, tags = []) => node("td", props, tags);
+const template = (props = {}, tags = []) => node("template", props, tags);
+const textarea = (props = {}, tags = []) => node("textarea", props, tags);
+const tfoot = (props = {}, tags = []) => node("tfoot", props, tags);
+const th = (props = {}, tags = []) => node("th", props, tags);
+const thead = (props = {}, tags = []) => node("thead", props, tags);
+const time = (props = {}, tags = []) => node("time", props, tags);
+const title = (props = {}, tags = []) => node("title", props, tags);
+const tr = (props = {}, tags = []) => node("tr", props, tags);
+const track = (props = {}, tags = []) => node("track", props, tags);
+const tt = (props = {}, tags = []) => node("tt", props, tags);
+const u = (props = {}, tags = []) => node("ul", props, tags);
+const ul = (props = {}, tags = []) => node("ul", props, tags);
+const htmlVar = (props = {}, tags = []) => node("var", props, tags);
+const video = (props = {}, tags = []) => node("video", props, tags);
+class Pos {
+    constructor() {
+        this.x = 0;
+        this.y = 0;
+    }
+}
+class Size {
+    constructor() {
+        this.x = 0;
+        this.y = 0;
+    }
+}
+const node = (type, props = {}, tags = []) => {
+    if (type === "document")
+        return tag(document.implementation.createDocument("doc", "doc", document.implementation.createDocumentType("doc", "doc", Unit.uniqueID())), new TagProps({}), []);
     if (type === "comment")
-        return tag(document.createComment("Grafix Magic Here!"), new TagProps({}), []);
+        return tag(document.createComment("Grafix Magic Here!"), new TagProps(props), []);
     if (props instanceof Array)
         return tag(document.createElement(type), new TagProps({}), props);
     return tag(document.createElement(type), new TagProps(props), tags);
 };
-const div = (props = {}, tags = []) => htmlNode("div", props, tags);
-const input = (props = {}, tags = []) => htmlNode("input", props, tags);
-const form = (props = {}, tags = []) => htmlNode("form", props, tags);
-const style = (props = {}, tags = []) => htmlNode("style", props, tags);
-const comment = (props = {}, tags = []) => htmlNode("comment", props, tags);
 const mountTag = (query, elementFunc, data) => {
     const element = elementFunc(data);
     element.onInit();
@@ -688,35 +890,19 @@ const expand = (style) => {
         return style;
     return style();
 };
+const forward = (tags) => tags[0];
+const filter = (feed, tag) => {
+    if (feed.target)
+        return feed.target();
+    else
+        return tag;
+};
 const fx = o({
     dragging: false,
     dragData: null,
     placeholder: null
 });
 const tag = (node, props, childTags) => {
-    const data = {
-        id: Unit.uniqueID(),
-        parent: null,
-        tags: new Mix(),
-        binds: new Mix(),
-        bindsCache: {},
-        unmounts: new Mix(),
-        node,
-        props,
-        addEvent: (eventName, func) => addEvent(eventName, func),
-        onCreate: () => props.onCreate(data),
-        onMount: () => props.onMount(data),
-        onInit: () => props.onInit(data),
-        onUnmount: () => props.onUnmount(data),
-        onUnmountAsync: (u) => props.onUnmountAsync(() => u(), data),
-        unmount: (u) => unmount(u),
-        mount: (tag) => mountTag(tag),
-        bind: (type, apply) => bind(type, apply),
-        disableBinding: () => disableBinding()
-    };
-    let originalOnSubmit = null;
-    if (props.onCreate)
-        props.onCreate(data);
     const setupProps = () => {
         if (!props.onInit)
             props.onInit = () => { };
@@ -727,6 +913,32 @@ const tag = (node, props, childTags) => {
         if (!props.onUnmountAsync)
             props.onUnmountAsync = (u) => u();
     };
+    setupProps();
+    const data = {
+        id: Unit.uniqueID(),
+        name: () => props.name,
+        parent: null,
+        tags: new Mix(),
+        binds: new Mix(),
+        bindsCache: {},
+        unmounts: new Mix(),
+        node,
+        props,
+        mounted: false,
+        addEvent: (eventName, func) => addEvent(eventName, func),
+        onCreate: () => props.onCreate(data),
+        onMount: () => props.onMount(data),
+        onInit: () => props.onInit(data),
+        onUnmount: () => props.onUnmount(data),
+        onUnmountAsync: (u) => props.onUnmountAsync(() => u(), data),
+        unmount: (u) => unmount(u),
+        mount: (tag, id) => mountTag(tag, id),
+        bind: (type, apply) => bind(type, apply),
+        disableBinding: () => disableBinding()
+    };
+    let originalOnSubmit = null;
+    if (props.onCreate)
+        props.onCreate(data);
     const setupName = () => {
         if (!data.props.name.length)
             data.props.name = Unit.uniqueID();
@@ -734,6 +946,8 @@ const tag = (node, props, childTags) => {
     const applyNodeValue = (domProp, value) => {
         if (domProp === "style")
             return data.node.style.cssText = value;
+        if (domProp === "className")
+            return data.node[domProp] = value.replace(/\s\s+/g, ' ').trim();
         data.node[domProp] = value;
     };
     const setupNodeProp = (type, prop, domProp) => {
@@ -742,11 +956,9 @@ const tag = (node, props, childTags) => {
         if (!data.props[prop])
             return;
         if (typeof data.props[prop] === "string" || typeof data.props[prop] === "number")
-            return data.node[domProp] = data.props[prop];
+            return applyNodeValue(domProp, data.props[prop]);
         if (data.props[prop] instanceof Function) {
             bind(type, () => applyNodeValue(domProp, data.props[prop]()));
-            applyNodeValue(domProp, data.props[prop]());
-            disableBinding();
         }
     };
     const enableBinding = (type, func) => {
@@ -772,125 +984,406 @@ const tag = (node, props, childTags) => {
     const setupValue = () => setupNodeProp(bindType.text, "value", "value");
     const setupStyle = () => setupNodeProp(bindType.styles, "style", "style");
     const setupClasses = () => setupNodeProp(bindType.classes, "classes", "className");
+    const setupPlaceholder = () => setupAttribute("placeholder", "placeholder");
+    const setupType = () => setupAttribute("type", "type");
+    const setupAttribute = (name, prop) => {
+        if (data.node instanceof Comment)
+            return;
+        if (!data.props[prop])
+            return;
+        bind(bindType.attributes, () => applyAttribute(name, data.props[prop]));
+    };
+    const applyAttribute = (name, val) => {
+        let value;
+        if (typeof val === "string")
+            value = val;
+        else
+            value = val();
+        if (!value)
+            return data.node.removeAttribute(name);
+        data.node.setAttribute(name, value);
+    };
     const setupAttributes = () => {
         if (data.node instanceof Comment)
             return;
         if (!data.props.attributes)
             return;
         const props = [];
-        bind(bindType.attributes, () => applyAttributes(props, data.props.attributes));
         const value = data.props.attributes();
         for (const prop in value)
             props.push(prop);
-        applyAttributes(props, value);
-        disableBinding();
+        bind(bindType.attributes, () => applyAttributes(props, data.props.attributes()));
     };
     const applyAttributes = (props, attributes) => {
-        for (let i = 0; i < props.length; i++)
-            if (attributes[props[i]] === null) {
+        for (let i = 0; i < props.length; i++) {
+            let value = null;
+            if (attributes[props[i]] instanceof Function)
+                value = attributes[props[i]]();
+            else if (typeof attributes[props[i]] === "string")
+                value = attributes[props[i]];
+            if (value === null) {
                 if (data.node.hasAttribute(props[i]))
                     data.node.removeAttribute(props[i]);
             }
             else if (data.node.hasAttribute(props[i])) {
-                if (data.node.getAttribute(props[i]) !== attributes[props[i]])
-                    data.node.setAttribute(props[i], attributes[props[i]]);
+                if (data.node.getAttribute(props[i]) !== value)
+                    data.node.setAttribute(props[i], value);
             }
             else
-                data.node.setAttribute(props[i], attributes[props[i]]);
+                data.node.setAttribute(props[i], value);
+        }
     };
     const setupEvents = () => {
+        // Custom Events
         if (data.props.onUpdate)
             data.props.onKeyDown = e => val(e, v => data.props.onUpdate(v));
-        if (data.props.onClick)
-            data.node.addEventListener("click", data.props.onClick, false);
-        if (data.props.onChange)
-            data.node.addEventListener("change", data.props.onChange, false);
-        if (data.props.onFocus)
-            data.node.addEventListener("focus", data.props.onFocus, false);
+        // DOM Events
+        if (data.props.onAbort)
+            data.node.addEventListener("abort", data.props.onAbort, false);
+        if (data.props.onAfterPrint)
+            data.node.addEventListener("afterprint", data.props.onAfterPrint, false);
+        if (data.props.onAnimationEnd)
+            data.node.addEventListener("animationend", data.props.onAnimationEnd, false);
+        if (data.props.onAnimationIteration)
+            data.node.addEventListener("animationiteration", data.props.onAnimationIteration, false);
+        if (data.props.onAnimationStart)
+            data.node.addEventListener("animationstart", data.props.onAnimationStart, false);
+        if (data.props.onBeforePrint)
+            data.node.addEventListener("beforeprint", data.props.onBeforePrint, false);
+        if (data.props.onBeforeUnload)
+            data.node.addEventListener("beforeunload", data.props.onBeforeUnload, false);
         if (data.props.onBlur)
             data.node.addEventListener("blur", data.props.onBlur, false);
+        if (data.props.onCanPlay)
+            data.node.addEventListener("canplay", data.props.onCanPlay, false);
+        if (data.props.onCanPlayThough)
+            data.node.addEventListener("canplaythrough", data.props.onCanPlayThough, false);
+        if (data.props.onChange)
+            data.node.addEventListener("change", data.props.onChange, false);
+        if (data.props.onClick)
+            data.node.addEventListener("click", data.props.onClick, false);
+        if (data.props.onContextMenu)
+            data.node.addEventListener("contextmenu", data.props.onContextMenu, false);
+        if (data.props.onCopy)
+            data.node.addEventListener("copy", data.props.onCopy, false);
+        if (data.props.onCut)
+            data.node.addEventListener("cut", data.props.onCut, false);
         if (data.props.onDoubleClick)
             data.node.addEventListener("dblclick", data.props.onDoubleClick, false);
+        if (data.props.onDrag)
+            data.node.addEventListener("drag", data.props.onDrag, false);
+        if (data.props.onDragEnd)
+            data.node.addEventListener("dragend", data.props.onDragEnd, false);
+        if (data.props.onDragEnter)
+            data.node.addEventListener("dragenter", data.props.onDragEnter, false);
+        if (data.props.onDragLeave)
+            data.node.addEventListener("dragleave", data.props.onDragLeave, false);
+        if (data.props.onDragOver)
+            data.node.addEventListener("dragover", data.props.onDragOver, false);
+        if (data.props.onDragStart)
+            data.node.addEventListener("dragstart", data.props.onDragStart, false);
+        if (data.props.onDrop)
+            data.node.addEventListener("drop", data.props.onDrop, false);
+        if (data.props.onDurationChange)
+            data.node.addEventListener("durationchange", data.props.onDurationChange, false);
+        if (data.props.onEnded)
+            data.node.addEventListener("ended", data.props.onEnded, false);
+        if (data.props.onError)
+            data.node.addEventListener("error", data.props.onError, false);
+        if (data.props.onFocus)
+            data.node.addEventListener("focus", data.props.onFocus, false);
+        if (data.props.onFocusIn)
+            data.node.addEventListener("focusin", data.props.onFocusIn, false);
+        if (data.props.onFocusOut)
+            data.node.addEventListener("focusout", data.props.onFocusOut, false);
+        if (data.props.onFullScreenChange)
+            data.node.addEventListener("fullscreenchange", data.props.onFullScreenChange, false);
+        if (data.props.onFullScreenError)
+            data.node.addEventListener("fullscreenerror", data.props.onFullScreenError, false);
+        if (data.props.onHashChange)
+            data.node.addEventListener("hashchange", data.props.onHashChange, false);
+        if (data.props.onInput)
+            data.node.addEventListener("input", data.props.onInput, false);
+        if (data.props.onKeyDown)
+            data.node.addEventListener("keydown", data.props.onKeyDown, false);
+        if (data.props.onKeyPress)
+            data.node.addEventListener("keypress", data.props.onKeyPress, false);
+        if (data.props.onKeyUp)
+            data.node.addEventListener("keyup", data.props.onKeyUp, false);
+        if (data.props.onLoad)
+            data.node.addEventListener("load", data.props.onLoad, false);
+        if (data.props.onLoadedData)
+            data.node.addEventListener("loadeddata", data.props.onLoadedData, false);
+        if (data.props.onLoadedMetaData)
+            data.node.addEventListener("loadedmetadata", data.props.onLoadedMetaData, false);
+        if (data.props.onLoadStart)
+            data.node.addEventListener("loadstart", data.props.onLoadStart, false);
+        if (data.props.onMessage)
+            data.node.addEventListener("message", data.props.onMessage, false);
         if (data.props.onMouseDown)
             data.node.addEventListener("mousedown", data.props.onMouseDown, false);
-        if (data.props.onMouseUp)
-            data.node.addEventListener("mouseup", data.props.onMouseUp, false);
-        if (data.props.onMouseMove)
-            data.node.addEventListener("mousemove", data.props.onMouseMove, false);
         if (data.props.onMouseEnter)
             data.node.addEventListener("mouseenter", data.props.onMouseEnter, false);
         if (data.props.onMouseLeave)
             data.node.addEventListener("mouseleave", data.props.onMouseLeave, false);
+        if (data.props.onMouseMove)
+            data.node.addEventListener("mousemove", data.props.onMouseMove, false);
         if (data.props.onMouseOver)
             data.node.addEventListener("mouseover", data.props.onMouseOver, false);
         if (data.props.onMouseOut)
             data.node.addEventListener("mouseout", data.props.onMouseOut, false);
-        if (data.props.onRightClick)
-            data.node.addEventListener("contextmenu", data.props.onRightClick, false);
-        if (data.props.onKeyUp)
-            data.node.addEventListener("keyup", data.props.onKeyUp, false);
-        if (data.props.onKeyDown)
-            data.node.addEventListener("keydown", data.props.onKeyDown, false);
-        if (data.props.onScroll)
-            data.node.addEventListener("scroll", data.props.onScroll, false);
+        if (data.props.onMouseUp)
+            data.node.addEventListener("mouseup", data.props.onMouseUp, false);
         if (data.props.onMouseWheel)
             data.node.addEventListener("mousewheel", data.props.onMouseWheel, false);
+        if (data.props.onOffline)
+            data.node.addEventListener("offline", data.props.onOffline, false);
+        if (data.props.onOnline)
+            data.node.addEventListener("online", data.props.onOnline, false);
+        if (data.props.onOpen)
+            data.node.addEventListener("open", data.props.onOpen, false);
+        if (data.props.onPageHide)
+            data.node.addEventListener("pagehide", data.props.onPageHide, false);
+        if (data.props.onPageShow)
+            data.node.addEventListener("pageshow", data.props.onPageShow, false);
+        if (data.props.onPaste)
+            data.node.addEventListener("paste", data.props.onPaste, false);
+        if (data.props.onPause)
+            data.node.addEventListener("pause", data.props.onPause, false);
+        if (data.props.onPlay)
+            data.node.addEventListener("play", data.props.onPlay, false);
+        if (data.props.onPlaying)
+            data.node.addEventListener("playing", data.props.onPlaying, false);
+        if (data.props.onPopState)
+            data.node.addEventListener("popstate", data.props.onPopState, false);
+        if (data.props.onProgress)
+            data.node.addEventListener("progress", data.props.onProgress, false);
+        if (data.props.onRateChange)
+            data.node.addEventListener("ratechange", data.props.onRateChange, false);
+        if (data.props.onResize)
+            data.node.addEventListener("resize", data.props.onResize, false);
+        if (data.props.onReset)
+            data.node.addEventListener("reset", data.props.onReset, false);
+        if (data.props.onScroll)
+            data.node.addEventListener("scroll", data.props.onScroll, false);
+        if (data.props.onSearch)
+            data.node.addEventListener("search", data.props.onSearch, false);
+        if (data.props.onSeeked)
+            data.node.addEventListener("seeked", data.props.onSeeked, false);
+        if (data.props.onSelect)
+            data.node.addEventListener("select", data.props.onSelect, false);
+        if (data.props.onShow)
+            data.node.addEventListener("show", data.props.onShow, false);
+        if (data.props.onStalled)
+            data.node.addEventListener("stalled", data.props.onStalled, false);
+        if (data.props.onStorage)
+            data.node.addEventListener("storage", data.props.onStorage, false);
+        if (data.props.onSuspend)
+            data.node.addEventListener("suspend", data.props.onSuspend, false);
+        if (data.props.onTimeUpdate)
+            data.node.addEventListener("timeupdate", data.props.onTimeUpdate, false);
+        if (data.props.onToggle)
+            data.node.addEventListener("toggle", data.props.onToggle, false);
+        if (data.props.onTouchCancel)
+            data.node.addEventListener("touchcancel", data.props.onTouchCancel, false);
+        if (data.props.onTouchEnd)
+            data.node.addEventListener("touchend", data.props.onTouchEnd, false);
+        if (data.props.onTouchMove)
+            data.node.addEventListener("touchmove", data.props.onTouchMove, false);
+        if (data.props.onTouchStart)
+            data.node.addEventListener("touchstart", data.props.onTouchStart, false);
+        if (data.props.onTransitionEnd)
+            data.node.addEventListener("transitionend", data.props.onTransitionEnd, false);
+        if (data.props.onUnload)
+            data.node.addEventListener("unload", data.props.onUnload, false);
+        if (data.props.onVolumeChange)
+            data.node.addEventListener("volumechange", data.props.onVolumeChange, false);
+        if (data.props.onWaiting)
+            data.node.addEventListener("waiting", data.props.onWaiting, false);
+        if (data.props.onWheel)
+            data.node.addEventListener("wheel", data.props.onWheel, false);
         if (data.props.onSubmit) {
             originalOnSubmit = data.props.onSubmit;
             data.props.onSubmit = (ev) => {
-                originalOnSubmit(ev);
                 ev.preventDefault();
+                originalOnSubmit(ev);
             };
             data.node.addEventListener("submit", data.props.onSubmit, false);
         }
-        if (data.props.onResize)
-            data.node.addEventListener("resize", data.props.onResize, false);
     };
     const cleanEvents = () => {
-        if (data.props.onClick)
-            data.node.removeEventListener("click", data.props.onClick, false);
-        if (data.props.onChange)
-            data.node.removeEventListener("change", data.props.onChange, false);
-        if (data.props.onFocus)
-            data.node.removeEventListener("focus", data.props.onFocus, false);
+        if (data.props.onAbort)
+            data.node.removeEventListener("abort", data.props.onAbort, false);
+        if (data.props.onAfterPrint)
+            data.node.removeEventListener("afterprint", data.props.onAfterPrint, false);
+        if (data.props.onAnimationEnd)
+            data.node.removeEventListener("animationend", data.props.onAnimationEnd, false);
+        if (data.props.onAnimationIteration)
+            data.node.removeEventListener("animationiteration", data.props.onAnimationIteration, false);
+        if (data.props.onAnimationStart)
+            data.node.removeEventListener("animationstart", data.props.onAnimationStart, false);
+        if (data.props.onBeforePrint)
+            data.node.removeEventListener("beforeprint", data.props.onBeforePrint, false);
+        if (data.props.onBeforeUnload)
+            data.node.removeEventListener("beforeunload", data.props.onBeforeUnload, false);
         if (data.props.onBlur)
             data.node.removeEventListener("blur", data.props.onBlur, false);
+        if (data.props.onCanPlay)
+            data.node.removeEventListener("canplay", data.props.onCanPlay, false);
+        if (data.props.onCanPlayThough)
+            data.node.removeEventListener("canplaythrough", data.props.onCanPlayThough, false);
+        if (data.props.onChange)
+            data.node.removeEventListener("change", data.props.onChange, false);
+        if (data.props.onClick)
+            data.node.removeEventListener("click", data.props.onClick, false);
+        if (data.props.onContextMenu)
+            data.node.removeEventListener("contextmenu", data.props.onContextMenu, false);
+        if (data.props.onCopy)
+            data.node.removeEventListener("copy", data.props.onCopy, false);
+        if (data.props.onCut)
+            data.node.removeEventListener("cut", data.props.onCut, false);
         if (data.props.onDoubleClick)
             data.node.removeEventListener("dblclick", data.props.onDoubleClick, false);
+        if (data.props.onDrag)
+            data.node.removeEventListener("drag", data.props.onDrag, false);
+        if (data.props.onDragEnd)
+            data.node.removeEventListener("dragend", data.props.onDragEnd, false);
+        if (data.props.onDragEnter)
+            data.node.removeEventListener("dragenter", data.props.onDragEnter, false);
+        if (data.props.onDragLeave)
+            data.node.removeEventListener("dragleave", data.props.onDragLeave, false);
+        if (data.props.onDragOver)
+            data.node.removeEventListener("dragover", data.props.onDragOver, false);
+        if (data.props.onDragStart)
+            data.node.removeEventListener("dragstart", data.props.onDragStart, false);
+        if (data.props.onDrop)
+            data.node.removeEventListener("drop", data.props.onDrop, false);
+        if (data.props.onDurationChange)
+            data.node.removeEventListener("durationchange", data.props.onDurationChange, false);
+        if (data.props.onEnded)
+            data.node.removeEventListener("ended", data.props.onEnded, false);
+        if (data.props.onError)
+            data.node.removeEventListener("error", data.props.onError, false);
+        if (data.props.onFocus)
+            data.node.removeEventListener("focus", data.props.onFocus, false);
+        if (data.props.onFocusIn)
+            data.node.removeEventListener("focusin", data.props.onFocusIn, false);
+        if (data.props.onFocusOut)
+            data.node.removeEventListener("focusout", data.props.onFocusOut, false);
+        if (data.props.onFullScreenChange)
+            data.node.removeEventListener("fullscreenchange", data.props.onFullScreenChange, false);
+        if (data.props.onFullScreenError)
+            data.node.removeEventListener("fullscreenerror", data.props.onFullScreenError, false);
+        if (data.props.onHashChange)
+            data.node.removeEventListener("hashchange", data.props.onHashChange, false);
+        if (data.props.onInput)
+            data.node.removeEventListener("input", data.props.onInput, false);
+        if (data.props.onKeyDown)
+            data.node.removeEventListener("keydown", data.props.onKeyDown, false);
+        if (data.props.onKeyPress)
+            data.node.removeEventListener("keypress", data.props.onKeyPress, false);
+        if (data.props.onKeyUp)
+            data.node.removeEventListener("keyup", data.props.onKeyUp, false);
+        if (data.props.onLoad)
+            data.node.removeEventListener("load", data.props.onLoad, false);
+        if (data.props.onLoadedData)
+            data.node.removeEventListener("loadeddata", data.props.onLoadedData, false);
+        if (data.props.onLoadedMetaData)
+            data.node.removeEventListener("loadedmetadata", data.props.onLoadedMetaData, false);
+        if (data.props.onLoadStart)
+            data.node.removeEventListener("loadstart", data.props.onLoadStart, false);
+        if (data.props.onMessage)
+            data.node.removeEventListener("message", data.props.onMessage, false);
         if (data.props.onMouseDown)
             data.node.removeEventListener("mousedown", data.props.onMouseDown, false);
-        if (data.props.onMouseUp)
-            data.node.removeEventListener("mouseup", data.props.onMouseUp, false);
-        if (data.props.onMouseMove)
-            data.node.removeEventListener("mousemove", data.props.onMouseMove, false);
         if (data.props.onMouseEnter)
             data.node.removeEventListener("mouseenter", data.props.onMouseEnter, false);
         if (data.props.onMouseLeave)
             data.node.removeEventListener("mouseleave", data.props.onMouseLeave, false);
+        if (data.props.onMouseMove)
+            data.node.removeEventListener("mousemove", data.props.onMouseMove, false);
         if (data.props.onMouseOver)
             data.node.removeEventListener("mouseover", data.props.onMouseOver, false);
         if (data.props.onMouseOut)
             data.node.removeEventListener("mouseout", data.props.onMouseOut, false);
-        if (data.props.onRightClick)
-            data.node.removeEventListener("contextmenu", data.props.onRightClick, false);
-        if (data.props.onKeyUp)
-            data.node.removeEventListener("keyup", data.props.onKeyUp, false);
-        if (data.props.onKeyDown)
-            data.node.removeEventListener("keydown", data.props.onKeyDown, false);
-        if (data.props.onScroll)
-            data.node.removeEventListener("scroll", data.props.onScroll, false);
+        if (data.props.onMouseUp)
+            data.node.removeEventListener("mouseup", data.props.onMouseUp, false);
         if (data.props.onMouseWheel)
             data.node.removeEventListener("mousewheel", data.props.onMouseWheel, false);
-        if (data.props.onSubmit)
-            data.node.removeEventListener("submit", data.props.onSubmit, false);
+        if (data.props.onOffline)
+            data.node.removeEventListener("offline", data.props.onOffline, false);
+        if (data.props.onOnline)
+            data.node.removeEventListener("online", data.props.onOnline, false);
+        if (data.props.onOpen)
+            data.node.removeEventListener("open", data.props.onOpen, false);
+        if (data.props.onPageHide)
+            data.node.removeEventListener("pagehide", data.props.onPageHide, false);
+        if (data.props.onPageShow)
+            data.node.removeEventListener("pageshow", data.props.onPageShow, false);
+        if (data.props.onPaste)
+            data.node.removeEventListener("paste", data.props.onPaste, false);
+        if (data.props.onPause)
+            data.node.removeEventListener("pause", data.props.onPause, false);
+        if (data.props.onPlay)
+            data.node.removeEventListener("play", data.props.onPlay, false);
+        if (data.props.onPlaying)
+            data.node.removeEventListener("playing", data.props.onPlaying, false);
+        if (data.props.onPopState)
+            data.node.removeEventListener("popstate", data.props.onPopState, false);
+        if (data.props.onProgress)
+            data.node.removeEventListener("progress", data.props.onProgress, false);
+        if (data.props.onRateChange)
+            data.node.removeEventListener("ratechange", data.props.onRateChange, false);
         if (data.props.onResize)
             data.node.removeEventListener("resize", data.props.onResize, false);
+        if (data.props.onReset)
+            data.node.removeEventListener("reset", data.props.onReset, false);
+        if (data.props.onScroll)
+            data.node.removeEventListener("scroll", data.props.onScroll, false);
+        if (data.props.onSearch)
+            data.node.removeEventListener("search", data.props.onSearch, false);
+        if (data.props.onSeeked)
+            data.node.removeEventListener("seeked", data.props.onSeeked, false);
+        if (data.props.onSelect)
+            data.node.removeEventListener("select", data.props.onSelect, false);
+        if (data.props.onShow)
+            data.node.removeEventListener("show", data.props.onShow, false);
+        if (data.props.onStalled)
+            data.node.removeEventListener("stalled", data.props.onStalled, false);
+        if (data.props.onStorage)
+            data.node.removeEventListener("storage", data.props.onStorage, false);
+        if (data.props.onSuspend)
+            data.node.removeEventListener("suspend", data.props.onSuspend, false);
+        if (data.props.onTimeUpdate)
+            data.node.removeEventListener("timeupdate", data.props.onTimeUpdate, false);
+        if (data.props.onToggle)
+            data.node.removeEventListener("toggle", data.props.onToggle, false);
+        if (data.props.onTouchCancel)
+            data.node.removeEventListener("touchcancel", data.props.onTouchCancel, false);
+        if (data.props.onTouchEnd)
+            data.node.removeEventListener("touchend", data.props.onTouchEnd, false);
+        if (data.props.onTouchMove)
+            data.node.removeEventListener("touchmove", data.props.onTouchMove, false);
+        if (data.props.onTouchStart)
+            data.node.removeEventListener("touchstart", data.props.onTouchStart, false);
+        if (data.props.onTransitionEnd)
+            data.node.removeEventListener("transitionend", data.props.onTransitionEnd, false);
+        if (data.props.onUnload)
+            data.node.removeEventListener("unload", data.props.onUnload, false);
+        if (data.props.onVolumeChange)
+            data.node.removeEventListener("volumechange", data.props.onVolumeChange, false);
+        if (data.props.onWaiting)
+            data.node.removeEventListener("waiting", data.props.onWaiting, false);
+        if (data.props.onWheel)
+            data.node.removeEventListener("wheel", data.props.onWheel, false);
+        if (data.props.onSubmit)
+            data.node.removeEventListener("submit", data.props.onSubmit, false);
         if (originalOnSubmit)
             originalOnSubmit = null;
     };
     const addEvent = (eventName, func) => {
-        data.node.addEventListener("mousedown", func, false);
-        data.unmounts.add(() => data.node.removeEventListener("mousedown", func, false));
+        data.node.addEventListener(eventName, func, false);
+        data.unmounts.add(() => data.node.removeEventListener(eventName, func, false));
     };
     const cleanSubscriptions = () => {
         data.binds.foreach(obj => obj.foreach((prop, propName) => prop.foreach(binding => binding.objBinds.get(propName).delete(binding.id))));
@@ -901,7 +1394,7 @@ const tag = (node, props, childTags) => {
             data.tags.set(tag.id, tag);
         }
     };
-    const mountTag = (rawTag) => {
+    const mountTag = (rawTag, id) => {
         let tag = null;
         if (rawTag instanceof Array)
             tag = tagList({
@@ -927,6 +1420,9 @@ const tag = (node, props, childTags) => {
             data.node.parentNode.insertBefore(tag.node, data.node);
         else
             data.node.appendChild(tag.node);
+        if (id)
+            tag.id = id;
+        tag.mounted = true;
         tag.onMount();
         return tag;
     };
@@ -951,16 +1447,22 @@ const tag = (node, props, childTags) => {
             u();
     };
     const unmountFromParent = () => {
-        data.node.parentNode.removeChild(data.node);
+        // Animation overlapping can occur naturally
+        // in complex situations, which means that a node is always cleaned
+        // so we don't have to rely on the parent unmounting?
+        if (data.node.parentNode)
+            data.node.parentNode.removeChild(data.node);
         if (data.parent)
-            data.parent.tags.delete(data.id);
+            if (data.parent.tags.has(data.id))
+                data.parent.tags.delete(data.id);
     };
-    setupProps();
     setupName();
     setupText();
     setupValue();
     setupStyle();
     setupClasses();
+    setupPlaceholder();
+    setupType();
     setupAttributes();
     setupEvents();
     mountTags(childTags);
@@ -1030,108 +1532,74 @@ const tagList = (props) => {
     return tag;
 };
 const router = (props) => {
-    const tag = comment();
+    const tag = comment({
+        onMount: (t) => {
+            mountID = t.id + "_selection";
+            tag.bind(bindType.router, () => bind());
+        }
+    });
     let unmounting = false;
+    let mountID = "";
     const bind = () => {
         if (unmounting)
             return;
+        if (tag.tags.has(mountID)) {
+            unmounting = true;
+            return tag.tags.get(mountID).unmount(() => {
+                tag.tags.delete(mountID);
+                unmounting = false;
+                bind();
+            });
+        }
         let t = props();
-        if (t instanceof Array)
-            t = t[0];
-        if (tag.tags.has("selection"))
-            tag.tags.get("selection").unmount();
         if (!t)
             return;
-        t = tag.mount(t);
-        t.id = "selection";
-        t.props.name = "selection";
-        tag.tags.set(t.id, t);
-    };
-    tag.onMount = () => {
-        tag.bind(bindType.router, () => bind());
-        bind();
-        tag.disableBinding();
+        if (t instanceof Array)
+            t = t[0];
+        t = tag.mount(t, mountID);
+        tag.tags.set(mountID, t);
     };
     return tag;
 };
-class Pos {
-    constructor() {
-        this.x = 0;
-        this.y = 0;
-    }
-}
-const move = (props, tags) => {
-    if (props instanceof Function) {
-        tags = props;
-        props = {
-            pos: o(Pos)
-        };
-    }
-    const localProps = props;
-    const start = {
-        x: 0,
-        y: 0
+const move = (feed, tags) => {
+    const props = {
+        translate: () => `
+            translate3d(${feed.data.x}px, ${feed.data.y}px, 0)
+        `,
+        transform: () => `
+            transform: ${props.translate()};
+        `,
+        style: () => props.transform()
     };
+    const tag = forward(tags(props));
+    const target = filter(feed, tag);
+    // Blend Logic
+    const start = { x: 0, y: 0 };
     const onDown = (ev) => {
-        if (localProps.onDown)
-            localProps.onDown(ev);
-        start.x = ev.pageX - localProps.pos.x;
-        start.y = ev.pageY - localProps.pos.y;
+        if (feed.onDown)
+            feed.onDown(ev);
+        start.x = ev.pageX - feed.data.x;
+        start.y = ev.pageY - feed.data.y;
         window.onmousemove = onMove;
         window.onmouseup = onUp;
     };
     const onMove = (ev) => {
-        localProps.pos.x = ev.pageX - start.x;
-        localProps.pos.y = ev.pageY - start.y;
-        if (localProps.onMove)
-            localProps.onMove(ev);
+        feed.data.x = ev.pageX - start.x;
+        feed.data.y = ev.pageY - start.y;
+        if (feed.onMove)
+            feed.onMove(ev);
     };
     const onUp = (ev) => {
         window.onmousemove = null;
         window.onmouseup = null;
-        if (localProps.onUp)
-            localProps.onUp(ev);
+        if (feed.onUp)
+            feed.onUp(ev);
     };
-    const tag = tags({
-        translate: () => "translate3d(" + localProps.pos.x + "px, " + localProps.pos.y + "px, 0)",
-        transform: () => `
-            transform: translate3d(${localProps.pos.x}px, ${localProps.pos.y}px, 0);
-        `,
-        tag: (p, tags) => {
-            const style = () => `
-                transform: translate3d(${localProps.pos.x}px, ${localProps.pos.y}px, 0);
-            `;
-            if (p instanceof Array) {
-                tags = p;
-                p = new TagProps({ style });
-            }
-            else if (p)
-                if (p.style) {
-                    const oldStyle = p.style instanceof Function ? p.style() : p.style;
-                    p.style = () => `
-                        transform: translate3d(${localProps.pos.x}px, ${localProps.pos.y}px, 0);
-                        ${oldStyle}
-                    `;
-                }
-                else
-                    p.style = style;
-            if (!localProps)
-                p = new TagProps({ style });
-            return div(p, tags);
-        }
-    })[0];
-    const target = props.target ? props.target() : tag;
-    target.node.addEventListener("mousedown", onDown, false);
-    target.unmounts.add(() => target.node.removeEventListener("mousedown", onDown, false));
+    // ~Blend Logic
+    target.addEvent("mousedown", onDown);
     return tag;
 };
-class Size {
-    constructor() {
-        this.x = 0;
-        this.y = 0;
-    }
-}
-const resize = (props, tags) => {
+const resize = (feed, tags) => {
     const start = {
         x: 0,
         y: 0,
@@ -1144,89 +1612,127 @@ const resize = (props, tags) => {
         left: o(Pos),
         right: o(Pos),
     };
-    return tags({
-        width: () => "width: " + props.size.x + "px;",
-        height: () => "height: " + props.size.y + "px;",
-        translate: () => "translate3d(" + props.pos.x + "px, " + props.pos.y + "px, 0)",
+    const resizerStyle = `
+        position: absolute;
+        background-color: pink;
+    `;
+    return forward(tags({
+        width: () => "width: " + feed.size.x + "px;",
+        height: () => "height: " + feed.size.y + "px;",
+        translate: () => "translate3d(" + feed.pos.x + "px, " + feed.pos.y + "px, 0)",
         style: () => `
-            width: ${props.size.x}px;
-            height: ${props.size.y}px;
-            transform: translate3d(${props.pos.x}px, ${props.pos.y}px, 0);
+            width: ${feed.size.x}px;
+            height: ${feed.size.y}px;
+            transform: translate3d(${feed.pos.x}px, ${feed.pos.y}px, 0);
         `,
         resizers: () => [
-            move({ pos: pos.top, onDown: () => {
+            move({ data: pos.top, onDown: () => {
                     pos.top.y = 0;
-                    start.x = props.size.x;
-                    start.y = props.size.y;
-                    if (props.pos) {
-                        start.posX = props.pos.x;
-                        start.posY = props.pos.y;
+                    start.x = feed.size.x;
+                    start.y = feed.size.y;
+                    if (feed.pos) {
+                        start.posX = feed.pos.x;
+                        start.posY = feed.pos.y;
                     }
                 }, onMove: () => {
-                    props.size.y = start.y - pos.top.y;
-                    if (props.pos)
-                        props.pos.y = start.posY + pos.top.y;
+                    feed.size.y = start.y - pos.top.y;
+                    if (feed.pos)
+                        feed.pos.y = start.posY + pos.top.y;
                 } }, () => [
-                div({ classes: "ResizerTop Resizer" })
+                div({
+                    classes: "ResizerTop Resizer",
+                    style: `
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 10px;
+                        cursor: move;
+                        ${resizerStyle}
+                    `
+                })
             ]),
-            move({ pos: pos.bottom, onDown: () => {
+            move({ data: pos.bottom, onDown: () => {
                     pos.bottom.y = 0;
-                    start.x = props.size.x;
-                    start.y = props.size.y;
-                    if (props.pos) {
-                        start.posX = props.pos.x;
-                        start.posY = props.pos.y;
+                    start.x = feed.size.x;
+                    start.y = feed.size.y;
+                    if (feed.pos) {
+                        start.posX = feed.pos.x;
+                        start.posY = feed.pos.y;
                     }
                 }, onMove: () => {
-                    props.size.y = start.y + pos.bottom.y;
+                    feed.size.y = start.y + pos.bottom.y;
                 } }, () => [
-                div({ classes: "ResizerBottom Resizer" })
+                div({
+                    classes: "ResizerBottom Resizer",
+                    style: `
+                        bottom: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 10px;
+                        cursor: move;
+                        ${resizerStyle}
+                    `
+                })
             ]),
-            move({ pos: pos.left, onDown: () => {
+            move({ data: pos.left, onDown: () => {
                     pos.left.x = 0;
-                    start.x = props.size.x;
-                    start.y = props.size.y;
-                    if (props.pos) {
-                        start.posX = props.pos.x;
-                        start.posY = props.pos.y;
+                    start.x = feed.size.x;
+                    start.y = feed.size.y;
+                    if (feed.pos) {
+                        start.posX = feed.pos.x;
+                        start.posY = feed.pos.y;
                     }
                 }, onMove: () => {
-                    props.size.x = start.x - pos.left.x;
-                    if (props.pos)
-                        props.pos.x = start.posX + pos.left.x;
+                    feed.size.x = start.x - pos.left.x;
+                    if (feed.pos)
+                        feed.pos.x = start.posX + pos.left.x;
                 } }, () => [
-                div({ classes: "ResizerLeft Resizer" })
+                div({
+                    classes: "ResizerLeft Resizer",
+                    style: `
+                        top: 0;
+                        left: 0;
+                        width: 10px;
+                        height: 100%;
+                        cursor: move;
+                        ${resizerStyle}
+                    `
+                })
             ]),
-            move({ pos: pos.right, onDown: () => {
+            move({ data: pos.right, onDown: () => {
                     pos.right.x = 0;
-                    start.x = props.size.x;
-                    start.y = props.size.y;
-                    if (props.pos) {
-                        start.posX = props.pos.x;
-                        start.posY = props.pos.y;
+                    start.x = feed.size.x;
+                    start.y = feed.size.y;
+                    if (feed.pos) {
+                        start.posX = feed.pos.x;
+                        start.posY = feed.pos.y;
                     }
                 }, onMove: () => {
-                    props.size.x = start.x + pos.right.x;
+                    feed.size.x = start.x + pos.right.x;
                 } }, () => [
-                div({ classes: "ResizerRight Resizer" })
+                div({
+                    classes: "ResizerRight Resizer",
+                    style: `
+                        top: 0;
+                        right: 0;
+                        width: 10px;
+                        height: 100%;
+                        cursor: move;
+                        ${resizerStyle}
+                    `
+                })
             ])
         ]
-    })[0];
+    }));
 };
-const drag = (props, tags) => {
-    if (props instanceof Function) {
-        tags = props;
-        props = {};
-    }
-    const pos = o(Pos);
+const drag = (feed, tags) => {
+    if (!feed.data)
+        feed.data = o(Pos);
+    const state = o({
+        style: ""
+    });
     let node = null;
     let placeholder = null;
-    let position = null;
-    let top = null;
-    let left = null;
-    let style = o({
-        value: ""
-    });
     const onDown = (ev) => {
         node = tag.node;
         if (!node)
@@ -1240,7 +1746,7 @@ const drag = (props, tags) => {
         if (css.float || node.style.float)
             placeholder.style.float = (css.float || node.style.float);
         node.parentNode.insertBefore(placeholder, node);
-        style.value = `
+        state.style = `
             position: absolute;
             left: ${rect.left + +document.body.scrollLeft}px;
             top: ${rect.top + document.body.scrollTop}px;
@@ -1248,86 +1754,76 @@ const drag = (props, tags) => {
         `;
         document.body.append(node);
         fx.dragging = true;
-        if (!(props instanceof Function))
-            if (props.onData)
-                fx.dragData = props.onData();
+        if (!(feed instanceof Function))
+            if (feed.onData)
+                fx.dragData = feed.onData();
     };
     const onUp = () => {
         fx.dragging = false;
         placeholder.replaceWith(node);
-        style.value = ``;
+        state.style = "";
         node = null;
         fx.placeholder = null;
         placeholder = null;
-        pos.x = 0;
-        pos.y = 0;
+        feed.data.x = 0;
+        feed.data.y = 0;
         if (fx.dragData)
             fx.dragData = null;
     };
-    const tag = move({ pos, onDown, onUp, target: props.target }, ({ transform: moveStyle, tag, translate }) => tags({
-        style: () => moveStyle() + style.value,
-        tag,
+    const tag = move({
+        data: feed.data,
+        onDown, onUp,
+        target: feed.target
+    }, ({ style: moveStyle, transform, translate }) => tags({
+        style: () => moveStyle() + state.style,
         translate,
-        dragStyle: () => style.value,
-        moveStyle
+        dragStyle: () => state.style,
+        moveStyle,
+        transform
     }));
     return tag;
 };
-const drop = (props, tag) => {
-    if (props instanceof Function) {
-        tag = props;
-        props = {};
-    }
+const drop = (feed, tags) => {
+    const props = {};
+    const tag = forward(tags(props));
+    const target = filter(feed, tag);
     const mouseEnter = (ev) => {
         if (!fx.dragging)
             return;
-        if (props instanceof Function)
-            return;
-        if (props.onEnter)
-            props.onEnter(props.onData ? props.onData() : null);
+        if (feed.onEnter)
+            feed.onEnter(feed.onData ? feed.onData() : null);
     };
     const mouseUp = () => {
         if (!fx.dragging)
             return;
-        if (props instanceof Function)
-            return;
-        if (props.onDrop)
-            props.onDrop(fx.dragData);
+        if (feed.onDrop)
+            feed.onDrop(fx.dragData);
     };
-    const t = tag({})[0];
-    const node = t.node;
-    node.addEventListener("mouseenter", mouseEnter, false);
-    node.addEventListener("mouseup", mouseUp, false);
-    attachUnmount(t, () => node.removeEventListener("mouseenter", mouseEnter, false));
-    attachUnmount(t, () => node.removeEventListener("mouseup", mouseUp, false));
-    return t;
+    target.addEvent("mouseenter", mouseEnter);
+    target.addEvent("mouseup", mouseUp);
+    return tag;
 };
-const sort = (props, tag) => {
-    if (props instanceof Function) {
-        tag = props;
-        props = {};
-    }
-    const p = props;
+const sort = (feed, tags) => {
     const onEnter = (data) => {
         if (!(fx.placeholder instanceof HTMLDivElement))
             return;
-        const node = t.node;
+        const node = tag.node;
         if (node.parentNode !== fx.placeholder.parentNode)
             return;
         const after = (node.compareDocumentPosition(fx.placeholder) & 0x02) !== 0;
-        if (p.mix) {
-            const hoveredTag = t;
+        if (feed.data) {
+            const hoveredTag = tag;
             const draggingTag = fx.dragData;
-            if (!p.mix.has(hoveredTag.props.name) ||
-                !p.mix.has(draggingTag.props.name))
+            if (!feed.data.has(hoveredTag.props.name) ||
+                !feed.data.has(draggingTag.props.name))
                 return;
             if (after)
-                if (hoveredTag.props.name === p.mix.lastID())
-                    p.mix.sort(draggingTag.props.name, null);
+                if (hoveredTag.props.name === feed.data.lastID())
+                    feed.data.sort(draggingTag.props.name, null);
                 else
-                    p.mix.sort(draggingTag.props.name, p.mix.getNode(hoveredTag.props.name).next.id);
+                    feed.data.sort(draggingTag.props.name, feed.data.getNode(hoveredTag.props.name).next.id);
             else
-                p.mix.sort(draggingTag.props.name, hoveredTag.props.name);
+                feed.data.sort(draggingTag.props.name, hoveredTag.props.name);
         }
         else if (after) {
             if (node.nextSibling)
@@ -1337,20 +1833,26 @@ const sort = (props, tag) => {
         }
         else
             fx.placeholder.parentNode.insertBefore(fx.placeholder, node);
-        if (p.onSort)
-            p.onSort(fx.dragData, t, after);
+        if (feed.onSort)
+            feed.onSort(fx.dragData, tag, after);
     };
-    let t = null;
-    return drag({ onStart: () => p.onStart(fx.dragData, t), onData: () => t, target: p.target }, (dragProps) => [
-        drop({ onEnter, onData: () => t }, (dropProps) => [
-            t = tag({
+    const tag = drag({
+        onStart: () => feed.onStart(fx.dragData, tag),
+        onData: () => tag,
+        target: feed.target
+    }, (dragProps) => [
+        drop({ onEnter, onData: () => tag }, () => [
+            forward(tags({
                 translate: dragProps.translate,
-                tag: dragProps.tag,
-                style: dragProps.style,
+                style: () => `
+                    user-select: none;
+                    ${dragProps.style()}
+                `,
                 moveStyle: dragProps.moveStyle,
                 dragStyle: dragProps.style
-            })[0]
+            }))
         ])
     ]);
+    return tag;
 };
 //# sourceMappingURL=grafix.js.map
