@@ -141,7 +141,9 @@ module.exports = {
     o,
     forward,
     filter,
-    grafix: Unit
+    grafix: Unit,
+    prepare,
+    visuals
 }
 declare module "grafix" {
     export const node: (
@@ -314,5 +316,7 @@ declare module "grafix" {
     ) => Mix<T>
     export const forward: (tags: TagChild[]) => Tag
     export const filter: (feed: Partial<{ target: () => Tag }>, tag: Tag) => Tag
+    export const prepare: (props: Partial<TagProps>, prop: string) => void
+    export const visuals: any
     export const grafix: typeof Unit
 }

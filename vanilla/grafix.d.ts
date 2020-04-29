@@ -245,13 +245,18 @@ declare enum bindType {
     styles = "styles",
     classes = "classes",
     router = "router",
-    attributes = "attributes"
+    attributes = "attributes",
+    css = "css"
 }
 declare let bindListen: boolean;
 declare let currentTag: Tag;
 declare let currentBindType: bindType;
 declare let currentBindFunc: () => any;
 declare let bindingChanged: boolean;
+declare const enableBinding: (type: bindType, data: any, func: () => any) => void;
+declare const disableBinding: () => void;
+declare const bind: (type: bindType, data: any, apply: Function) => void;
+declare const cleanSubscriptions: (data: any) => void;
 /**
  * @function
  * @template A
@@ -397,6 +402,7 @@ declare const forward: (tags: any[]) => Tag;
 declare const filter: (feed: Partial<{
     target: () => any;
 }>, tag: Tag) => Tag;
+declare const prepare: (props: Partial<TagProps>, prop: string) => void;
 declare const fx: {
     dragging: boolean;
     dragData: any;
@@ -407,8 +413,8 @@ declare type Tag = {
     name: () => string;
     parent: Tag;
     tags: Mix<Tag>;
-    binds: Binds;
     bindsCache: any;
+    binds: Binds;
     unmounts: Mix<VoidFunction>;
     node: HTMLElement;
     props: TagProps;
@@ -431,6 +437,18 @@ declare type ListData = {
 };
 declare const tagList: (props: ListData) => Tag;
 declare const router: (props: () => TagChild) => Tag;
+interface StylesData {
+    bindsCache: any;
+    binds: Binds;
+}
+interface StyleNode {
+    data: StylesData;
+    node: HTMLStyleElement;
+}
+declare const styles: Mix<StyleNode>;
+declare const mountStyle: (name: string, val: Function) => void;
+declare const unmountStyle: (name: string) => void;
+declare const visuals: any;
 declare type MoveFeed = {
     data: Pos;
     target?: () => Tag;
@@ -493,157 +511,3 @@ declare type SortProps = {
     moveStyle: () => string;
 };
 declare const sort: (feed: SortFeed, tags: (p?: SortProps) => Tag[]) => Tag;
-declare module "grafix" {
-    const node: (type: string, props: Partial<TagProps> | TagChild[], tags: TagChild[]) => Tag;
-    const comment: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const a: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const abbr: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const acronym: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const address: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const applet: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const area: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const article: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const aside: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const audio: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const b: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const base: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const basefont: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const bdi: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const bdo: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const big: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const blockquote: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const body: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const br: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const button: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const canvas: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const cite: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const code: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const col: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const colgroup: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const data: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const datalist: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const dd: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const del: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const details: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const dfn: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const dialog: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const dir: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const div: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const dl: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const dt: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const doc: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const em: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const embed: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const fieldset: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const figcaption: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const figure: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const font: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const footer: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const form: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const frame: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const frameset: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const h1: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const h2: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const h3: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const h4: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const h5: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const h6: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const head: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const header: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const hr: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const html: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const i: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const iframe: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const img: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const input: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const ins: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const kbd: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const label: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const legend: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const li: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const link: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const main: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const map: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const mark: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const meta: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const meter: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const nav: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const noframes: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const noscript: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const object: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const ol: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const optgroup: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const option: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const p: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const param: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const picture: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const pre: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const progress: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const q: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const rp: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const ruby: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const s: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const samp: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const script: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const section: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const select: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const small: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const source: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const span: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const strike: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const strong: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const style: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const sub: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const svg: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const table: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const tbody: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const td: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const template: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const textarea: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const tfoot: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const th: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const thead: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const time: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const title: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const tr: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const track: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const tt: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const u: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const ul: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const htmlVar: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const video: (props?: Partial<TagProps> | TagChild[], tags?: TagChild[]) => Tag;
-    const move: (props: MoveFeed, tags: (p: MoveProps) => Tag[]) => Tag;
-    const drag: (props: DragFeed, tags: (p?: DragProps) => Tag[]) => Tag;
-    const drop: (props: DropFeed, tags: (p?: DropProps) => Tag[]) => Tag;
-    const resize: (props: ResizeFeed, tags: (p?: ResizeProps) => Tag[]) => Tag;
-    const sort: (props: SortFeed, tags: (p?: SortProps) => Tag[]) => Tag;
-    const mountTag: (query: string, elementFunc: (...p: any[]) => Tag, data?: any) => Tag;
-    const attachUnmount: (tag: Tag, unmount: VoidFunction) => any;
-    const size: Size;
-    const pos: Pos;
-    const loop: (n: any[] | number | Mix, func: (data?: any, id?: any) => TagChild[]) => TagChild[];
-    const val: (e: any, u: (v: string) => void) => void;
-    const arrange: (props: Partial<TagProps> | TagChild[], tags: TagChild[]) => [Partial<TagProps>, TagChild[]];
-    const setDefaultStyle: (props: Partial<TagProps>, defaultStyle: string) => void;
-    const expand: (style: string | (() => string)) => string;
-    const fx: {
-        dragging: boolean;
-        dragData: any;
-        placeholder: HTMLDivElement;
-    };
-    const tag: (node: HTMLElement, props: TagProps, childTags: TagChild[]) => Tag;
-    const bindType: {
-        text: "text";
-        styles: "styles";
-        classes: "classes";
-        router: "router";
-        attributes: "attributes";
-    };
-    const o: <C = any>(/** @type {(new() => A)|A} */ ref: (new () => C) | C, /** @type {A} */ d?: Partial<C>) => C;
-    const mix: <T = any>(items?: T[] | [string, T][], unique?: boolean, subscribable?: boolean) => Mix<T>;
-    const forward: (tags: TagChild[]) => Tag;
-    const filter: (feed: Partial<{
-        target: () => Tag;
-    }>, tag: Tag) => Tag;
-    const grafix: typeof Unit;
-}

@@ -3,8 +3,8 @@ declare type Tag = {
     name: () => string
     parent: Tag
     tags: Mix<Tag>
+    bindsCache: any
     binds: Binds
-    bindsCache: any,
     unmounts: Mix<VoidFunction>
     node: HTMLElement
     props: TagProps
@@ -37,14 +37,14 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         name: () => props.name,
         parent: null,
         tags: new Mix(),
-        binds: new Mix(),
         bindsCache: {},
+        binds: new Mix(),
         unmounts: new Mix(),
         node,
         props,
         mounted: false,
-        addEvent: (eventName: string, func: ((ev?: any) => void)
-        ) => addEvent(eventName, func),
+        addEvent: (eventName: string, func: ((ev?: any) => void)) =>
+            addEvent(eventName, func),
         onCreate: () => props.onCreate(data),
         onMount: () => props.onMount(data),
         onInit: () => props.onInit(data),
@@ -52,7 +52,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         onUnmountAsync: (u: VoidFunction) => props.onUnmountAsync(() => u(), data),
         unmount: (u?: VoidFunction) => unmount(u),
         mount: (tag: TagChild, id?: string) => mountTag(tag, id),
-        bind: (type: bindType, apply: Function) => bind(type, apply),
+        bind: (type: bindType, apply: Function) => bind(type, data, apply),
         disableBinding: () => disableBinding()
     }
     let originalOnSubmit: (ev: Event) => void = null
@@ -78,30 +78,8 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         if (typeof data.props[prop] === "string" || typeof data.props[prop] === "number")
             return applyNodeValue(domProp, data.props[prop])
         if (data.props[prop] instanceof Function) {
-            bind(type, () => applyNodeValue(domProp, data.props[prop]()))
+            bind(type, data, () => applyNodeValue(domProp, data.props[prop]()))
         }
-    }
-    
-    const enableBinding = (type: bindType, func: () => any): void => {
-        bindingChanged = false
-        currentBindType = type
-        currentBindFunc = func
-        currentTag = data
-        bindListen = true
-    }
-    
-    const disableBinding = (): void => {
-        bindingChanged = false
-        bindListen = false
-        currentBindType = null
-        currentBindFunc = null
-        currentTag = null
-    }
-    
-    const bind = (type: bindType, apply: Function): void => {
-        enableBinding(type, () => bind(type, apply))
-        apply()
-        disableBinding()
     }
     
     const setupText = (): void | string =>
@@ -120,7 +98,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     const setupAttribute = (name: string, prop: string) => {
         if (data.node instanceof Comment) return
         if (!data.props[prop]) return
-        bind(bindType.attributes,
+        bind(bindType.attributes, data,
             () => applyAttribute(name, data.props[prop]))
     }
     
@@ -139,7 +117,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         const props: string[] = []
         const value = data.props.attributes()
         for (const prop in value) props.push(prop)
-        bind(bindType.attributes,
+        bind(bindType.attributes, data,
             () => applyAttributes(props, data.props.attributes()))
     }
     
@@ -350,14 +328,6 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         data.unmounts.add(() => data.node.removeEventListener(eventName, func, false))
     }
     
-    const cleanSubscriptions = (): void => {
-        data.binds.foreach(obj =>
-        obj.foreach((prop, propName) =>
-        prop.foreach(binding =>
-            binding.objBinds.get(propName).delete(binding.id)
-        )))
-    }
-    
     const mountTags = (tags?: TagChild[]): void => {
         for (let i = 0; i < tags.length; i++) {
             const tag = mountTag(tags[i])
@@ -411,7 +381,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     
     const continueUnmount = (u?: VoidFunction): void => {
         cleanEvents()
-        cleanSubscriptions()
+        cleanSubscriptions(data)
         unmountFromParent()
         if (u) u()
     }

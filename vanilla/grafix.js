@@ -634,12 +634,35 @@ var bindType;
     bindType["classes"] = "classes";
     bindType["router"] = "router";
     bindType["attributes"] = "attributes";
+    bindType["css"] = "css";
 })(bindType || (bindType = {}));
 let bindListen = false;
 let currentTag = null;
 let currentBindType = bindType.text;
 let currentBindFunc = null;
 let bindingChanged = false;
+const enableBinding = (type, data, func) => {
+    bindingChanged = false;
+    currentBindType = type;
+    currentBindFunc = func;
+    currentTag = data;
+    bindListen = true;
+};
+const disableBinding = () => {
+    bindingChanged = false;
+    bindListen = false;
+    currentBindType = null;
+    currentBindFunc = null;
+    currentTag = null;
+};
+const bind = (type, data, apply) => {
+    enableBinding(type, data, () => bind(type, data, apply));
+    apply();
+    disableBinding();
+};
+const cleanSubscriptions = (data) => {
+    data.binds.foreach(obj => obj.foreach((prop, propName) => prop.foreach(binding => binding.objBinds.get(propName).delete(binding.id))));
+};
 /**
  * @function
  * @template A
@@ -897,6 +920,23 @@ const filter = (feed, tag) => {
     else
         return tag;
 };
+const prepare = (props, prop) => {
+    let defaultValue = null;
+    if (prop === "text")
+        defaultValue = "";
+    else if (prop === "classes")
+        defaultValue = "";
+    else if (prop === "style")
+        defaultValue = "";
+    else if (prop === "placeholder")
+        defaultValue = "";
+    else if (prop === "type")
+        defaultValue = "";
+    else if (prop === "value")
+        defaultValue = "";
+    if (!props[prop])
+        props[prop] = defaultValue;
+};
 const fx = o({
     dragging: false,
     dragData: null,
@@ -919,8 +959,8 @@ const tag = (node, props, childTags) => {
         name: () => props.name,
         parent: null,
         tags: new Mix(),
-        binds: new Mix(),
         bindsCache: {},
+        binds: new Mix(),
         unmounts: new Mix(),
         node,
         props,
@@ -933,7 +973,7 @@ const tag = (node, props, childTags) => {
         onUnmountAsync: (u) => props.onUnmountAsync(() => u(), data),
         unmount: (u) => unmount(u),
         mount: (tag, id) => mountTag(tag, id),
-        bind: (type, apply) => bind(type, apply),
+        bind: (type, apply) => bind(type, data, apply),
         disableBinding: () => disableBinding()
     };
     let originalOnSubmit = null;
@@ -958,27 +998,8 @@ const tag = (node, props, childTags) => {
         if (typeof data.props[prop] === "string" || typeof data.props[prop] === "number")
             return applyNodeValue(domProp, data.props[prop]);
         if (data.props[prop] instanceof Function) {
-            bind(type, () => applyNodeValue(domProp, data.props[prop]()));
+            bind(type, data, () => applyNodeValue(domProp, data.props[prop]()));
         }
-    };
-    const enableBinding = (type, func) => {
-        bindingChanged = false;
-        currentBindType = type;
-        currentBindFunc = func;
-        currentTag = data;
-        bindListen = true;
-    };
-    const disableBinding = () => {
-        bindingChanged = false;
-        bindListen = false;
-        currentBindType = null;
-        currentBindFunc = null;
-        currentTag = null;
-    };
-    const bind = (type, apply) => {
-        enableBinding(type, () => bind(type, apply));
-        apply();
-        disableBinding();
     };
     const setupText = () => setupNodeProp(bindType.text, "text", "innerText");
     const setupValue = () => setupNodeProp(bindType.text, "value", "value");
@@ -991,7 +1012,7 @@ const tag = (node, props, childTags) => {
             return;
         if (!data.props[prop])
             return;
-        bind(bindType.attributes, () => applyAttribute(name, data.props[prop]));
+        bind(bindType.attributes, data, () => applyAttribute(name, data.props[prop]));
     };
     const applyAttribute = (name, val) => {
         let value;
@@ -1012,7 +1033,7 @@ const tag = (node, props, childTags) => {
         const value = data.props.attributes();
         for (const prop in value)
             props.push(prop);
-        bind(bindType.attributes, () => applyAttributes(props, data.props.attributes()));
+        bind(bindType.attributes, data, () => applyAttributes(props, data.props.attributes()));
     };
     const applyAttributes = (props, attributes) => {
         for (let i = 0; i < props.length; i++) {
@@ -1385,9 +1406,6 @@ const tag = (node, props, childTags) => {
         data.node.addEventListener(eventName, func, false);
         data.unmounts.add(() => data.node.removeEventListener(eventName, func, false));
     };
-    const cleanSubscriptions = () => {
-        data.binds.foreach(obj => obj.foreach((prop, propName) => prop.foreach(binding => binding.objBinds.get(propName).delete(binding.id))));
-    };
     const mountTags = (tags) => {
         for (let i = 0; i < tags.length; i++) {
             const tag = mountTag(tags[i]);
@@ -1441,7 +1459,7 @@ const tag = (node, props, childTags) => {
     };
     const continueUnmount = (u) => {
         cleanEvents();
-        cleanSubscriptions();
+        cleanSubscriptions(data);
         unmountFromParent();
         if (u)
             u();
@@ -1561,6 +1579,42 @@ const router = (props) => {
     };
     return tag;
 };
+const styles = new Mix();
+const mountStyle = (name, val) => {
+    if (styles.has(name))
+        return;
+    const node = document.createElement("style");
+    node.type = "text/css";
+    const data = {
+        bindsCache: {},
+        binds: new Mix()
+    };
+    bind(bindType.css, data, () => node.innerHTML = val());
+    styles.set(name, {
+        data,
+        node
+    });
+    document.head.appendChild(node);
+};
+const unmountStyle = (name) => {
+    if (!styles.has(name))
+        return;
+    cleanSubscriptions(styles.get(name).data);
+    document.head.removeChild(styles.get(name).node);
+    styles.delete(name);
+};
+const visuals = new Proxy({}, {
+    defineProperty: (t, p, a) => {
+        t[p] = null;
+        mountStyle(p, a.value);
+        return true;
+    },
+    deleteProperty: (t, p) => {
+        delete t[p];
+        unmountStyle(p);
+        return true;
+    }
+});
 const move = (feed, tags) => {
     const props = {
         translate: () => `

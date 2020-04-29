@@ -103,7 +103,18 @@ const forward = (tags: any[]): Tag => tags[0]
 const filter = (feed: Partial<{ target: () => any }>, tag: Tag): Tag => {
     if (feed.target) return feed.target()
     else return tag
-} 
+}
+
+const prepare = (props: Partial<TagProps>, prop: string): void => {
+    let defaultValue = null
+    if (prop === "text") defaultValue = ""
+    else if (prop === "classes") defaultValue = ""
+    else if (prop === "style") defaultValue = ""
+    else if (prop === "placeholder") defaultValue = ""
+    else if (prop === "type") defaultValue = ""
+    else if (prop === "value") defaultValue = ""
+    if (!props[prop]) props[prop] = defaultValue
+}
 
 const fx = o({
     dragging: false,

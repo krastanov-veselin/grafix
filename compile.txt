@@ -2,12 +2,14 @@
 ./src/mix.ts
 ./src/types.ts
 ./src/tagprops.ts
+./src/bind.ts
 ./src/o.ts
 ./src/nodes.ts
 ./src/api.ts
 ./src/tag.ts
 ./src/list.ts
 ./src/router.ts
+./src/visuals.ts
 ./src/blends/move.ts
 ./src/blends/resize.ts
 ./src/blends/drag.ts

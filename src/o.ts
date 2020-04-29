@@ -1,16 +1,3 @@
-enum bindType {
-    text = "text",
-    styles = "styles",
-    classes = "classes",
-    router = "router",
-    attributes = "attributes"
-}
-let bindListen: boolean = false
-let currentTag: Tag = null
-let currentBindType: bindType = bindType.text
-let currentBindFunc: () => any = null
-let bindingChanged: boolean = false
-
 /** 
  * @function
  * @template A
@@ -18,7 +5,7 @@ let bindingChanged: boolean = false
  * */
 const o = <C = any>(/** @type {(new() => A)|A} */ref: (new () => C) | C, /** @type {A} */d?: Partial<C>, refreshable: boolean = false): C => {
     const id = Unit.uniqueID()
-    let object: any = ref instanceof Function ? 
+    let object: any = ref instanceof Function ?
         new (ref as any as new () => C)() : ref
     if (d) for (const key in d)
         if (typeof object[key as string] !== "undefined")
