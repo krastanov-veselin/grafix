@@ -143,7 +143,8 @@ module.exports = {
     filter,
     grafix: Unit,
     prepare,
-    visuals
+    visuals,
+    allow
 }
 declare module "grafix" {
     export const node: (
@@ -318,5 +319,6 @@ declare module "grafix" {
     export const filter: (feed: Partial<{ target: () => Tag }>, tag: Tag) => Tag
     export const prepare: (props: Partial<TagProps>, prop: string) => void
     export const visuals: any
+    export const allow: (condition: () => any, tags: () => NodeTags) => TagChild
     export const grafix: typeof Unit
 }

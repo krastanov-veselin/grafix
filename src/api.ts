@@ -116,6 +116,9 @@ const prepare = (props: Partial<TagProps>, prop: string): void => {
     if (!props[prop]) props[prop] = defaultValue
 }
 
+const allow = (condition: () => any, tags: () => NodeTags) =>
+    () => condition() ? tags() : null
+
 const fx = o({
     dragging: false,
     dragData: null,
