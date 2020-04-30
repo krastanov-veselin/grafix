@@ -937,6 +937,7 @@ const prepare = (props, prop) => {
     if (!props[prop])
         props[prop] = defaultValue;
 };
+const allow = (condition, tags) => () => condition() ? tags() : null;
 const fx = o({
     dragging: false,
     dragData: null,
@@ -984,10 +985,32 @@ const tag = (node, props, childTags) => {
             data.props.name = Unit.uniqueID();
     };
     const applyNodeValue = (domProp, value) => {
-        if (domProp === "style")
+        if (domProp === "innerText") {
+            if (data.node.innerText === value)
+                return;
+            return data.node.innerText = value;
+        }
+        if (domProp === "value") {
+            if (data.node.value === value)
+                return;
+            return data.node.value = value;
+        }
+        if (domProp === "placeholder") {
+            if (data.node.placeholder === value)
+                return;
+            return data.node.placeholder = value;
+        }
+        if (domProp === "style") {
+            if (data.node.style.cssText === value)
+                return;
             return data.node.style.cssText = value;
-        if (domProp === "className")
-            return data.node[domProp] = value.replace(/\s\s+/g, ' ').trim();
+        }
+        if (domProp === "className") {
+            const val = value.replace(/\s\s+/g, ' ').trim();
+            if (val === data.node.className)
+                return;
+            return data.node.className = value.replace(/\s\s+/g, ' ').trim();
+        }
         data.node[domProp] = value;
     };
     const setupNodeProp = (type, prop, domProp) => {

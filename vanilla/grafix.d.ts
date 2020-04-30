@@ -403,6 +403,7 @@ declare const filter: (feed: Partial<{
     target: () => any;
 }>, tag: Tag) => Tag;
 declare const prepare: (props: Partial<TagProps>, prop: string) => void;
+declare const allow: (condition: () => any, tags: () => NodeTags) => () => NodeTags;
 declare const fx: {
     dragging: boolean;
     dragData: any;
