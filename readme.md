@@ -1067,6 +1067,27 @@ mountTag(".gfx1", app1)
 mountTag(".gfx2", app2)
 ```
 
+# The Allower Example
+```js
+import { div, o, mountTag, allow } from 'grafix'
+
+const data = o({
+    enabled: false
+})
+
+const app = () => div([
+    div({
+        text: "Toggle",
+        onClick: () => data.enabled = !data.enabled
+    }),
+    allow(() => data.enabled, () => [
+        div({ text: "I'm mounted now!" })
+    ])
+])
+
+mountTag(".gfx", app)
+```
+
 # The Working With Data Example
 
 ```js
