@@ -401,7 +401,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     const continueUnmount = (u?: VoidFunction, direct: boolean = false): void => {
         cleanEvents()
         cleanSubscriptions(data)
-        if (direct) unmountFromParent()
+        unmountFromParent()
         if (u) u()
     }
     
