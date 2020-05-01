@@ -1,6 +1,6 @@
 const router = (props: () => TagChild): Tag => {
     const tag = comment({
-        onMount: (t: Tag) => {
+        onMount: t => {
             mountID = t.id + "_selection"
             tag.bind(bindType.router, () => bind())
         }
@@ -15,7 +15,7 @@ const router = (props: () => TagChild): Tag => {
                 tag.tags.delete(mountID)
                 unmounting = false
                 bind()
-            })
+            }, true)
         }
         let t = props()
         if (!t) return

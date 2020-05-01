@@ -15,7 +15,7 @@ declare type Tag = {
     onInit: (tag?: Tag) => void
     onUnmount: (tag?: Tag) => void
     onUnmountAsync: (u: VoidFunction, tag?: Tag) => void
-    unmount: (u?: VoidFunction) => void
+    unmount: (u?: VoidFunction, direct?: boolean) => void
     mount: (tag: TagChild, id?: string) => Tag
     bind: (type: bindType, apply: Function) => void
     disableBinding: VoidFunction
@@ -50,7 +50,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         onInit: () => props.onInit(data),
         onUnmount: () => props.onUnmount(data),
         onUnmountAsync: (u: VoidFunction) => props.onUnmountAsync(() => u(), data),
-        unmount: (u?: VoidFunction) => unmount(u),
+        unmount: (u?: VoidFunction, direct: boolean = false) => unmount(u, direct),
         mount: (tag: TagChild, id?: string) => mountTag(tag, id),
         bind: (type: bindType, apply: Function) => bind(type, data, apply),
         disableBinding: () => disableBinding()
@@ -384,22 +384,24 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         return tag as Tag
     }
     
-    const unmount = (u?: VoidFunction): void => {
+    const unmount = (u?: VoidFunction, direct: boolean = false): void => {
         data.onUnmountAsync(() => {
             data.onUnmount()
             data.unmounts.foreach(u => u())
-            if (data.tags.size)
+            if (data.tags.size) {
+                let deleted = 0
                 data.tags.foreach(t => t.unmount(() => {
-                    if (!data.tags.size) continueUnmount(u)
+                    if (++deleted === data.tags.size) continueUnmount(u, direct)
                 }))
-            else continueUnmount(u)
+            }
+            else continueUnmount(u, direct)
         })
     }
     
-    const continueUnmount = (u?: VoidFunction): void => {
+    const continueUnmount = (u?: VoidFunction, direct: boolean = false): void => {
         cleanEvents()
         cleanSubscriptions(data)
-        unmountFromParent()
+        if (direct) unmountFromParent()
         if (u) u()
     }
     

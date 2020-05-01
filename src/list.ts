@@ -62,7 +62,7 @@ const tagList = (props: ListData) => {
         }
     }
     
-    const remove = (id: string) => tag.tags.get(id).unmount()
+    const remove = (id: string) => tag.tags.get(id).unmount(undefined, true)
     
     tag.onInit = () => {
         props.mix.onAdd((item, id) =>
