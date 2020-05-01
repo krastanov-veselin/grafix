@@ -1437,11 +1437,19 @@ const tag = (node, props, childTags) => {
     };
     const mountTag = (rawTag, id) => {
         let tag = null;
-        if (rawTag instanceof Array)
+        if (rawTag instanceof Array &&
+            rawTag.length &&
+            rawTag[0] instanceof Mix &&
+            rawTag[1] instanceof Function)
             tag = tagList({
                 ref: rawTag[1],
                 mix: rawTag[0]
             });
+        // No need of multiple items as array
+        // While already being in an array
+        // Design protection
+        else if (rawTag instanceof Array)
+            return;
         else if (rawTag instanceof Function)
             tag = router(rawTag);
         else {
@@ -1578,30 +1586,47 @@ const tagList = (props) => {
 const router = (props) => {
     const tag = comment({
         onMount: t => {
-            mountID = t.id + "_selection";
             tag.bind(bindType.router, () => bind());
         }
     });
     let unmounting = false;
-    let mountID = "";
+    let count = 0;
     const bind = () => {
         if (unmounting)
             return;
-        if (tag.tags.has(mountID)) {
-            unmounting = true;
-            return tag.tags.get(mountID).unmount(() => {
-                tag.tags.delete(mountID);
-                unmounting = false;
-                bind();
-            }, true);
-        }
+        if (count)
+            if (!tag.tags.size)
+                count = 0;
+            else {
+                for (let i = 0; i < count; i++) {
+                    const id = i.toString();
+                    if (!tag.tags.has(id))
+                        continue;
+                    unmounting = true;
+                    tag.tags.get(id).unmount(() => {
+                        tag.tags.delete(id);
+                        unmounting = false;
+                        bind();
+                    }, true);
+                    break;
+                }
+                return;
+            }
         let t = props();
         if (!t)
             return;
-        if (t instanceof Array)
+        if (t instanceof Array && !t.length)
+            return;
+        if (t instanceof Array && t[0] instanceof Array)
             t = t[0];
-        t = tag.mount(t, mountID);
-        tag.tags.set(mountID, t);
+        if (!(t instanceof Array))
+            t = [t];
+        for (let i = 0; i < t.length; i++) {
+            const id = i.toString();
+            t[i] = tag.mount(t[i], id);
+            tag.tags.set(id, t[i]);
+        }
+        count = t.length;
     };
     return tag;
 };

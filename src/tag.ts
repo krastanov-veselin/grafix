@@ -354,11 +354,19 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     
     const mountTag = (rawTag: TagChild, id?: string): Tag => {
         let tag: Tag = null
-        if (rawTag instanceof Array)
+        if (rawTag instanceof Array &&
+            rawTag.length &&
+            rawTag[0] instanceof Mix &&
+            rawTag[1] instanceof Function
+        )
             tag = tagList({
                 ref: rawTag[1],
                 mix: rawTag[0]
             })
+        // No need of multiple items as array
+        // While already being in an array
+        // Design protection
+        else if (rawTag instanceof Array) return
         else if (rawTag instanceof Function)
             tag = router(rawTag)
         else {

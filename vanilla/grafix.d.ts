@@ -97,7 +97,7 @@ declare class UniqueMix<T = any> extends Mix<T> {
     constructor(items?: T[] | [string, T][]);
 }
 declare type MouseEventFunc = (ev?: MouseEvent) => void;
-declare type TagChild = Tag | [Mix, (...p: any[]) => TagChild[]] | (() => any);
+declare type TagChild = Tag | [Mix, (...p: any[]) => TagChild[]] | (() => any) | TagChild[];
 declare type Binding = [Unit<any>, string];
 declare type Bindings = Binding[];
 declare type TagValue = string | (() => string);

@@ -1025,6 +1025,31 @@ const itemElement = (item, id) => {
 mountTag(".gfx", app)
 ```
 
+# No need of fragments
+### Instead use [] and it will simply iterate within grafix statefully
+```js
+import { div, o, mountTag } from 'grafix'
+
+const state = o({
+    enabled: false
+})
+
+const app = () => div([
+    div({ text: "toggle", onClick: () => state.enabled = !state.enabled }),
+    () => {
+        if (state.enabled)
+            return [
+                div({ text: "Item 1" }),
+                div({ text: "Item 2" }),
+                div({ text: "Item 3" })
+            ]
+    }
+])
+
+mountTag(".gfx", app)
+
+```
+
 # The Multiple Grafix Instances Example
 
 > index.html
