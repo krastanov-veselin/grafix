@@ -398,9 +398,10 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
             data.unmounts.foreach(u => u())
             if (data.tags.size) {
                 let deleted = 0
+                let size = data.tags.size
                 data.tags.foreach(t => t.unmount(() => {
-                    if (++deleted === data.tags.size) continueUnmount(u, direct)
-                }))
+                    if (++deleted === size) continueUnmount(u, direct)
+                }, data.node instanceof Comment ? true : false))
             }
             else continueUnmount(u, direct)
         })

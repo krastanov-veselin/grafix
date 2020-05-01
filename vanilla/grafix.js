@@ -1481,10 +1481,11 @@ const tag = (node, props, childTags) => {
             data.unmounts.foreach(u => u());
             if (data.tags.size) {
                 let deleted = 0;
+                let size = data.tags.size;
                 data.tags.foreach(t => t.unmount(() => {
-                    if (++deleted === data.tags.size)
+                    if (++deleted === size)
                         continueUnmount(u, direct);
-                }));
+                }, data.node instanceof Comment ? true : false));
             }
             else
                 continueUnmount(u, direct);
@@ -1589,36 +1590,17 @@ const router = (props) => {
             tag.bind(bindType.router, () => bind());
         }
     });
-    let unmounting = false;
-    let count = 0;
     const bind = () => {
-        if (unmounting)
-            return;
-        if (count)
-            if (!tag.tags.size)
-                count = 0;
-            else {
-                for (let i = 0; i < count; i++) {
-                    const id = i.toString();
-                    if (!tag.tags.has(id))
-                        continue;
-                    unmounting = true;
-                    tag.tags.get(id).unmount(() => {
-                        tag.tags.delete(id);
-                        unmounting = false;
-                        bind();
-                    }, true);
-                    break;
-                }
-                return;
-            }
+        if (tag.tags.size)
+            return tag.tags.aforeach((next, t) => t.unmount(() => {
+                tag.tags.delete(t.id);
+                next();
+            }, true), () => bind());
         let t = props();
         if (!t)
             return;
         if (t instanceof Array && !t.length)
             return;
-        if (t instanceof Array && t[0] instanceof Array)
-            t = t[0];
         if (!(t instanceof Array))
             t = [t];
         for (let i = 0; i < t.length; i++) {
@@ -1626,7 +1608,6 @@ const router = (props) => {
             t[i] = tag.mount(t[i], id);
             tag.tags.set(id, t[i]);
         }
-        count = t.length;
     };
     return tag;
 };
