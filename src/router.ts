@@ -4,13 +4,18 @@ const router = (props: () => TagChild): Tag => {
             tag.bind(bindType.router, () => bind())
         }
     })
+    let unmounting = false
     const bind = () => {
-        if (tag.tags.size)
+        if (unmounting) return
+        if (tag.tags.size) {
+            unmounting = true
             return tag.tags.aforeach((next, t) =>
                 t.unmount(() => {
                     tag.tags.delete(t.id)
-                    next()
-                }, true), () => bind())
+                    unmounting = false
+                    bind()
+                }, true))
+        }
         let t = props()
         if (!t) return
         if (t instanceof Array && !t.length) return

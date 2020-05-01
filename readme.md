@@ -298,7 +298,7 @@ const app = () => div({
         
         tag.unmount(() => {
             console.log("Tag successfully unmounted!", tag)
-        })
+        }, true)
     },
     onUnmount: (tag: Tag) => {
         // Called when Tag is getting unmounted
