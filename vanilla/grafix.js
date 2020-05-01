@@ -1935,4 +1935,4 @@ const sort = (feed, tags) => {
     ]);
     return tag;
 };
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=grafix.js.map
