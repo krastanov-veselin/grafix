@@ -972,7 +972,7 @@ const tag = (node, props, childTags) => {
         onInit: () => props.onInit(data),
         onUnmount: () => props.onUnmount(data),
         onUnmountAsync: (u) => props.onUnmountAsync(() => u(), data),
-        unmount: (u) => unmount(u),
+        unmount: (u, direct = false) => unmount(u, direct),
         mount: (tag, id) => mountTag(tag, id),
         bind: (type, apply) => bind(type, data, apply),
         disableBinding: () => disableBinding()
@@ -1467,23 +1467,26 @@ const tag = (node, props, childTags) => {
         tag.onMount();
         return tag;
     };
-    const unmount = (u) => {
+    const unmount = (u, direct = false) => {
         data.onUnmountAsync(() => {
             data.onUnmount();
             data.unmounts.foreach(u => u());
-            if (data.tags.size)
+            if (data.tags.size) {
+                let deleted = 0;
                 data.tags.foreach(t => t.unmount(() => {
-                    if (!data.tags.size)
-                        continueUnmount(u);
+                    if (++deleted === data.tags.size)
+                        continueUnmount(u, direct);
                 }));
+            }
             else
-                continueUnmount(u);
+                continueUnmount(u, direct);
         });
     };
-    const continueUnmount = (u) => {
+    const continueUnmount = (u, direct = false) => {
         cleanEvents();
         cleanSubscriptions(data);
-        unmountFromParent();
+        if (direct)
+            unmountFromParent();
         if (u)
             u();
     };
@@ -1558,7 +1561,7 @@ const tagList = (props) => {
             getNode(id1).parentNode.insertBefore(getNode(id1), getNode(id2));
         }
     };
-    const remove = (id) => tag.tags.get(id).unmount();
+    const remove = (id) => tag.tags.get(id).unmount(undefined, true);
     tag.onInit = () => {
         props.mix.onAdd((item, id) => add(item, id), onAddID);
         props.mix.onSort((item1, item2, id1, id2) => sort(id1, id2), onSortID);
@@ -1574,7 +1577,7 @@ const tagList = (props) => {
 };
 const router = (props) => {
     const tag = comment({
-        onMount: (t) => {
+        onMount: t => {
             mountID = t.id + "_selection";
             tag.bind(bindType.router, () => bind());
         }
@@ -1590,7 +1593,7 @@ const router = (props) => {
                 tag.tags.delete(mountID);
                 unmounting = false;
                 bind();
-            });
+            }, true);
         }
         let t = props();
         if (!t)
@@ -1932,4 +1935,4 @@ const sort = (feed, tags) => {
     ]);
     return tag;
 };
-//# sourceMappingURL=grafix.js.map
+//# sourceMappingURL=index.js.map

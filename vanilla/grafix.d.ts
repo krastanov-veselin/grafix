@@ -426,7 +426,7 @@ declare type Tag = {
     onInit: (tag?: Tag) => void;
     onUnmount: (tag?: Tag) => void;
     onUnmountAsync: (u: VoidFunction, tag?: Tag) => void;
-    unmount: (u?: VoidFunction) => void;
+    unmount: (u?: VoidFunction, direct?: boolean) => void;
     mount: (tag: TagChild, id?: string) => Tag;
     bind: (type: bindType, apply: Function) => void;
     disableBinding: VoidFunction;
