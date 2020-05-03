@@ -658,7 +658,8 @@ const disableBinding = () => {
 const bind = (type, data, apply) => {
     enableBinding(type, data, () => bind(type, data, apply));
     apply();
-    disableBinding();
+    if (bindListen)
+        disableBinding();
 };
 const cleanSubscriptions = (data) => {
     data.binds.foreach(obj => obj.foreach((prop, propName) => prop.foreach(binding => binding.objBinds.get(propName).delete(binding.id))));
@@ -937,7 +938,11 @@ const prepare = (props, prop) => {
     if (!props[prop])
         props[prop] = defaultValue;
 };
-const allow = (condition, tags) => () => condition() ? tags() : null;
+const allow = (condition, tags) => () => condition() ? () => tags() : null;
+const purify = () => {
+    if (bindListen)
+        disableBinding();
+};
 const fx = o({
     dragging: false,
     dragData: null,
@@ -1586,19 +1591,70 @@ const tagList = (props) => {
 };
 const router = (props) => {
     const tag = comment({
-        onMount: t => {
-            tag.bind(bindType.router, () => bind());
+        onMount: () => {
+            bind();
         }
     });
+    let unmounting = false;
+    let lastAsyncName = "";
+    let shouldContinue = false;
     const bind = () => {
-        if (tag.tags.size)
+        if (unmounting)
+            return;
+        shouldContinue = true;
+        if (!bindListen)
+            enableBinding(bindType.router, tag, () => bind());
+        let tFunc = props((tag, name) => {
+            if (name && name === lastAsyncName)
+                return shouldContinue = false;
+            lastAsyncName = "";
+            unmount((result) => {
+                if (result)
+                    return bind();
+                lastAsyncName = name;
+                const t = tag();
+                mount(t);
+                if (!t)
+                    lastAsyncName = "";
+            });
+            shouldContinue = false;
+        });
+        if (bindListen)
+            disableBinding();
+        if (!shouldContinue)
+            return;
+        if (typeof tFunc === "string" ||
+            typeof tFunc === "number")
+            return;
+        unmount((result) => {
+            lastAsyncName = "";
+            if (result)
+                return bind();
+            if (!tFunc)
+                return;
+            if (!(tFunc instanceof Function))
+                return console.error("As of Grafix 1.1.0 routers must return a lambda, e.g. () => div() " +
+                    "in order to prevent unwanted autobinding propagation.");
+            mount(tFunc());
+        });
+    };
+    const unmount = (ready) => {
+        if (tag.tags.size) {
+            unmounting = true;
             return tag.tags.aforeach((next, t) => t.unmount(() => {
                 tag.tags.delete(t.id);
-                next();
-            }, true), () => bind());
-        let t = props();
+                unmounting = false;
+                ready(true);
+            }, true));
+        }
+        else
+            ready(false);
+    };
+    const mount = (t) => {
+        if (bindListen)
+            disableBinding();
         if (!t)
-            return;
+            return lastAsyncName = "";
         if (t instanceof Array && !t.length)
             return;
         if (!(t instanceof Array))

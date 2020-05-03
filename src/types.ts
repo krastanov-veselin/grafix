@@ -1,6 +1,6 @@
 declare type MouseEventFunc = (ev?: MouseEvent) => void
 // declare type List = [new () => Grafix, Mix, ...any[]] | [Mix, (...p) => TagChild[]]
-declare type TagChild = Tag | [Mix, (...p) => TagChild[]] | (() => any) | TagChild[]
+declare type TagChild = Tag | [Mix, (...p) => TagChild[]] | (() => any) | ((route: RouteFunc) => any) | TagChild[]
 declare type Binding = [Unit<any>, string]
 declare type Bindings = Binding[]
 declare type TagValue = string | (() => string)
@@ -39,3 +39,4 @@ declare type Attributes = {
 }
 declare type NodeProps = Partial<TagProps> | TagChild[]
 declare type NodeTags = TagChild[]
+declare type RouteFunc = (tag: () => TagChild, name?: string) => void

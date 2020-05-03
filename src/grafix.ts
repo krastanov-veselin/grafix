@@ -144,7 +144,8 @@ module.exports = {
     grafix: Unit,
     prepare,
     visuals,
-    allow
+    allow,
+    purify
 }
 declare module "grafix" {
     export const node: (
@@ -321,4 +322,5 @@ declare module "grafix" {
     export const visuals: any
     export const allow: (condition: () => any, tags: () => NodeTags) => TagChild
     export const grafix: typeof Unit
+    export const purify: VoidFunction
 }

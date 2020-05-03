@@ -117,7 +117,12 @@ const prepare = (props: Partial<TagProps>, prop: string): void => {
 }
 
 const allow = (condition: () => any, tags: () => NodeTags) =>
-    () => condition() ? tags() : null
+    () => condition() ?  () => tags() : null
+
+const purify = () => {
+    if (bindListen)
+        disableBinding()
+}
 
 const fx = o({
     dragging: false,

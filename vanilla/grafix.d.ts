@@ -97,7 +97,7 @@ declare class UniqueMix<T = any> extends Mix<T> {
     constructor(items?: T[] | [string, T][]);
 }
 declare type MouseEventFunc = (ev?: MouseEvent) => void;
-declare type TagChild = Tag | [Mix, (...p: any[]) => TagChild[]] | (() => any) | TagChild[];
+declare type TagChild = Tag | [Mix, (...p: any[]) => TagChild[]] | (() => any) | ((route: RouteFunc) => any) | TagChild[];
 declare type Binding = [Unit<any>, string];
 declare type Bindings = Binding[];
 declare type TagValue = string | (() => string);
@@ -136,6 +136,7 @@ declare type Attributes = {
 };
 declare type NodeProps = Partial<TagProps> | TagChild[];
 declare type NodeTags = TagChild[];
+declare type RouteFunc = (tag: () => TagChild, name?: string) => void;
 declare class TagProps {
     name?: string;
     text?: string | (() => string);
@@ -403,7 +404,8 @@ declare const filter: (feed: Partial<{
     target: () => any;
 }>, tag: Tag) => Tag;
 declare const prepare: (props: Partial<TagProps>, prop: string) => void;
-declare const allow: (condition: () => any, tags: () => NodeTags) => () => NodeTags;
+declare const allow: (condition: () => any, tags: () => NodeTags) => () => () => NodeTags;
+declare const purify: () => void;
 declare const fx: {
     dragging: boolean;
     dragData: any;
@@ -437,7 +439,7 @@ declare type ListData = {
     mix: Mix;
 };
 declare const tagList: (props: ListData) => Tag;
-declare const router: (props: () => TagChild) => Tag;
+declare const router: (props: (route: RouteFunc) => () => TagChild) => Tag;
 interface StylesData {
     bindsCache: any;
     binds: Binds;

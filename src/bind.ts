@@ -31,7 +31,7 @@ const disableBinding = (): void => {
 const bind = (type: bindType, data: any, apply: Function): void => {
     enableBinding(type, data, () => bind(type, data, apply))
     apply()
-    disableBinding()
+    if (bindListen) disableBinding()
 }
 
 const cleanSubscriptions = (data: any): void => {

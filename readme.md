@@ -140,8 +140,8 @@ div({
 > router
 ```js
 () => {
-    if (a) return div({ text: "A" })
-    if (b) return div({ text: "B" })
+    if (a) return () => div({ text: "A" })
+    if (b) return () => div({ text: "B" })
 }
 ```
 
@@ -267,6 +267,8 @@ visuals.myLoopedStyle = () => `
     }
 `
 
+setTimeout(() => state.color = "#999", 1000)
+
 // Check what's outputed in <head> tag in your browser's devtools
 // Go play around with state while it's hot!
 ```
@@ -346,11 +348,11 @@ const app = () => div([
         // When ever data changes, it reroutes
         // It's practically magic
         if (data.location === "home")
-            return div({text: "This is Home"})
+            return () => div({text: "This is Home"})
         if (data.location === "settings")
-            return div({text: "This is Settings"})
+            return () => div({text: "This is Settings"})
         if (data.location === "gallery")
-            return div({text: "This is Gallery"})
+            return () => div({text: "This is Gallery"})
     }
 ])
 
@@ -403,11 +405,11 @@ const app = () => div([
     ]),
     () => {
         if (data.unmounting)
-            return div({ text: "Unmounting" })
+            return () => div({ text: "Unmounting" })
     },
     () => {
         if (data.location === "loc1")
-            return div({
+            return () => div({
                 text: "Loc1 with 1s unmount",
                 onMount: () => data.unmounting = false,
                 onUnmountAsync: (u) => {
@@ -421,7 +423,7 @@ const app = () => div([
                 })
             ])
         if (data.location === "loc2")
-            return div({
+            return () => div({
                 text: "Loc2 with 1s unmount",
                 onMount: () => data.unmounting = false,
                 onUnmountAsync: (u) => {
@@ -430,7 +432,7 @@ const app = () => div([
                 }
             })
         if (data.location === "loc3")
-            return div({
+            return () => div({
                 text: "Loc3 with immediate unmount",
                 onMount: () => data.unmounting = false
             })
@@ -438,6 +440,30 @@ const app = () => div([
 ])
 
 mountTag(".gfx", app)
+```
+
+# The Async Routing Example
+
+```js
+route => {
+    if (state.enabled)
+        return network.request().then(() =>
+            // async route, it routes when server responds
+            route(() => div())
+        )
+    if (state.somethingElse == "someValue")
+        // You can still mix sync routing along with async routing!
+        return () => div()
+    if (state.somethingCompletelyElse)
+        return network.request().then(() =>
+            // indexed async route, so it does not rerender your content
+            // on same results
+            route(() => div(), "routeName")
+        )
+    if (state.somethingCompletelyElse2)
+        // indexed sync route
+        return route(() => div(), "routeName")
+}
 ```
 
 # The Simple Loop Example
@@ -637,9 +663,9 @@ const element2 = (tags) => [
 
 const myRouter = (optionalProps) => () => {
     if (settings.location === "home")
-        return element1({})
+        return () => element1({})
     if (settings.location === "settings")
-        return div({text: "This is settings"})
+        return () => div({text: "This is settings"})
 }
 
 mountTag(".gfx", app)
@@ -660,23 +686,25 @@ const app = () => div([
     div(),
     () => {
         if (settings.location === "home")
-            return div({text: "This is Home"})
+            return () => div({text: "This is Home"})
         if (settings.location === "settings")
-            return div({text: "This is Settings"})
+            return () => div({text: "This is Settings"})
         if (settings.location === "nested")
-            return () => {
-                if (settings.innerLocation === "nested1")
-                    return div({text: "Inner1 Route Tag 1"})
-                if (settings.innerLocation === "nested2")
-                    return div({text: "Inner1 Route Tag 2"})
-                if (settings.innerLocation === "nested3")
-                    return () => {
-                        if (settings.innerLocation2 === "nested1")
-                            return div({text: "Inner2 Route Tag 1"})
-                        if (settings.innerLocation2 === "nested2")
-                            return div({text: "Inner2 Route Tag 2"})
-                    }
-            }
+            return () =>
+                () => {
+                    if (settings.innerLocation === "nested1")
+                        return () => div({text: "Inner1 Route Tag 1"})
+                    if (settings.innerLocation === "nested2")
+                        return () => div({text: "Inner1 Route Tag 2"})
+                    if (settings.innerLocation === "nested3")
+                        return () =>
+                            () => {
+                                if (settings.innerLocation2 === "nested1")
+                                    return () => div({text: "Inner2 Route Tag 1"})
+                                if (settings.innerLocation2 === "nested2")
+                                    return () => div({text: "Inner2 Route Tag 2"})
+                            }
+                }
     },
     div()
 ])
@@ -938,7 +966,7 @@ const network = (
     
     return () => {
         if (state.loaded)
-            return tags(data)
+            return () => tags(data)
     }
 }
 
@@ -1013,7 +1041,7 @@ const itemElement = (item, id) => {
             }),
             () => {
                 if (item.renaming)
-                    return input({
+                    return () => input({
                         value: () => item.title,
                         onUpdate: v => item.title = v
                     })
@@ -1038,7 +1066,7 @@ const app = () => div([
     div({ text: "toggle", onClick: () => state.enabled = !state.enabled }),
     () => {
         if (state.enabled)
-            return [
+            return () => [
                 div({ text: "Item 1" }),
                 div({ text: "Item 2" }),
                 div({ text: "Item 3" })
@@ -1047,7 +1075,6 @@ const app = () => div([
 ])
 
 mountTag(".gfx", app)
-
 ```
 
 # The Multiple Grafix Instances Example
@@ -1213,7 +1240,6 @@ const newMix = mix()
 newMix.set("item1", o({
     prop: "val"
 }))
-
 ```
 
 # The TagProps List
