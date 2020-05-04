@@ -1182,7 +1182,7 @@ const someFunc = () => {
 
 const app = () =>
 div({ onUnmount: () => cleanBinding(bindData) }, [
-                    // GC the binding from the prixies
+                    // GC the binding from the proxies
     div({
         text: "toggle",
         onClick: () => state.enabled = !state.enabled
