@@ -1,3 +1,7 @@
+class BindData {
+    public bindsCache: any = {}
+    public binds: Binds = mix()
+}
 enum bindType {
     text = "text",
     styles = "styles",
@@ -7,12 +11,12 @@ enum bindType {
     css = "css"
 }
 let bindListen: boolean = false
-let currentTag: Tag = null
-let currentBindType: bindType = bindType.text
+let currentTag: BindData = null
+let currentBindType: string = bindType.text
 let currentBindFunc: () => any = null
 let bindingChanged: boolean = false
 
-const enableBinding = (type: bindType, data: any, func: () => any): void => {
+const enableBinding = (type: string, data: BindData, func: () => any): void => {
     bindingChanged = false
     currentBindType = type
     currentBindFunc = func
@@ -28,13 +32,13 @@ const disableBinding = (): void => {
     currentTag = null
 }
 
-const bind = (type: bindType, data: any, apply: Function): void => {
+const bind = (type: string, data: BindData, apply: Function): void => {
     enableBinding(type, data, () => bind(type, data, apply))
     apply()
     if (bindListen) disableBinding()
 }
 
-const cleanSubscriptions = (data: any): void => {
+const cleanSubscriptions = (data: BindData): void => {
     data.binds.foreach(obj =>
     obj.foreach((prop, propName) =>
     prop.foreach(binding =>

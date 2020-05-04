@@ -124,6 +124,12 @@ const purify = () => {
         disableBinding()
 }
 
+const stateful = (name: string, update: VoidFunction): BindData => {
+    const bindData = new BindData
+    bind(name, bindData, update)
+    return bindData
+}
+
 const fx = o({
     dragging: false,
     dragData: null,

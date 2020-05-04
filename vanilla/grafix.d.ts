@@ -241,6 +241,10 @@ declare class TagProps {
     _onSubmit?: MouseEventFunc | null;
     constructor(data: Partial<TagProps>);
 }
+declare class BindData {
+    bindsCache: any;
+    binds: Binds;
+}
 declare enum bindType {
     text = "text",
     styles = "styles",
@@ -250,14 +254,14 @@ declare enum bindType {
     css = "css"
 }
 declare let bindListen: boolean;
-declare let currentTag: Tag;
-declare let currentBindType: bindType;
+declare let currentTag: BindData;
+declare let currentBindType: string;
 declare let currentBindFunc: () => any;
 declare let bindingChanged: boolean;
-declare const enableBinding: (type: bindType, data: any, func: () => any) => void;
+declare const enableBinding: (type: string, data: BindData, func: () => any) => void;
 declare const disableBinding: () => void;
-declare const bind: (type: bindType, data: any, apply: Function) => void;
-declare const cleanSubscriptions: (data: any) => void;
+declare const bind: (type: string, data: BindData, apply: Function) => void;
+declare const cleanSubscriptions: (data: BindData) => void;
 /**
  * @function
  * @template A
@@ -406,6 +410,7 @@ declare const filter: (feed: Partial<{
 declare const prepare: (props: Partial<TagProps>, prop: string) => void;
 declare const allow: (condition: () => any, tags: () => NodeTags) => () => () => NodeTags;
 declare const purify: () => void;
+declare const stateful: (name: string, update: VoidFunction) => BindData;
 declare const fx: {
     dragging: boolean;
     dragData: any;

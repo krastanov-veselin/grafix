@@ -627,6 +627,12 @@ class TagProps {
         this._onSubmit = typeof data._onSubmit === "undefined" ? null : data._onSubmit;
     }
 }
+class BindData {
+    constructor() {
+        this.bindsCache = {};
+        this.binds = mix();
+    }
+}
 var bindType;
 (function (bindType) {
     bindType["text"] = "text";
@@ -942,6 +948,11 @@ const allow = (condition, tags) => () => condition() ? () => tags() : null;
 const purify = () => {
     if (bindListen)
         disableBinding();
+};
+const stateful = (name, update) => {
+    const bindData = new BindData;
+    bind(name, bindData, update);
+    return bindData;
 };
 const fx = o({
     dragging: false,

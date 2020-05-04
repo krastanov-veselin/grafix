@@ -145,7 +145,18 @@ module.exports = {
     prepare,
     visuals,
     allow,
-    purify
+    purify,
+    bind,
+    cleanSubscriptions,
+    enableBinding,
+    disableBinding,
+    bindListen,
+    currentTag,
+    currentBindType,
+    currentBindFunc,
+    bindingChanged,
+    BindData,
+    stateful
 }
 declare module "grafix" {
     export const node: (
@@ -323,4 +334,18 @@ declare module "grafix" {
     export const allow: (condition: () => any, tags: () => NodeTags) => TagChild
     export const grafix: typeof Unit
     export const purify: VoidFunction
+    export const bind: (type: string, data: BindData, apply: Function) => void
+    export const cleanSubscriptions: (data: BindData) => void
+    export const disableBinding: () => void
+    export const enableBinding: (type: string, data: BindData, func: () => any) => void
+    export let bindListen: boolean
+    export let currentTag: Tag
+    export let currentBindType: string
+    export let currentBindFunc: () => any
+    export let bindingChanged: boolean
+    export class BindData {
+        public bindsCache: any
+        public binds: Binds
+    }
+    export const stateful: (name: string, update: VoidFunction) => BindData
 }

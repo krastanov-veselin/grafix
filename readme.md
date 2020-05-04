@@ -1140,6 +1140,48 @@ const app = () => div([
 mountTag(".gfx", app)
 ```
 
+# The Custom Data Binding Example
+
+```js
+import { 
+    div, mix, stateful,
+    cleanSubscriptions, loop,
+    mountTag, o
+} from "grafix";
+
+const items = mix([
+    "tab1",
+    "tab2"
+], true, true) // first true is [value is key]
+// second true is allowing the databinding to mix
+
+const state = o({
+    enabled: false
+})
+
+const bindData = stateful("databindingName", () => {
+    if (state.enabled) {
+        if (!items.has("tab2"))
+            items.add("tab2")
+    }
+    else if (items.has("tab2"))
+        items.delete("tab2")
+})
+
+const app = () =>
+div({ onUnmount: () => cleanSubscriptions(bindData) }, [
+    div({
+        text: "toggle",
+        onClick: () => state.enabled = !state.enabled
+    }),
+    ...loop(items, (item) => [
+        div({ text: item })
+    ])
+])
+
+mountTag(".gfx", app)
+```
+
 # The Working With Data Example
 
 ```js
