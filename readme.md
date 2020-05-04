@@ -22,7 +22,7 @@ npm install grafix
 * **Composition / Reusability** Every single element is a function that receives props and returns a tag which makes elements composable and reusable.
 * **Zero Effort Databinding** While developing your tags as if you would do in normal HTML file you would probably want to add something like style="width: " + size.x + "px", well, just write it and it will automatically do all the binding for you, so no more databinding architectural effort!
 * **Blending** Create immersive blending functions that wrap tags and blend them with behavior and style.
-* **Stateful Logical CSS** Using the code binding mechanism you can easily create stateful CSS styles, where you could add logic to both the styles and the selector and yes, you can do loops in CSS on the fly.
+* **Stateful Logical CSS** Using the data binding mechanism you can easily create stateful CSS styles, where you could add logic to both the styles and the selector and yes, you can do loops in CSS on the fly.
 * **Animation Patience** Patiently awaiting all nested animations to finish for a tag to unmount, unless explicitly stated to do bruteforce unmount.
 * **Efficiency** Without any expensive virtual doms or intense diffing for simple operations, Grafix simply does the subscribe->update pattern using the JavaScript Proxy API.
 * **Simplicity** Just write a tag, router, loop, text, styles, classes, attributes and that's it! Just like you would do in HTML.
