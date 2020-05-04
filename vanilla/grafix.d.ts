@@ -410,7 +410,7 @@ declare const filter: (feed: Partial<{
 declare const prepare: (props: Partial<TagProps>, prop: string) => void;
 declare const allow: (condition: () => any, tags: () => NodeTags) => () => () => NodeTags;
 declare const purify: () => void;
-declare const stateful: (name: string, update: VoidFunction) => BindData;
+declare const stateful: (name: string | VoidFunction, update?: VoidFunction) => BindData;
 declare const fx: {
     dragging: boolean;
     dragData: any;

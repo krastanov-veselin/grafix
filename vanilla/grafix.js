@@ -667,7 +667,7 @@ const bind = (type, data, apply) => {
     if (bindListen)
         disableBinding();
 };
-const cleanSubscriptions = (data) => {
+const cleanBinding = (data) => {
     data.binds.foreach(obj => obj.foreach((prop, propName) => prop.foreach(binding => binding.objBinds.get(propName).delete(binding.id))));
 };
 /**
@@ -950,6 +950,10 @@ const purify = () => {
         disableBinding();
 };
 const stateful = (name, update) => {
+    if (name instanceof Function) {
+        update = name;
+        name = Unit.uniqueID();
+    }
     const bindData = new BindData;
     bind(name, bindData, update);
     return bindData;
@@ -1509,7 +1513,7 @@ const tag = (node, props, childTags) => {
     };
     const continueUnmount = (u, direct = false) => {
         cleanEvents();
-        cleanSubscriptions(data);
+        cleanBinding(data);
         if (direct)
             unmountFromParent();
         if (u)
@@ -1698,7 +1702,7 @@ const mountStyle = (name, val) => {
 const unmountStyle = (name) => {
     if (!styles.has(name))
         return;
-    cleanSubscriptions(styles.get(name).data);
+    cleanBinding(styles.get(name).data);
     document.head.removeChild(styles.get(name).node);
     styles.delete(name);
 };
