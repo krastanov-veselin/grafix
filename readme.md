@@ -1145,9 +1145,10 @@ mountTag(".gfx", app)
 ```js
 import { 
     div, mix, stateful,
-    cleanSubscriptions, loop,
-    mountTag, o
-} from "grafix";
+    cleanBinding, loop,
+    mountTag, o, purify
+} from "grafix"
+import someProxy from './somewhere' // Just an abstract example
 
 const items = mix([
     "tab1",
@@ -1159,17 +1160,29 @@ const state = o({
     enabled: false
 })
 
-const bindData = stateful("databindingName", () => {
+const bindData = stateful(() => {
     if (state.enabled) {
         if (!items.has("tab2"))
             items.add("tab2")
     }
     else if (items.has("tab2"))
         items.delete("tab2")
+    someFunc()
 })
 
+const someFunc = () => {
+    // Use purify() to prevent databinding propagation
+    // to someProxy
+    // Otherwise updating someProxy.prop will trigger
+    // The parent function call to be called again
+    // And again, in an endless loop
+    purify()
+    someProxy.prop = "someValue"
+}
+
 const app = () =>
-div({ onUnmount: () => cleanSubscriptions(bindData) }, [
+div({ onUnmount: () => cleanBinding(bindData) }, [
+                    // GC the binding from the prixies
     div({
         text: "toggle",
         onClick: () => state.enabled = !state.enabled

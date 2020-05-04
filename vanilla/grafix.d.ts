@@ -261,7 +261,7 @@ declare let bindingChanged: boolean;
 declare const enableBinding: (type: string, data: BindData, func: () => any) => void;
 declare const disableBinding: () => void;
 declare const bind: (type: string, data: BindData, apply: Function) => void;
-declare const cleanSubscriptions: (data: BindData) => void;
+declare const cleanBinding: (data: BindData) => void;
 /**
  * @function
  * @template A

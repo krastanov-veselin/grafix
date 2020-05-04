@@ -38,7 +38,7 @@ const bind = (type: string, data: BindData, apply: Function): void => {
     if (bindListen) disableBinding()
 }
 
-const cleanSubscriptions = (data: BindData): void => {
+const cleanBinding = (data: BindData): void => {
     data.binds.foreach(obj =>
     obj.foreach((prop, propName) =>
     prop.foreach(binding =>

@@ -124,7 +124,11 @@ const purify = () => {
         disableBinding()
 }
 
-const stateful = (name: string, update: VoidFunction): BindData => {
+const stateful = (name: string | VoidFunction, update?: VoidFunction): BindData => {
+    if (name instanceof Function) {
+        update = name
+        name = Unit.uniqueID()
+    }
     const bindData = new BindData
     bind(name, bindData, update)
     return bindData

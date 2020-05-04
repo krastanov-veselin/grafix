@@ -24,7 +24,7 @@ const mountStyle = (name: string, val: Function): void => {
 }
 const unmountStyle = (name: string): void => {
     if (!styles.has(name)) return
-    cleanSubscriptions(styles.get(name).data)
+    cleanBinding(styles.get(name).data)
     document.head.removeChild(styles.get(name).node)
     styles.delete(name)
 }

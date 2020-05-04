@@ -147,7 +147,7 @@ module.exports = {
     allow,
     purify,
     bind,
-    cleanSubscriptions,
+    cleanBinding,
     enableBinding,
     disableBinding,
     bindListen,
@@ -335,7 +335,7 @@ declare module "grafix" {
     export const grafix: typeof Unit
     export const purify: VoidFunction
     export const bind: (type: string, data: BindData, apply: Function) => void
-    export const cleanSubscriptions: (data: BindData) => void
+    export const cleanBinding: (data: BindData) => void
     export const disableBinding: () => void
     export const enableBinding: (type: string, data: BindData, func: () => any) => void
     export let bindListen: boolean
@@ -347,5 +347,5 @@ declare module "grafix" {
         public bindsCache: any
         public binds: Binds
     }
-    export const stateful: (name: string, update: VoidFunction) => BindData
+    export const stateful: (name: string | VoidFunction, update?: VoidFunction) => BindData
 }
