@@ -5,7 +5,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "npm version patch",
     "publish": "npm publish --access=public",
     "start": "tsc @compile.txt --target ESNext --out ./dist/index.js -d --sourceMap true --watch"
   },
