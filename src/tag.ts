@@ -14,7 +14,7 @@ declare type Tag = {
     onMount: (tag?: Tag) => void
     onInit: (tag?: Tag) => void
     onUnmount: (tag?: Tag) => void
-    onUnmountAsync: (u: VoidFunction, tag?: Tag) => void
+    onUnmountAsync: (u: VoidFunction, tag?: Tag, force?: VoidFunction) => void
     unmount: (u?: VoidFunction, direct?: boolean) => void
     mount: (tag: TagChild, id?: string) => Tag
     bind: (type: bindType, apply: Function) => void
@@ -49,7 +49,9 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         onMount: () => props.onMount(data),
         onInit: () => props.onInit(data),
         onUnmount: () => props.onUnmount(data),
-        onUnmountAsync: (u: VoidFunction) => props.onUnmountAsync(() => u(), data),
+        onUnmountAsync: 
+            (u: VoidFunction, data: Tag, forced?: VoidFunction) =>
+                props.onUnmountAsync(() => u(), data, forced),
         unmount: (u?: VoidFunction, direct: boolean = false) => unmount(u, direct),
         mount: (tag: TagChild, id?: string) => mountTag(tag, id),
         bind: (type: bindType, apply: Function) => bind(type, data, apply),
@@ -393,6 +395,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     }
     
     const unmount = (u?: VoidFunction, direct: boolean = false): void => {
+        let forced = false
         data.onUnmountAsync(() => {
             data.onUnmount()
             data.unmounts.foreach(u => u())
@@ -404,10 +407,12 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
                 }, data.node instanceof Comment ? true : false))
             }
             else continueUnmount(u, direct)
-        })
+        }, data, () => continueUnmount(u, direct))
     }
     
     const continueUnmount = (u?: VoidFunction, direct: boolean = false): void => {
+        if (!data.mounted) return
+        data.mounted = false
         cleanEvents()
         cleanBinding(data)
         if (direct) unmountFromParent()

@@ -14,7 +14,8 @@ class TagProps {
     public onInit?: (tag?: Tag) => void
     public onMount?: (tag?: Tag) => void
     public onUnmount?: (tag?: Tag) => void
-    public onUnmountAsync: (unmount: VoidFunction, tag?: Tag) => void
+    public onUnmountAsync: 
+        (unmount: VoidFunction, tag?: Tag, forced?: VoidFunction) => void
     
     // DOM Events
     public onAbort?: MouseEventFunc | null
