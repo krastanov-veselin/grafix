@@ -395,19 +395,29 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     }
     
     const unmount = (u?: VoidFunction, direct: boolean = false): void => {
-        let forced = false
-        data.onUnmountAsync(() => {
+        let cancelled = false
+        let synced = false
+        const sync = () => {
+            if (synced) return
+            synced = true
             data.onUnmount()
             data.unmounts.foreach(u => u())
             if (data.tags.size) {
                 let deleted = 0
                 let size = data.tags.size
                 data.tags.foreach(t => t.unmount(() => {
-                    if (++deleted === size) continueUnmount(u, direct)
+                    if (cancelled) return
+                    if (++deleted === size)
+                        continueUnmount(u, direct)
                 }, data.node instanceof Comment ? true : false))
+                if (cancelled) continueUnmount(u, direct)
             }
             else continueUnmount(u, direct)
-        }, data, () => continueUnmount(u, direct))
+        }
+        data.onUnmountAsync(sync, data, () => {
+            cancelled = true
+            sync()
+        })
     }
     
     const continueUnmount = (u?: VoidFunction, direct: boolean = false): void => {

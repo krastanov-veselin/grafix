@@ -150,7 +150,7 @@ declare class TagProps {
     onInit?: (tag?: Tag) => void;
     onMount?: (tag?: Tag) => void;
     onUnmount?: (tag?: Tag) => void;
-    onUnmountAsync: (unmount: VoidFunction, tag?: Tag) => void;
+    onUnmountAsync: (unmount: VoidFunction, tag?: Tag, forced?: VoidFunction) => void;
     onAbort?: MouseEventFunc | null;
     onAfterPrint?: MouseEventFunc | null;
     onAnimationEnd?: MouseEventFunc | null;
@@ -432,7 +432,7 @@ declare type Tag = {
     onMount: (tag?: Tag) => void;
     onInit: (tag?: Tag) => void;
     onUnmount: (tag?: Tag) => void;
-    onUnmountAsync: (u: VoidFunction, tag?: Tag) => void;
+    onUnmountAsync: (u: VoidFunction, tag?: Tag, force?: VoidFunction) => void;
     unmount: (u?: VoidFunction, direct?: boolean) => void;
     mount: (tag: TagChild, id?: string) => Tag;
     bind: (type: bindType, apply: Function) => void;

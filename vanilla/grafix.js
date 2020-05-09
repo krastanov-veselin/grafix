@@ -991,7 +991,7 @@ const tag = (node, props, childTags) => {
         onMount: () => props.onMount(data),
         onInit: () => props.onInit(data),
         onUnmount: () => props.onUnmount(data),
-        onUnmountAsync: (u) => props.onUnmountAsync(() => u(), data),
+        onUnmountAsync: (u, data, forced) => props.onUnmountAsync(() => u(), data, forced),
         unmount: (u, direct = false) => unmount(u, direct),
         mount: (tag, id) => mountTag(tag, id),
         bind: (type, apply) => bind(type, data, apply),
@@ -1496,22 +1496,38 @@ const tag = (node, props, childTags) => {
         return tag;
     };
     const unmount = (u, direct = false) => {
-        data.onUnmountAsync(() => {
+        let cancelled = false;
+        let synced = false;
+        const sync = () => {
+            if (synced)
+                return;
+            synced = true;
             data.onUnmount();
             data.unmounts.foreach(u => u());
             if (data.tags.size) {
                 let deleted = 0;
                 let size = data.tags.size;
                 data.tags.foreach(t => t.unmount(() => {
+                    if (cancelled)
+                        return;
                     if (++deleted === size)
                         continueUnmount(u, direct);
                 }, data.node instanceof Comment ? true : false));
+                if (cancelled)
+                    continueUnmount(u, direct);
             }
             else
                 continueUnmount(u, direct);
+        };
+        data.onUnmountAsync(sync, data, () => {
+            cancelled = true;
+            sync();
         });
     };
     const continueUnmount = (u, direct = false) => {
+        if (!data.mounted)
+            return;
+        data.mounted = false;
         cleanEvents();
         cleanBinding(data);
         if (direct)
