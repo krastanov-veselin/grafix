@@ -53,16 +53,16 @@ declare class AssocList<I, T> {
     get prev(): this;
     focus(id: I): AssocList<I, T>;
     getID(): I;
-    add(item: T): string;
+    add(item: T, beforeID?: I): string;
     pre(item: T): AssocList<I, T>;
     preAssoc(id: I, item: T): AssocList<I, T>;
     push(item: T): AssocList<I, T>;
-    set(id: I, item: T): void;
+    set(id: I, item: T, beforeID?: I): void;
     shift(): T;
     pop(): T;
     index(n: number): T;
     iteratedSort(callback: (a: T, b: T) => number): void;
-    sort(beforeID: I, afterID: I): void;
+    sort(beforeID: I, afterID: I, silent?: boolean): void;
     has(id: I): boolean;
     get(id?: I): T;
     getNode(id: I): AssocNode<T, I>;
@@ -410,7 +410,7 @@ declare const filter: (feed: Partial<{
 declare const prepare: (props: Partial<TagProps>, prop: string) => void;
 declare const allow: (condition: () => any, tags: () => NodeTags) => () => () => NodeTags;
 declare const purify: () => void;
-declare const stateful: (name: string | VoidFunction, update?: VoidFunction) => BindData;
+declare const stateful: (update?: VoidFunction) => BindData;
 declare const fx: {
     dragging: boolean;
     dragData: any;
@@ -454,9 +454,10 @@ interface StyleNode {
     node: HTMLStyleElement;
 }
 declare const styles: Mix<StyleNode>;
-declare const mountStyle: (name: string, val: Function) => void;
+declare const mountStyle: (name: string, val: Function) => HTMLElement;
 declare const unmountStyle: (name: string) => void;
 declare const visuals: any;
+declare const css: () => void;
 declare type MoveFeed = {
     data: Pos;
     target?: () => Tag;
@@ -519,3 +520,82 @@ declare type SortProps = {
     moveStyle: () => string;
 };
 declare const sort: (feed: SortFeed, tags: (p?: SortProps) => Tag[]) => Tag;
+interface EditorInputProps {
+    onUpdate: (val?: string, state?: InputState) => void;
+    onChange: (val?: string, state?: InputState) => void;
+    state: () => string;
+    initial: () => string;
+    animation: () => boolean;
+    autoFocus: boolean;
+    layer: () => string;
+    placeholder: () => string;
+    placeholderColor: () => string;
+    style: () => string;
+    classes: () => string;
+    raid: () => string;
+    getRaid: (raid: Mix<InputState>) => void;
+    getState: (inputState: InputState) => void;
+    onDelete: (state: InputState, value: string) => void;
+    onMount: (t?: Tag) => void;
+    onUnmount: (t?: Tag) => void;
+}
+interface InputState {
+    id: string;
+    focused: boolean;
+    selecting: boolean;
+    entered: boolean;
+    props: Partial<EditorInputProps>;
+    selected: Mix<Letter>;
+    shift: boolean;
+    control: boolean;
+    valueSize: number;
+    animation: boolean;
+    mounted: boolean;
+    value: Mix<Letter>;
+    raid: string;
+    updateMutex: boolean;
+    onDelete: (state: InputState, value: string) => void;
+}
+interface Letter {
+    value: string;
+    selected: boolean;
+    node: HTMLElement;
+    color: string;
+    bold: boolean;
+    italic: boolean;
+}
+declare const raids: Mix<Mix<InputState>>;
+declare let currentInputCancellation: (ev: MouseEvent) => void;
+declare const write: (key: string, state: InputState) => void;
+declare const highlight: (state: InputState) => void;
+declare const getValue: (state: InputState, selected?: boolean) => string;
+declare const left: (state: InputState) => void;
+declare const right: (state: InputState) => void;
+declare const up: (state: InputState) => void;
+declare const down: (state: InputState) => void;
+declare const backspace: (state: InputState) => void;
+declare const triggerOnDelete: (state: InputState) => void;
+declare const inputFocus: (state: InputState) => void;
+declare const inputBlur: (state: InputState) => void;
+declare const clearSelection: (state: InputState) => void;
+declare const increaseValueSize: (state: InputState) => void;
+declare const decreaseValueSize: (state: InputState) => void;
+declare const triggerChange: (state: InputState) => void;
+declare const removeAll: (state: InputState) => void;
+declare const removeSelected: (state: InputState) => void;
+declare const copy: (state: InputState) => void;
+declare const cut: (state: InputState) => void;
+declare const paste: (state: InputState) => Promise<void>;
+declare const selectAll: (state: InputState) => void;
+declare const setValue: (state: InputState, val: string, remove?: boolean) => void;
+declare const cursor: (item: Letter, state: InputState) => Tag;
+declare const enableSelection: (item: Letter, id: string, state: InputState) => void;
+declare const inputSelect: (state: InputState, item: Letter, id: string) => void;
+declare const unselect: (state: InputState, item: Letter, id: string) => void;
+declare const unselectAll: (state: InputState) => void;
+declare const selectCursorWord: (id: string, state: InputState) => void;
+declare const letter: (item: Letter, id: string, state: InputState) => Tag;
+declare const applyCursor: (state: InputState) => void;
+declare const addRaid: (state: InputState) => void;
+declare const cleanRaid: (state: InputState) => void;
+declare const inputgfx: (props?: Partial<EditorInputProps>) => Tag;

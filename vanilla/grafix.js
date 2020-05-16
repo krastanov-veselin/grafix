@@ -161,15 +161,15 @@ class AssocList {
             return this.focusNode.id;
         return null;
     }
-    add(item) {
+    add(item, beforeID) {
         if (this instanceof Mix &&
             typeof item === "string" &&
             this.uniqueMix) {
-            this.set(item, item);
+            this.set(item, item, beforeID);
             return item;
         }
         const id = Unit.uniqueID();
-        this.set(id, item);
+        this.set(id, item, beforeID);
         return id;
     }
     pre(item) {
@@ -188,7 +188,7 @@ class AssocList {
         this.add(item);
         return this;
     }
-    set(id, item) {
+    set(id, item, beforeID) {
         let next = null;
         if (this.has(id)) {
             next = this.getNode(id).next;
@@ -207,6 +207,8 @@ class AssocList {
         this.lastNode = node;
         this.ids.set(id, () => node);
         this.size++;
+        if (beforeID)
+            this.sort(id, beforeID, true);
         if (this.binds)
             if (this.binds.add.size)
                 this.binds.add.foreach(subscriber => subscriber(item, id));
@@ -240,7 +242,7 @@ class AssocList {
         return result;
     }
     iteratedSort(callback) { }
-    sort(beforeID, afterID) {
+    sort(beforeID, afterID, silent = false) {
         if (beforeID === afterID)
             return;
         if (this.ids.has(beforeID) === false)
@@ -263,9 +265,10 @@ class AssocList {
             before.prev = this.lastNode;
             before.next = null;
             this.lastNode = before;
-            if (this.binds)
-                if (this.binds.sort.size)
-                    this.binds.sort.foreach(subscriber => subscriber(this.get(beforeID), null, beforeID, null));
+            if (!silent)
+                if (this.binds)
+                    if (this.binds.sort.size)
+                        this.binds.sort.foreach(subscriber => subscriber(this.get(beforeID), null, beforeID, null));
             return;
         }
         const after = this.getNode(afterID);
@@ -285,9 +288,10 @@ class AssocList {
             before.prev = null;
             this.firstNode = before;
         }
-        if (this.binds)
-            if (this.binds.sort.size)
-                this.binds.sort.foreach(subscriber => subscriber(this.get(beforeID), this.get(afterID), beforeID, afterID));
+        if (!silent)
+            if (this.binds)
+                if (this.binds.sort.size)
+                    this.binds.sort.foreach(subscriber => subscriber(this.get(beforeID), this.get(afterID), beforeID, afterID));
     }
     has(id) {
         return this.ids.has(id);
@@ -686,12 +690,6 @@ const o = (/** @type {(new() => A)|A} */ ref, /** @type {A} */ d, refreshable = 
     const binds = new Mix();
     const propCache = {};
     const reg = (prop) => {
-        if (!propCache[prop])
-            propCache[prop] = prop + id + currentBindType;
-        if (currentTag.bindsCache[propCache[prop]])
-            return;
-        else
-            currentTag.bindsCache[propCache[prop]] = true;
         if (currentTag.binds.has(id))
             if (currentTag.binds.get(id).has(prop))
                 if (currentTag.binds.get(id).get(prop).has(currentBindType))
@@ -708,7 +706,7 @@ const o = (/** @type {(new() => A)|A} */ ref, /** @type {A} */ d, refreshable = 
         });
         if (!binds.has(prop))
             binds.set(prop, new Mix());
-        binds.get(prop).preAssoc(bindID, currentBindFunc);
+        binds.get(prop).set(bindID, currentBindFunc);
         bindingChanged = true;
     };
     const p = new Proxy(object, {
@@ -722,7 +720,7 @@ const o = (/** @type {(new() => A)|A} */ ref, /** @type {A} */ d, refreshable = 
                 return true;
             obj[prop] = val;
             if (binds.has(prop))
-                binds.get(prop).foreach(u => u());
+                binds.get(prop).foreach(u => u(), true);
             return true;
         }
     });
@@ -949,13 +947,9 @@ const purify = () => {
     if (bindListen)
         disableBinding();
 };
-const stateful = (name, update) => {
-    if (name instanceof Function) {
-        update = name;
-        name = Unit.uniqueID();
-    }
+const stateful = (update) => {
     const bindData = new BindData;
-    bind(name, bindData, update);
+    bind(Unit.uniqueID(), bindData, update);
     return bindData;
 };
 const fx = o({
@@ -1038,11 +1032,11 @@ const tag = (node, props, childTags) => {
             return;
         if (!data.props[prop])
             return;
-        if (typeof data.props[prop] === "string" || typeof data.props[prop] === "number")
+        if (typeof data.props[prop] === "string" ||
+            typeof data.props[prop] === "number")
             return applyNodeValue(domProp, data.props[prop]);
-        if (data.props[prop] instanceof Function) {
+        if (data.props[prop] instanceof Function)
             bind(type, data, () => applyNodeValue(domProp, data.props[prop]()));
-        }
     };
     const setupText = () => setupNodeProp(bindType.text, "text", "innerText");
     const setupValue = () => setupNodeProp(bindType.text, "value", "value");
@@ -1714,6 +1708,7 @@ const mountStyle = (name, val) => {
         node
     });
     document.head.appendChild(node);
+    return node;
 };
 const unmountStyle = (name) => {
     if (!styles.has(name))
@@ -1723,17 +1718,247 @@ const unmountStyle = (name) => {
     styles.delete(name);
 };
 const visuals = new Proxy({}, {
-    defineProperty: (t, p, a) => {
-        t[p] = null;
-        mountStyle(p, a.value);
+    defineProperty: (obj, p, v) => {
+        obj[p] = mountStyle(p, v.value);
         return true;
     },
-    deleteProperty: (t, p) => {
-        delete t[p];
+    deleteProperty: (obj, p) => {
+        delete obj[p];
         unmountStyle(p);
         return true;
     }
 });
+const css = () => {
+    visuals.grafix = () => `
+::-webkit-scrollbar {
+    width: 10px !important;
+    height: 10px !important;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+.InvisibleScroll::-webkit-scrollbar {
+    width: 0px !important;
+}
+
+html, body, .gfx, .gfx > div {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    overflow: hidden;
+}
+
+.FloatLeft {
+    float: left;
+}
+
+.FloatRight {
+    float: right;
+}
+
+.FloatFix::before, .FloatFix::after {
+    display: block;
+    content: "";
+    float: none;
+    clear: both;
+}
+
+.ColLeft {
+    width: 300px;
+    float: left;
+    height: 100%;
+}
+
+.ColRight {
+    width: calc(100% - 300px);
+    height: 100%;
+    float: left;
+}
+
+.Input {
+    border-radius: 0px;
+    border: 0;
+    line-height: 20px;
+    box-sizing: border-box;
+    padding: 0;
+    height: 20px;
+    outline: 0;
+    font-family: code;
+    display: block;
+    width: 100%;
+    font-size: 20px;
+    /* border-left: 3px solid #39f; */
+}
+
+.TinyInput {
+    width: calc(100% - 75px);
+    height: 20px;
+    margin-left: 10px;
+    margin-right: 7px;
+}
+
+.Button {
+    position: relative;
+    user-select: none;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+div {
+    user-select: none;
+}
+
+.HalfButton {
+    position: relative;
+    width: 50%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.Background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.Abs {
+    position: absolute;
+}
+
+.Rel {
+    position: relative;
+}
+
+.Full {
+    width: 100%;
+    height: 100%;
+}
+
+.Grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
+}
+
+.TabView {
+    height: calc(100% - 40px);
+    perspective: 700px;
+}
+
+.TabViewElement {
+    transition: transform 0.5s, opacity 0.5s;
+    transform: translate3d(0, 0, -50px);
+    opacity: 0;
+}
+
+.TabViewElement.active {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+}
+
+.Tabs, .TabView > div {
+    width: 100%;
+    height: 100%;
+}
+
+.HalfWidth {
+    width: 50%;
+}
+
+.BorderBox {
+    box-sizing: border-box;
+}
+
+.EditorInputValue {
+    height: 100%;
+    perspective: 700px;
+}
+
+.EditorInputCursor {
+    opacity: 0;
+    width: 0;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.EditorInputCursor.active {
+    opacity: 1;
+}
+
+.EditorInputCursor > div {
+    width: 2px;
+    height: 100%;
+    background-color: #39f;
+}
+
+.EditorInputLetter {
+    width: 12px;
+    height: 100%;
+}
+
+.EditorInputLetter.animation {
+    transition: transform 0.3s, opacity 0.3s, width 0.3s, color 0.3s, font-weight 0.3s, font-style 0.3s;
+    transform: translate3d(-3px, 0, 0);
+    opacity: 0;
+    width: 0;
+}
+
+.EditorInputLetter.animation.active {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    width: 12px;
+}
+
+.EditorInputLetter.bold {
+    font-weight: 700;
+}
+
+.EditorInputLetter.italic {
+    font-style: italic;
+}
+
+.EditorInputLetter.tab {
+    width: calc(48px)
+}
+
+.EditorInputLetter.selected {
+    background-color: #39f5
+}
+
+.EditorInput {
+    width: 100% !important;
+    overflow: hidden;
+}
+
+.InputPlaceholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.5s, transform 0.5s;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(-10px, 0, 0)
+}
+
+.InputPlaceholder.active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0)
+}
+`;
+    if (document.head.children.length > 1)
+        document.head.insertBefore(visuals.grafix, document.head.children[0]);
+};
 const move = (feed, tags) => {
     const props = {
         translate: () => `
@@ -2027,5 +2252,581 @@ const sort = (feed, tags) => {
         ])
     ]);
     return tag;
+};
+const raids = new Mix();
+let currentInputCancellation = null;
+const write = (key, state) => {
+    const id = state.value.add(o({
+        value: key,
+        selected: false,
+        node: null,
+        color: null,
+        bold: false,
+        italic: false
+    }));
+    state.value.sort(id, "cursor");
+    increaseValueSize(state);
+};
+const highlight = (state) => {
+    let currentColor = null;
+    let bold = false;
+    let italic = false;
+    let currentWord = "";
+    let currentLetters = mix();
+    state.value.foreach((letter, id) => {
+        if (letter.value === "cursor")
+            return;
+        if (letter.value === " ") {
+            currentWord = "";
+            currentLetters = mix();
+            currentColor = null;
+            bold = false;
+            italic = false;
+            return;
+        }
+        let special = false;
+        if (letter.value === "@") {
+            currentColor = "#6495ee";
+            bold = true;
+            italic = false;
+            special = true;
+        }
+        if (letter.value === "^") {
+            currentColor = "#cf68e1";
+            bold = true;
+            italic = false;
+            special = true;
+        }
+        if (letter.value === "-") {
+            currentColor = "#676e95";
+            italic = true;
+            bold = false;
+            special = true;
+        }
+        if (letter.value === "*") {
+            currentColor = "#cf68e1";
+            bold = true;
+            italic = false;
+            special = true;
+        }
+        currentWord += letter.value;
+        currentLetters.set(id, letter);
+        if (currentWord === "casters" || currentWord === "props")
+            return currentLetters.foreach(sibling => sibling.color = "#98c379");
+        if (currentWord === "set" ||
+            currentWord === "unset" ||
+            currentWord === "before" ||
+            currentWord === "after" ||
+            currentWord === "while")
+            return currentLetters.foreach(sibling => sibling.color = "#ff6ab3");
+        if (!currentColor) {
+            if (letter.color)
+                letter.color = null;
+            if (letter.bold)
+                letter.bold = false;
+            if (letter.italic)
+                letter.italic = false;
+            return;
+        }
+        letter.color = currentColor;
+        letter.bold = bold;
+        letter.italic = italic;
+    });
+};
+const getValue = (state, selected = false) => {
+    const arr = state.value.array;
+    let val = "";
+    for (let i = 0; i < arr.length; i++)
+        if (arr[i].value !== "cursor") {
+            if (selected && !arr[i].selected)
+                continue;
+            val += arr[i].value;
+        }
+    return val;
+};
+const left = (state) => {
+    if (!state.value.getNode("cursor").prev)
+        return;
+    if (state.shift)
+        if (state.value.getNode("cursor").prev.data.selected)
+            unselect(state, state.value.getNode("cursor").prev.data, state.value.getNode("cursor").prev.id);
+        else
+            inputSelect(state, state.value.getNode("cursor").prev.data, state.value.getNode("cursor").prev.id);
+    state.value.sort("cursor", state.value.getNode("cursor").prev.id);
+    if (state.selected && !state.shift)
+        unselectAll(state);
+};
+const right = (state) => {
+    if (!state.value.getNode("cursor").next)
+        return;
+    if (state.shift)
+        if (state.value.getNode("cursor").next.data.selected)
+            unselect(state, state.value.getNode("cursor").next.data, state.value.getNode("cursor").next.id);
+        else
+            inputSelect(state, state.value.getNode("cursor").next.data, state.value.getNode("cursor").next.id);
+    if (!state.value.getNode("cursor").next.next)
+        return state.value.sort("cursor", null);
+    state.value.sort("cursor", state.value.getNode("cursor").next.next.id);
+    if (state.selected && !state.shift)
+        unselectAll(state);
+};
+const up = (state) => {
+    if (!state.raid)
+        return;
+    const node = raids.get(state.raid).getNode(state.id);
+    if (node.prev)
+        applyCursor(node.prev.data);
+};
+const down = (state) => {
+    if (!state.raid)
+        return;
+    const node = raids.get(state.raid).getNode(state.id);
+    if (node.next)
+        applyCursor(node.next.data);
+};
+const backspace = (state) => {
+    if (state.selected.size) {
+        triggerOnDelete(state);
+        removeSelected(state);
+        state.selected.clean();
+        return;
+    }
+    if (!state.value.getNode("cursor").prev)
+        return triggerOnDelete(state);
+    triggerOnDelete(state);
+    state.value.delete(state.value.getNode("cursor").prev.id);
+    decreaseValueSize(state);
+};
+const triggerOnDelete = (state) => {
+    if (!state.onDelete)
+        return;
+    state.onDelete(state, "");
+};
+const inputFocus = (state) => {
+    purify();
+    if (currentInputCancellation)
+        currentInputCancellation(null);
+    currentInputCancellation = (ev) => {
+        if (state.entered && ev !== null)
+            return;
+        state.focused = false;
+    };
+    window.onmousedown = currentInputCancellation;
+    window.onkeydown = (ev) => {
+        ev.stopPropagation();
+        ev.preventDefault();
+        if (ev.key === "Escape")
+            return inputBlur(state);
+        if (ev.key === "ArrowLeft")
+            return left(state);
+        if (ev.key === "ArrowRight")
+            return right(state);
+        if (ev.key === "ArrowUp")
+            return up(state);
+        if (ev.key === "ArrowDown")
+            return down(state);
+        if (ev.key === "Shift")
+            return state.shift = true;
+        if (ev.key === "Control")
+            return state.control = true;
+        if (ev.key === "CapsLock")
+            return;
+        if (ev.key === "Enter") {
+            if (state.props)
+                if (state.props.onChange)
+                    state.props.onChange(getValue(state), state);
+            return;
+        }
+        if (ev.key === "Backspace")
+            return backspace(state);
+        if (state.control) {
+            if (ev.key === "c")
+                return copy(state);
+            if (ev.key === "x")
+                return cut(state);
+            if (ev.key === "v")
+                return paste(state);
+            if (ev.key === "a")
+                return selectAll(state);
+            return;
+        }
+        if (state.selected.size)
+            removeSelected(state);
+        write(ev.key, state);
+    };
+    window.onkeyup = (ev) => {
+        if (ev.key === "Shift")
+            return state.shift = false;
+        if (ev.key === "Control")
+            return state.control = false;
+    };
+};
+const inputBlur = (state) => {
+    purify();
+    window.onkeydown = null;
+    window.onkeyup = null;
+    window.onmousedown = null;
+    state.focused = false;
+    currentInputCancellation = null;
+    clearSelection(state);
+};
+const clearSelection = (state) => state.value.foreach((letter, id) => {
+    if (!letter.selected)
+        return;
+    unselect(state, letter, id);
+});
+const increaseValueSize = (state) => {
+    state.valueSize++;
+    triggerChange(state);
+};
+const decreaseValueSize = (state) => {
+    state.valueSize--;
+    triggerChange(state);
+};
+const triggerChange = (state) => {
+    if (!state.props)
+        return;
+    if (!state.props.onUpdate)
+        return;
+    state.updateMutex = true;
+    state.props.onUpdate(getValue(state), state);
+    state.updateMutex = false;
+};
+const removeAll = (state) => {
+    state.value.foreach((letter, id) => {
+        if (letter.value === "cursor")
+            return;
+        state.value.delete(id);
+        decreaseValueSize(state);
+    });
+    state.selected.clean();
+};
+const removeSelected = (state) => {
+    state.value.foreach((letter, id) => {
+        if (letter.selected) {
+            state.value.delete(id);
+            decreaseValueSize(state);
+        }
+    });
+    state.selected.clean();
+};
+const copy = (state) => {
+    if (!state.selected.size)
+        return;
+    const val = getValue(state, true);
+    navigator.clipboard.writeText(val);
+};
+const cut = (state) => {
+    if (!state.selected.size)
+        return;
+    copy(state);
+    removeSelected(state);
+};
+const paste = (state) => navigator.clipboard.readText().then(val => {
+    removeSelected(state);
+    setValue(state, val, false);
+});
+const selectAll = (state) => state.value.foreach((item, id) => {
+    if (item.value === "cursor")
+        return;
+    if (item.selected)
+        return;
+    inputSelect(state, item, id);
+});
+const setValue = (state, val, remove = true) => {
+    if (remove)
+        removeAll(state);
+    if (!val)
+        return;
+    if (!val.length)
+        return;
+    for (let i = 0; i < val.length; i++)
+        write(val[i], state);
+};
+const cursor = (item, state) => div({
+    onMount: t => item.node = t.node,
+    classes: () => `
+        EditorInputCursor FloatLeft
+        ${state.focused ? "active" : ""}
+    `
+}, [
+    div()
+]);
+const enableSelection = (item, id, state) => {
+    if (item.selected)
+        if (state.value.getNode(id).prev)
+            if (state.value.getNode(id).prev.data.value === "cursor")
+                return;
+    if (state.selected.size)
+        state.selected.clean();
+    state.value.foreach(sibling => {
+        sibling.selected = false;
+    });
+    state.selecting = true;
+    window.onmouseup = () => {
+        state.selecting = false;
+        if (window.onmousemove)
+            window.onmousemove = null;
+        if (window.onmouseup)
+            window.onmouseup = null;
+    };
+};
+const inputSelect = (state, item, id) => {
+    if (!state.selected.has(id))
+        state.selected.set(id, item);
+    item.selected = true;
+};
+const unselect = (state, item, id) => {
+    if (state.selected.has(id))
+        state.selected.delete(id);
+    item.selected = false;
+};
+const unselectAll = (state) => state.value.foreach((item, id) => {
+    if (!item.selected || item.value === "cursor")
+        return;
+    unselect(state, item, id);
+});
+const selectCursorWord = (id, state) => {
+    let currentWord = mix();
+    let wordReached = false;
+    state.value.foreach((item, itemID) => {
+        if (item.value === "cursor")
+            return true;
+        if (item.value === " ") {
+            if (wordReached)
+                return false;
+            currentWord = mix();
+            return true;
+        }
+        if (itemID === id)
+            wordReached = true;
+        currentWord.set(itemID, item);
+        return true;
+    });
+    if (currentWord.size)
+        currentWord.foreach((item, itemID) => inputSelect(state, item, itemID));
+};
+const letter = (item, id, state) => {
+    const letterState = o({
+        mounted: false
+    });
+    return div({
+        onMount: t => {
+            item.node = t.node;
+            if (!state.mounted)
+                return letterState.mounted = true;
+            Unit.setTimeout(() => letterState.mounted = true, 30);
+        },
+        onUnmountAsync: u => {
+            letterState.mounted = false;
+            if (!state.animation)
+                return u();
+            Unit.setTimeout(() => u(), 500);
+        },
+        text: () => {
+            if (item.value === "Tab")
+                return "    ";
+            return item.value;
+        },
+        onDoubleClick: ev => {
+            if (item.selected)
+                return;
+            selectCursorWord(id, state);
+            ev.stopPropagation();
+        },
+        onMouseDown: ev => {
+            ev.stopPropagation();
+            if (!state.focused)
+                state.focused = true;
+            enableSelection(item, id, state);
+            state.value.sort("cursor", id);
+        },
+        onMouseEnter: () => {
+            if (!state.selecting)
+                return;
+            window.onmousemove = ev => {
+                state.value.foreach((sibling, siblingID) => {
+                    if (sibling.value === "cursor")
+                        return;
+                    const x = ev.pageX;
+                    const rect = sibling.node.getBoundingClientRect();
+                    const cursorRect = state.value.get("cursor").node.getBoundingClientRect();
+                    if (x < rect.x + rect.width && cursorRect.x > rect.x ||
+                        x > rect.x && cursorRect.x <= rect.x)
+                        inputSelect(state, sibling, siblingID);
+                    else
+                        unselect(state, sibling, siblingID);
+                });
+            };
+        },
+        classes: () => `
+            EditorInputLetter FloatLeft
+            ${item.value === "Tab" ? "tab" : ""}
+            ${item.selected ? "selected" : ""}
+            ${letterState.mounted ? "active" : ""}
+            ${state.animation ? "animation" : ""}
+            ${item.bold ? "bold" : ""}
+            ${item.italic ? "italic" : ""}
+        `,
+        style: () => `
+            ${item.color ? "color: " + item.color : ""}
+        `
+    });
+};
+const applyCursor = (state) => {
+    if (!state.focused)
+        state.focused = true;
+    if (state.value.getNode("cursor").next)
+        state.value.sort("cursor", null);
+};
+const addRaid = (state) => {
+    if (!state.raid)
+        return;
+    if (!raids.has(state.raid))
+        raids.set(state.raid, new Mix());
+    raids.get(state.raid).set(state.id, state);
+};
+const cleanRaid = (state) => {
+    if (!state.raid)
+        return;
+    if (!raids.has(state.raid))
+        return;
+    raids.get(state.raid).delete(state.id);
+    if (!raids.get(state.raid).size)
+        raids.delete(state.raid);
+};
+const inputgfx = (props) => {
+    const state = o({
+        id: Unit.uniqueID(),
+        focused: false,
+        selecting: false,
+        entered: false,
+        selected: mix(),
+        shift: false,
+        control: false,
+        valueSize: 0,
+        animation: true,
+        mounted: false,
+        value: mix([
+            ["cursor", o({
+                    value: "cursor",
+                    selected: false,
+                    node: null,
+                    color: null,
+                    bold: false,
+                    italic: false
+                })]
+        ]),
+        raid: props ?
+            props.raid ? props.raid() : null
+            : null,
+        updateMutex: false,
+        props,
+        onDelete: props ?
+            props.onDelete ? props.onDelete : null
+            : null
+    });
+    let initialized = false;
+    const binding = stateful(() => {
+        state.focused;
+        if (!initialized) {
+            initialized = true;
+            return;
+        }
+        if (state.focused)
+            inputFocus(state);
+        else
+            inputBlur(state);
+    });
+    const hlBinding = stateful(() => {
+        if (state.valueSize) {
+            purify();
+            highlight(state);
+        }
+    });
+    let stateBinding = null;
+    let animBinding = null;
+    const timeoutID = Unit.uniqueID();
+    Unit.setTimeout(() => state.mounted = true, 30, timeoutID);
+    if (props && props.animation)
+        animBinding = stateful(() => state.animation = props.animation());
+    return div({
+        classes: () => `
+            Input  EditorInput
+            ${props.layer ? props.layer() : "Layer-1"}
+            ${props.classes ? props.classes() : ""}
+        `,
+        style: () => `
+            width: ${30 + (state.valueSize * 12)}px;
+            ${props.style ? props.style() : ""}
+        `,
+        onMouseEnter: () => state.entered = true,
+        onMouseLeave: () => state.entered = false,
+        onMouseDown: () => {
+            applyCursor(state);
+            if (state.value.size)
+                enableSelection(state.value.lastItem, state.value.lastID(), state);
+        },
+        onDoubleClick: () => selectAll(state),
+        onMount: t => {
+            if (!props)
+                return;
+            if (props.initial)
+                setValue(state, props.initial());
+            if (props.state)
+                stateBinding = stateful(() => {
+                    const val = props.state();
+                    purify();
+                    if (state.updateMutex)
+                        return;
+                    setValue(state, val);
+                });
+            if (props.autoFocus)
+                applyCursor(state);
+            addRaid(state);
+            if (state.raid && props.getRaid)
+                props.getRaid(raids.get(state.raid));
+            if (props.getState)
+                props.getState(state);
+            if (props.onMount)
+                props.onMount(t);
+        },
+        onUnmountAsync: (u, t, f) => f(),
+        onUnmount: t => {
+            cleanBinding(binding);
+            cleanBinding(hlBinding);
+            if (stateBinding)
+                cleanBinding(stateBinding);
+            if (animBinding)
+                cleanBinding(animBinding);
+            Unit.clearTimeout(timeoutID);
+            cleanRaid(state);
+            if (!props)
+                return;
+            if (props.onUnmount)
+                props.onUnmount(t);
+        }
+    }, [
+        div({ classes: "EditorInputValue FloatFix" }, [
+            div({
+                classes: () => `
+                    InputPlaceholder
+                    ${(props.placeholder && state.valueSize === 0) ? "active" : ""}
+                `,
+                style: () => `
+                    color: ${props.placeholderColor ? props.placeholderColor() : "#fff2"};
+                `,
+                text: props.placeholder
+            }),
+            ...loop(state.value, (item, id) => [
+                (() => {
+                    if (item.value === "cursor")
+                        return cursor(item, state);
+                    else
+                        return letter(item, id, state);
+                })()
+            ])
+        ])
+    ]);
 };
 //# sourceMappingURL=grafix.js.map
