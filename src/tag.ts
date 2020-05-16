@@ -9,6 +9,7 @@ declare type Tag = {
     node: HTMLElement
     props: TagProps
     mounted: boolean
+    data: any
     addEvent: ((eventName: string, func: (ev?: any) => void) => void)
     onCreate: (tag?: Tag) => void
     onMount: (tag?: Tag) => void
@@ -43,6 +44,7 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
         node,
         props,
         mounted: false,
+        data: null,
         addEvent: (eventName: string, func: ((ev?: any) => void)) =>
             addEvent(eventName, func),
         onCreate: () => props.onCreate(data),

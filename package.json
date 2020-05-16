@@ -1,6 +1,6 @@
 {
   "name": "grafix",
-  "version": "1.1.20",
+  "version": "1.1.22",
   "description": "Grafix is a library that allows you to do rapid UI Logic & Layout with automatic databinding.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
