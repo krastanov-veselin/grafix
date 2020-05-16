@@ -143,17 +143,17 @@ class AssocList<I, T> {
         return null
     }
     
-    public add(item: T): string {
+    public add(item: T, beforeID?: I): string {
         if (
             this instanceof Mix &&
             typeof item === "string" &&
             this.uniqueMix
         ) {
-            this.set(item as any, item)
+            this.set(item as any, item, beforeID)
             return item
         }
         const id = Unit.uniqueID()
-        this.set(id as any, item)
+        this.set(id as any, item, beforeID)
         return id
     }
     
@@ -180,7 +180,7 @@ class AssocList<I, T> {
         return this
     }
     
-    public set(id: I, item: T): void {
+    public set(id: I, item: T, beforeID?: I): void {
         let next: AssocNode<T, I> = null
         if (this.has(id)) {
             next = this.getNode(id).next
@@ -197,6 +197,7 @@ class AssocList<I, T> {
         this.lastNode = node
         this.ids.set(id, () => node)
         this.size++
+        if (beforeID) this.sort(id, beforeID, true)
         if (this.binds)
         if (this.binds.add.size)
             this.binds.add.foreach(subscriber =>
@@ -233,7 +234,7 @@ class AssocList<I, T> {
     
     public iteratedSort(callback: (a: T, b: T) => number): void {}
     
-    public sort(beforeID: I, afterID: I): void {
+    public sort(beforeID: I, afterID: I, silent: boolean = false): void {
         if (beforeID === afterID) return
         if (this.ids.has(beforeID) === false) return
         const before = this.getNode(beforeID)
@@ -252,6 +253,7 @@ class AssocList<I, T> {
             before.prev = this.lastNode
             before.next = null
             this.lastNode = before
+            if (!silent)
             if (this.binds)
             if (this.binds.sort.size)
                 this.binds.sort.foreach(subscriber =>
@@ -273,6 +275,7 @@ class AssocList<I, T> {
             before.prev = null
             this.firstNode = before
         }
+        if (!silent)
         if (this.binds)
         if (this.binds.sort.size)
             this.binds.sort.foreach(subscriber =>

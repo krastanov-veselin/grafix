@@ -10,9 +10,11 @@
 ./src/list.ts
 ./src/router.ts
 ./src/visuals.ts
+./src/css.ts
 ./src/blends/move.ts
 ./src/blends/resize.ts
 ./src/blends/drag.ts
 ./src/blends/drop.ts
 ./src/blends/sort.ts
+./src/models/input.ts
 ./src/grafix.ts

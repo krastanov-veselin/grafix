@@ -11,11 +11,7 @@ const o = <C = any>(/** @type {(new() => A)|A} */ref: (new () => C) | C, /** @ty
         if (typeof object[key as string] !== "undefined")
             object[key as string] = d[key]
     const binds: ObjBinds = new Mix()
-    const propCache: any = {}
     const reg = (prop: string) => {
-        if (!propCache[prop]) propCache[prop] = prop + id + currentBindType
-        if (currentTag.bindsCache[propCache[prop]]) return
-        else currentTag.bindsCache[propCache[prop]] = true
         if (currentTag.binds.has(id))
         if (currentTag.binds.get(id).has(prop))
         if (currentTag.binds.get(id).get(prop).has(currentBindType))
@@ -31,7 +27,7 @@ const o = <C = any>(/** @type {(new() => A)|A} */ref: (new () => C) | C, /** @ty
             id: bindID
         })
         if (!binds.has(prop)) binds.set(prop, new Mix())
-        binds.get(prop).preAssoc(bindID, currentBindFunc)
+        binds.get(prop).set(bindID, currentBindFunc)
         bindingChanged = true
     }
     const p = new Proxy(object, {
@@ -43,7 +39,7 @@ const o = <C = any>(/** @type {(new() => A)|A} */ref: (new () => C) | C, /** @ty
             if (obj[prop] === val && refreshable === false) return true
             obj[prop] = val
             if (binds.has(prop as string))
-                binds.get(prop as string).foreach(u => u())
+                binds.get(prop as string).foreach(u => u(), true)
             return true
         }
     })

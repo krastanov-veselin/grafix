@@ -94,11 +94,11 @@ const tag = (node: HTMLElement, props: TagProps, childTags: TagChild[]): Tag => 
     const setupNodeProp = (type: bindType, prop: string, domProp: string): void | string => {
         if (data.node instanceof Comment) return
         if (!data.props[prop]) return
-        if (typeof data.props[prop] === "string" || typeof data.props[prop] === "number")
-            return applyNodeValue(domProp, data.props[prop])
-        if (data.props[prop] instanceof Function) {
+        if (typeof data.props[prop] === "string" ||
+            typeof data.props[prop] === "number"
+        ) return applyNodeValue(domProp, data.props[prop])
+        if (data.props[prop] instanceof Function)
             bind(type, data, () => applyNodeValue(domProp, data.props[prop]()))
-        }
     }
     
     const setupText = (): void | string =>

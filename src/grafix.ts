@@ -148,6 +148,7 @@ module.exports = {
     purify,
     bind,
     cleanBinding,
+    cleanState: cleanBinding,
     enableBinding,
     disableBinding,
     bindListen,
@@ -156,7 +157,9 @@ module.exports = {
     currentBindFunc,
     bindingChanged,
     BindData,
-    stateful
+    stateful,
+    inputgfx,
+    css
 }
 declare module "grafix" {
     export const node: (
@@ -336,6 +339,7 @@ declare module "grafix" {
     export const purify: VoidFunction
     export const bind: (type: string, data: BindData, apply: Function) => void
     export const cleanBinding: (data: BindData) => void
+    export const cleanState: (data: BindData) => void
     export const disableBinding: () => void
     export const enableBinding: (type: string, data: BindData, func: () => any) => void
     export let bindListen: boolean
@@ -348,4 +352,6 @@ declare module "grafix" {
         public binds: Binds
     }
     export const stateful: (name: string | VoidFunction, update?: VoidFunction) => BindData
+    export const inputgfx: (props?: Partial<EditorInputProps>) => Tag
+    export const css: () => string
 }

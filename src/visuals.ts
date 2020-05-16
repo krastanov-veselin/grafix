@@ -7,7 +7,7 @@ interface StyleNode {
     node: HTMLStyleElement
 }
 const styles: Mix<StyleNode> = new Mix()
-const mountStyle = (name: string, val: Function): void => {
+const mountStyle = (name: string, val: Function): HTMLElement => {
     if (styles.has(name)) return
     const node = document.createElement("style")
     node.type = "text/css"
@@ -21,6 +21,7 @@ const mountStyle = (name: string, val: Function): void => {
         node
     })
     document.head.appendChild(node)
+    return node
 }
 const unmountStyle = (name: string): void => {
     if (!styles.has(name)) return
@@ -29,13 +30,12 @@ const unmountStyle = (name: string): void => {
     styles.delete(name)
 }
 const visuals: any = new Proxy({}, {
-    defineProperty: (t, p, a) => {
-        t[p] = null
-        mountStyle(p as string, a.value)
+    defineProperty: (obj, p, v) => {
+        obj[p] = mountStyle(p as string, v.value)
         return true
     },
-    deleteProperty: (t, p) => {
-        delete t[p]
+    deleteProperty: (obj, p) => {
+        delete obj[p]
         unmountStyle(p as string)
         return true
     }
