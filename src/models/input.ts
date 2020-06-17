@@ -1,6 +1,6 @@
 interface EditorInputProps {
-    onUpdate: (val?: string, state?: InputState) => void
-    onChange: (val?: string, state?: InputState) => void
+    onUpdate: (val?: string, state?: InputState, ev?: KeyboardEvent) => void
+    onChange: (val?: string, state?: InputState, ev?: KeyboardEvent) => void
     state: () => string
     initial: () => string
     animation: () => boolean
@@ -79,6 +79,26 @@ const highlight = (state: InputState) => {
             return
         }
         let special = false
+        if (
+            letter.value === "(" ||
+            letter.value === ")" ||
+            letter.value === "[" ||
+            letter.value === "]"
+        ) {
+            currentColor = "#fff"
+            bold = false
+            italic = false
+        }
+        if (letter.value === "&") {
+            currentColor = "#ff6ab3"
+            bold = false
+            italic = false
+        }
+        if (letter.value === "|") {
+            currentColor = "#ff6ab3"
+            bold = false
+            italic = false
+        }
         if (letter.value === "@") {
             currentColor = "#6495ee"
             bold = true
@@ -106,6 +126,9 @@ const highlight = (state: InputState) => {
         currentWord += letter.value
         currentLetters.set(id, letter)
         if (currentWord === "casters" || currentWord === "props")
+            return currentLetters.foreach(sibling =>
+                sibling.color = "#98c379")
+        if (currentWord === "as")
             return currentLetters.foreach(sibling =>
                 sibling.color = "#98c379")
         if (
@@ -238,7 +261,7 @@ const inputFocus = (state: InputState) => {
             return
         if (ev.key === "Enter") {
             if (state.props) if (state.props.onChange)
-                state.props.onChange(getValue(state), state)
+                state.props.onChange(getValue(state), state, ev)
             return
         }
         if (ev.key === "Backspace")
@@ -435,8 +458,23 @@ const letter = (
     const letterState = o({
         mounted: false
     })
+    let tag: Tag = null
+    const select = () => window.onmousemove = ev => {
+        state.value.foreach((sibling, siblingID) => {
+            if (sibling.value === "cursor") return
+            const x = ev.pageX
+            const rect = sibling.node.getBoundingClientRect()
+            const cursorRect =
+                state.value.get("cursor").node.getBoundingClientRect()
+            if (x < rect.x + rect.width && cursorRect.x > rect.x ||
+                x > rect.x && cursorRect.x <= rect.x
+            ) inputSelect(state, sibling, siblingID)
+            else unselect(state, sibling, siblingID)
+        })
+    }
     return div({
         onMount: t => {
+            tag = t
             item.node = t.node
             if (!state.mounted) return letterState.mounted = true
             Unit.setTimeout(() => letterState.mounted = true, 30)
@@ -452,8 +490,7 @@ const letter = (
             return item.value
         },
         onDoubleClick: ev => {
-            if (item.selected)
-                return
+            if (item.selected) return
             selectCursorWord(id, state)
             ev.stopPropagation()
         },
@@ -461,23 +498,18 @@ const letter = (
             ev.stopPropagation()
             if (!state.focused) state.focused = true
             enableSelection(item, id, state)
-            state.value.sort("cursor", id)
+            const rect = tag.node.getBoundingClientRect()
+            if (ev.pageX >= rect.left + (rect.width / 2)) {
+                if (state.value.getNode(id).next)
+                    state.value.sort("cursor", state.value.getNode(id).next.id)
+                else state.value.sort("cursor", null)
+                select()
+            }
+            else state.value.sort("cursor", id)
         },
         onMouseEnter: () => {
             if (!state.selecting) return
-            window.onmousemove = ev => {
-                state.value.foreach((sibling, siblingID) => {
-                    if (sibling.value === "cursor") return
-                    const x = ev.pageX
-                    const rect = sibling.node.getBoundingClientRect()
-                    const cursorRect =
-                        state.value.get("cursor").node.getBoundingClientRect()
-                    if (x < rect.x + rect.width && cursorRect.x > rect.x ||
-                        x > rect.x && cursorRect.x <= rect.x
-                    ) inputSelect(state, sibling, siblingID)
-                    else unselect(state, sibling, siblingID)
-                })
-            }
+            select()
         },
         classes: () => `
             EditorInputLetter FloatLeft
